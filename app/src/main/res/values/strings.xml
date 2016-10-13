@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">StyleSwap</string>
+
+    <string name="fragment_bottom_bar_id">TAG</string>
+    <string name="bottom_bar_hello">Hello</string>
+    <string name="bottom_bar_bye">GoodBye</string>
+    <string name="fragment_im_matches_title">MATCHES</string>
+    <string name="doop">::{\' - \' }</string>
+
+</resources>
