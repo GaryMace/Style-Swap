@@ -14,6 +14,7 @@ import com.roughike.bottombar.BottomBarFragment;
 import com.roughike.bottombar.OnTabSelectedListener;
 
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.gui.im.MatchListFragment;
 
 /**
  *
@@ -75,9 +76,11 @@ public class BarFragment extends Fragment {
         }
 
         private void addBarFragments() {
-                BottomBarFragment hello = new BottomBarFragment(new HelloFragment(), R.drawable.reviewicon_new, null);
-                BottomBarFragment bye = new BottomBarFragment(new GoodbyeFragment(), R.drawable.shimmer_new, null);
+                BottomBarFragment st = new BottomBarFragment(new HelloFragment(), R.drawable.user, null);
+                BottomBarFragment hello = new BottomBarFragment(new HelloFragment(), R.drawable.style, null);
+                BottomBarFragment bye = new BottomBarFragment(new MatchListFragment(), R.drawable.call, null);
                 bottomBar.setFragmentItems(getFragmentManager(), R.id.bottom_bar_container,
+                        st,
                         hello,
                         bye
                 );

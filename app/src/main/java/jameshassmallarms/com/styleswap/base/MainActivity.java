@@ -10,12 +10,12 @@ import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.gui.BarFragment;
 
 public class MainActivity extends AppCompatActivity {
-        private BarFragment bottomBar;
+        private BarFragment bottomBar;  //Navigation bar at bottom of screen
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
-                setContentView(R.layout.activity_main);
+                setContentView(R.layout.activity_main); //Load the main XML layout file.. empty on purpose
 
                 // Make us non-modal, so that others can receive touch events.
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);

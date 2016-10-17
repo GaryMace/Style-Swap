@@ -13,6 +13,7 @@ import jameshassmallarms.com.styleswap.R;
  */
 
 public class GoodbyeFragment extends Fragment {
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
