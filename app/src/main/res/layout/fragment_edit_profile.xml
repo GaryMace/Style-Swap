@@ -66,6 +66,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:hint="@string/item_description"
+            android:id="@+id/itemDescription"
             android:layout_weight="12"/>
 
 
