@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="50dp"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <ImageButton
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:srcCompat="@drawable/profilepicexample"
+            android:id="@+id/profilepic"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            android:padding="0dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nugs, 21"
+            android:id="@+id/profileinfo"
+            android:textColor="@android:color/background_dark"
+            android:textSize="9pt"
+            android:layout_gravity="center"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="40dp"
+            >
+
+            <Button
+                android:text="Settings"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/profilesettings"
+                android:background="@drawable/circlebutton"
+                android:layout_alignBaseline="@+id/profilecamera"
+                android:layout_alignBottom="@+id/profilecamera"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="28dp"
+                android:layout_marginEnd="28dp" />
+
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/profilecamera"
+                android:background="@android:drawable/ic_menu_camera"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="46dp"
+                android:layout_marginStart="46dp" />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>
