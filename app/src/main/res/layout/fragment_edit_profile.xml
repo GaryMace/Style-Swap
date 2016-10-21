@@ -18,10 +18,10 @@
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:layout_gravity="center"
-                android:src="@drawable/ja"
+                android:src="@drawable/call"
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
-                android:id="@+id/imageView" />
+                android:id="@+id/profileImage" />
 
             <Button
                 android:id="@+id/editPhotoButton"
