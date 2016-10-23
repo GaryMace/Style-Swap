@@ -42,8 +42,9 @@ public class MatchListFragment extends Fragment {
         private void updateUI() {
                 List<Match> matches = new ArrayList<>();
                 for (int i=0; i < 10; i++) {
+
                         Match m = new Match();
-                        m.setMatchImage(R.drawable.ja);
+                        m.setMatchImageKey(R.drawable.ja);
                         m.setMatchName("James");
                         m.setMatchNumber("085 766 3464");
                         matches.add(m);
@@ -78,7 +79,7 @@ public class MatchListFragment extends Fragment {
                 public void bindMatch(Match m) {
                         matchName.setText(m.getMatchName());
                         matchNumber.setText(m.getMatchNumber());
-                        matchImage.setImageResource(m.getMatchImage());
+                        matchImage.setImageResource(m.getMatchImageKey());
                 }
         }
 

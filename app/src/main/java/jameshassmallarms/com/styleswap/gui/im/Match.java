@@ -6,7 +6,7 @@ package jameshassmallarms.com.styleswap.gui.im;
 
 public class Match {
         private String matchName;
-        private int matchImage; //Needs refactoring
+        private int matchImageKey; //Needs refactoring
         private String matchNumber;
 
         public Match() {
@@ -21,12 +21,12 @@ public class Match {
                 this.matchName = matchName;
         }
 
-        public int getMatchImage() {
-                return matchImage;
+        public int getMatchImageKey() {
+                return matchImageKey;
         }
 
-        public void setMatchImage(int matchImage) {
-                this.matchImage = matchImage;
+        public void setMatchImageKey(int matchImageKey) {
+                this.matchImageKey = matchImageKey;
         }
 
         public String getMatchNumber() {

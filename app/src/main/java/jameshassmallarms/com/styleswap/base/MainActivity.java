@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 FragmentManager fragmentManager;
                 fragmentManager = getSupportFragmentManager();
                 FragmentTransaction ft = fragmentManager.beginTransaction();
-                ft.replace(R.id.activity_main, bottomBar, getString(R.string.fragment_bottom_bar_id)).commit();
+                ft.replace(R.id.activity_main, bottomBar, getString(R.string.fragment_bottom_bar_id)).commit(); //Swap layout for the bottombar layout resource file
 
         }
 

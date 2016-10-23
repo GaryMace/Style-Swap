@@ -10,23 +10,18 @@
         android:layout_weight="0.18"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/review_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/fragment_im_matches_title"
-                android:textColor="@color/forest_green"
-                android:textSize="15sp"
-                android:textStyle="bold"/>
-        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/fragment_im_matches_title"
+            android:textColor="@color/forest_green"
+            android:textSize="15sp"
+            android:textStyle="bold"/>
 
         <View
             android:layout_width="match_parent"
@@ -38,7 +33,5 @@
         android:id="@+id/fragment_im_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
         android:layout_weight="0.82"/>
 </LinearLayout>
