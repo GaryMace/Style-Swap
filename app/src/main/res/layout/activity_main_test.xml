@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main_test"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="jameshassmallarms.com.styleswap.base.MainActivity"
+    android:orientation="vertical">
+    <Button
+        android:id="@+id/add_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add User"/>
+    <Button
+        android:id="@+id/read_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Read Name"/>
+    <Button
+        android:id="@+id/read_bio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="read bio"/>
+    <Button
+        android:id="@+id/update_bio_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="update_bio"/>
+</LinearLayout>

@@ -76,13 +76,13 @@ public class BarFragment extends Fragment {
         }
 
         private void addBarFragments() {
-                BottomBarFragment st = new BottomBarFragment(new EditProfileFragment(), R.drawable.user, null);
-                BottomBarFragment hello = new BottomBarFragment(new EditProfileFragment(), R.drawable.style, null);
-                BottomBarFragment bye = new BottomBarFragment(new MatchListFragment(), R.drawable.call, null);
+                BottomBarFragment profile = new BottomBarFragment(new EditProfileFragment(), R.drawable.user, null);
+                BottomBarFragment explore = new BottomBarFragment(new EditProfileFragment(), R.drawable.style, null);
+                BottomBarFragment matches = new BottomBarFragment(new MatchListFragment(), R.drawable.call, null);
                 bottomBar.setFragmentItems(getFragmentManager(), R.id.bottom_bar_container,
-                        st,
-                        hello,
-                        bye
+                        profile,
+                        explore,
+                        matches
                 );
         }
 

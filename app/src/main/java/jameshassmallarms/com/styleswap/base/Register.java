@@ -1,10 +1,12 @@
-package com.example.mark_2.dressesandshoeslogin;
+package jameshassmallarms.com.styleswap.base;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import jameshassmallarms.com.styleswap.R;
 
 public class Register extends AppCompatActivity implements View.OnClickListener {
 

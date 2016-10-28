@@ -6,5 +6,11 @@ package jameshassmallarms.com.styleswap.infrastructure;
 
 public interface Linker {
 
+    boolean isUserLoggedIn();
 
+    void toggleUserLoggedIn();
+
+    String getLoggedInUser();
+
+    void setLoggedInUser(String user);
 }

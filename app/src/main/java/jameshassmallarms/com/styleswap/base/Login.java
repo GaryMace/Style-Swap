@@ -1,4 +1,4 @@
-package com.example.mark_2.dressesandshoeslogin;
+package jameshassmallarms.com.styleswap.base;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import jameshassmallarms.com.styleswap.R;
 
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
@@ -22,6 +24,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_login);
 
         etUsername = (EditText) findViewById(R.id.etUsername);
+        etUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         etPassword = (EditText) findViewById(R.id.etPassword);
         ButtonLogin = (Button) findViewById(R.id.ButtonLogin);
         LinkWithRegister = (TextView) findViewById(R.id.LinkWithRegister);
