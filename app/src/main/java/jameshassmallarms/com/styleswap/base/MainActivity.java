@@ -18,6 +18,8 @@ import jameshassmallarms.com.styleswap.gui.BarFragment;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
 public class MainActivity extends AppCompatActivity implements Linker {
+    private static final String KEY_IS_LOGGED_IN = "logged_in";
+    private static final String KEY_USER_LOGIN = "user_login";
     private BarFragment bottomBar;  //Navigation bar at bottom of screen
     private boolean isUserLoggedIn;
     private String userLogin;
@@ -33,8 +35,14 @@ public class MainActivity extends AppCompatActivity implements Linker {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH, WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
 
         bottomBar = new BarFragment();
-        isUserLoggedIn = false;
 
+        //Reload the user-log state if the app closes temporarily.
+        if (savedInstanceState != null) {
+            isUserLoggedIn = savedInstanceState.getBoolean(KEY_IS_LOGGED_IN);
+            userLogin = savedInstanceState.getString(KEY_USER_LOGIN);
+        } else {
+            isUserLoggedIn = false;
+        }
         FragmentManager fragmentManager;
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
@@ -69,5 +77,11 @@ public class MainActivity extends AppCompatActivity implements Linker {
         userLogin = user;
         if (!isUserLoggedIn())
             toggleUserLoggedIn();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean(KEY_IS_LOGGED_IN, isUserLoggedIn);
+        savedInstanceState.putString(KEY_USER_LOGIN, userLogin);
     }
 }

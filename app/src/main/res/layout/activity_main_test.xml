@@ -12,23 +12,27 @@
     tools:context="jameshassmallarms.com.styleswap.base.MainActivity"
     android:orientation="vertical">
     <Button
-        android:id="@+id/add_user"
+        android:id="@+id/fragment_exp_add_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add User"/>
     <Button
-        android:id="@+id/read_name"
+        android:id="@+id/fragment_exp_read_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Read Name"/>
     <Button
-        android:id="@+id/read_bio"
+        android:id="@+id/fragment_exp_read_bio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="read bio"/>
     <Button
-        android:id="@+id/update_bio_button"
+        android:id="@+id/fragment_exp_update_bio_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="update_bio"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/test_view"/>
 </LinearLayout>

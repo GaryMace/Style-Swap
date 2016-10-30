@@ -16,6 +16,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
 
@@ -97,22 +98,51 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         values = new ContentValues();
         values.put(KEY_IMAGE_KEY, usr.getEmail());
-        //values.put(KEY_IMAGE, ); //defualt stock img
+        values.put(KEY_IMAGE, createByteArray(usr.getImg()));           //Adds stock image on User being created.
+
         Log.d(TAG, "put in: " + values);
+
         db.insert(TABLE_IMAGE, null, values);
         db.close();
     }
 
-    public void writeImageForUser(Bitmap img, String userName) {
+    public void writeImageForUser(Bitmap img, String emailKey) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(KEY_IMAGE_KEY, userName);
+        values.put(KEY_IMAGE_KEY, emailKey);
         values.put(KEY_IMAGE, createByteArray(img));
-        db.update(TABLE_IMAGE, values, KEY_IMAGE_KEY + "=\'" + userName + "\'", null);
+        db.update(TABLE_IMAGE, values, KEY_IMAGE_KEY + "=\'" + emailKey + "\'", null);
         Log.d(TAG, "updated in: " + values);
         db.close();
     }
+
+    public User readUserFromDatabase(String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        String selectQuery = "SELECT * FROM " + TABLE_USER +
+            " WHERE " + KEY_USER_EMAIL + "=\'" + email + "\'";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        User usr;
+        if (cursor.moveToFirst()) {
+            Log.d(TAG, "attempting to read user with email: " + email);
+            usr = new User(email);
+            usr.setName(cursor.getString(cursor.getColumnIndex(KEY_USER_NAME)));
+            usr.setPhoneNum(cursor.getString(cursor.getColumnIndex(KEY_USER_PHONE)));
+            usr.setDressSize(cursor.getInt(cursor.getColumnIndex(KEY_USER_SIZE)));
+            usr.setBio(cursor.getString(cursor.getColumnIndex(KEY_USER_BIO)));
+
+            //TODO: change the below to update based on GPS.
+            usr.setLocation(cursor.getString(cursor.getColumnIndex(KEY_USER_LOCATION)));
+            //usr.setImg(cursor.getBlob(cursor.getColumnIndex()));
+            Log.d(TAG, "read user successfully with email: " + email);
+            return usr;
+        }
+
+        return null;
+     }
 
     public String readNameForUser(String email) {
         SQLiteDatabase db = this.getWritableDatabase();

@@ -1,14 +1,17 @@
 package jameshassmallarms.com.styleswap.impl;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by gary on 24/10/16.
  */
 
 public class User {
+    private String email;
     private String password;
+    private Bitmap img;
     private String location;
     private String name;
-    private String email;
     private int dressSize;
     private String phoneNum;
     private String bio;
@@ -16,6 +19,10 @@ public class User {
     public User(String email, String password) {
         this.email = email;
         this.password = password;
+    }
+
+    public User(String email) {
+        this.email = email;
     }
 
     public String getBio() {
@@ -68,5 +75,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Bitmap getImg() {
+        return img;
+    }
+
+    public void setImg(Bitmap img) {
+        this.img = img;
     }
 }
