@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 /**
  * Created by gary on 10/10/16.
@@ -40,10 +42,8 @@ import jameshassmallarms.com.styleswap.R;
 public class EditProfileFragment extends Fragment {
         private EditText itemDescription;
         private Button editProfileButton;
-        private String userName = "Haymaker Stirrat";
-        DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference mUserRef = mRootRef.child("Users").child(userName);
-        Query q = mRootRef.child("Users").equalTo("good dress");
+        FireBaseQueries fireBaseQueries = new FireBaseQueries();
+        DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail("haymakerStirrat@gmail.com");
         FirebaseStorage storage = FirebaseStorage.getInstance();
         ImageView imageView ;
 
@@ -58,9 +58,22 @@ public class EditProfileFragment extends Fragment {
                 return  view;
         }
 
+        @Override
+        public void onPause() {
+                super.onPause();
+        }
+
+        @Override
+        public void onResume() {
+                super.onResume();
+                if (fireBaseQueries.exsists != null){
+
+                }
+
+        }
+
         public void onStart(){
                 super.onStart();
-
                 itemDescription.addTextChangedListener(new TextWatcher() {
                         @Override
                         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -68,7 +81,14 @@ public class EditProfileFragment extends Fragment {
 
                         @Override
                         public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                mUserRef.child("itemDescription").setValue(itemDescription.getText().toString());
+                                fireBaseQueries.executeIfExsits(mUserRef, new Runnable() {
+                                        @Override
+                                        public void run() {
+                                                mUserRef.child("itemDescription").setValue(itemDescription.getText().toString());
+                                        }
+                                });
+
+
                         }
 
                         @Override
