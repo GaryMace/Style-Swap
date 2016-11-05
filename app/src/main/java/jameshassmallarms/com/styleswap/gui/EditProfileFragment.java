@@ -44,7 +44,6 @@ public class EditProfileFragment extends Fragment {
         private Button editProfileButton;
         FireBaseQueries fireBaseQueries = new FireBaseQueries();
         DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail("haymakerStirrat@gmail.com");
-        FirebaseStorage storage = FirebaseStorage.getInstance();
         ImageView imageView ;
 
 
@@ -58,19 +57,6 @@ public class EditProfileFragment extends Fragment {
                 return  view;
         }
 
-        @Override
-        public void onPause() {
-                super.onPause();
-        }
-
-        @Override
-        public void onResume() {
-                super.onResume();
-                if (fireBaseQueries.exsists != null){
-
-                }
-
-        }
 
         public void onStart(){
                 super.onStart();
@@ -99,60 +85,34 @@ public class EditProfileFragment extends Fragment {
                 editProfileButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
-                                //upload();
-                                download();
+                                fireBaseQueries.uploadImageView(imageView, "haymakerStirrat@gmail.com", "Dress");
                         }
                 });
         }
 
 
 
-        public void upload(){
 
-                // Get the data from an ImageView as bytes
-                StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child("images").child("User1");
-                imageView.setDrawingCacheEnabled(true);
-                imageView.buildDrawingCache();
-                Bitmap bitmap = imageView.getDrawingCache();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] data = baos.toByteArray();
-
-                UploadTask uploadTask = picRef.putBytes(data);
-                uploadTask.addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                                // Handle unsuccessful uploads
-                        }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        }
-                });
-        }
-        public void download() {
-
-                StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child("images/User1");
-
-                final long ONE_MEGABYTE = 1024 * 1024;
-                picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                        @Override
-                        public void onSuccess(byte[] bytes) {
-                                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                System.out.println("aaa");
-                                imageView.setImageBitmap(bmp);
-
-                        }
-                }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                                // Handle any errors
-                        }
-                });
-        }
+//        public void download() {
+//
+//                StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child("images/User1");
+//
+//                final long ONE_MEGABYTE = 1024 * 1024;
+//                picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//                        @Override
+//                        public void onSuccess(byte[] bytes) {
+//                                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                                System.out.println("aaa");
+//                                imageView.setImageBitmap(bmp);
+//
+//                        }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception exception) {
+//                                // Handle any errors
+//                        }
+//                });
+//        }
 //                //example query
 //                editProfileButton.setOnClickListener(new View.OnClickListener() {
 //                        @Override
