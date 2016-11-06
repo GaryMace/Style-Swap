@@ -1,6 +1,7 @@
 package jameshassmallarms.com.styleswap.infrastructure;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Xml;
@@ -61,6 +62,27 @@ public class FireBaseQueries {
             }
         });
     }
+
+    public void download(final ImageView imageView, String username, String imagename ) {
+
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child(username+"/"+imagename);
+
+        final long ONE_MEGABYTE = 1024 * 1024;
+        picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        imageView.setImageBitmap(bmp);
+
+                }
+        }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                }
+        });
+    }
+
 
     public void executeIfExsits(DatabaseReference databaseReference, final Runnable runnable){
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
