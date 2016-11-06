@@ -75,14 +75,5 @@ public class User {
         this.email = email;
     }
 
-    public void pushUserDetails(){
-        DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail(getEmail());
-        mUserRef.child("email").setValue(getEmail());
-        mUserRef.child("password").setValue(getPassword());
-        mUserRef.child("name").setValue(getName());
-        mUserRef.child("location").setValue(getLocation());
-        mUserRef.child("dressSize").setValue(getDressSize());
-        mUserRef.child("phoneNumber").setValue(getPhoneNum());
-        mUserRef.child("bio").setValue(getBio());
-    }
+
 }
