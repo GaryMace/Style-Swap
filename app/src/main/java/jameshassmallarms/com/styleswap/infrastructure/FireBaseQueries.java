@@ -84,13 +84,15 @@ public class FireBaseQueries {
     }
 
 
-    public void executeIfExsits(DatabaseReference databaseReference, final Runnable runnable){
+    public void executeIfExsits(DatabaseReference databaseReference, final Runnable exsist, final Runnable notExsist){
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists())
-                    runnable.run();
+                    exsist.run();
+                else
+                    notExsist.run();
 
             }
 

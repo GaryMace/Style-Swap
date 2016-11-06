@@ -53,9 +53,6 @@ public class EditProfileFragment extends Fragment {
         ImageView imageView ;
 
 
-
-
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
@@ -63,6 +60,7 @@ public class EditProfileFragment extends Fragment {
                 editProfileButton = (Button) view.findViewById(R.id.editPhotoButton);
                 itemDescription = (EditText) view.findViewById(R.id.itemDescription);
                 imageView = (ImageView) view.findViewById(R.id.profileImage);
+                fireBaseQueries.download(imageView, "haymakerStirrat@gmail.com", "Dress");
                 return  view;
         }
 
@@ -80,6 +78,11 @@ public class EditProfileFragment extends Fragment {
                                         @Override
                                         public void run() {
                                                 mUserRef.child("itemDescription").setValue(itemDescription.getText().toString());
+                                        }
+                                }, new Runnable() {
+                                        @Override
+                                        public void run() {
+
                                         }
                                 });
                         }

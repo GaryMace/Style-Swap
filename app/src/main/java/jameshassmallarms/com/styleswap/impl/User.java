@@ -1,10 +1,15 @@
 package jameshassmallarms.com.styleswap.impl;
 
+import com.google.firebase.database.DatabaseReference;
+
+import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
+
 /**
  * Created by gary on 24/10/16.
  */
 
 public class User {
+    FireBaseQueries fireBaseQueries = new FireBaseQueries();
     private String password;
     private String location;
     private String name;
@@ -68,5 +73,16 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void pushUserDetails(){
+        DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail(getEmail());
+        mUserRef.child("email").setValue(getEmail());
+        mUserRef.child("password").setValue(getPassword());
+        mUserRef.child("name").setValue(getName());
+        mUserRef.child("location").setValue(getLocation());
+        mUserRef.child("dressSize").setValue(getDressSize());
+        mUserRef.child("phoneNumber").setValue(getPhoneNum());
+        mUserRef.child("bio").setValue(getBio());
     }
 }
