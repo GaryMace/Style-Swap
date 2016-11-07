@@ -10,12 +10,11 @@ import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
  */
 
 public class User {
-    private String email;
     FireBaseQueries fireBaseQueries = new FireBaseQueries();
     private String password;
-    private Bitmap img;
     private String location;
     private String name;
+    private String email;
     private int dressSize;
     private String phoneNum;
     private String bio;
@@ -79,13 +78,5 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Bitmap getImg() {
-        return img;
-    }
-
-    public void setImg(Bitmap img) {
-        this.img = img;
     }
 }
