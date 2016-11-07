@@ -16,6 +16,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.impl.Match;
+import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
 /**
  * Created by gary on 13/10/16.
@@ -29,8 +30,6 @@ public class MatchListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_im, container, false);
-
-
         mMatchRecycler = (RecyclerView) view
             .findViewById(R.id.fragment_im_recycler);
         mMatchRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));

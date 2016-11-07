@@ -59,6 +59,7 @@
             android:layout_height="wrap_content"
             android:text="Username" />
 
+        <!-- just use email for username-->
         <EditText
             android:id="@+id/etUsername"
             android:layout_width="match_parent"
