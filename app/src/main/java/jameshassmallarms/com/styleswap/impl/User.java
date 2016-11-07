@@ -1,6 +1,9 @@
 package jameshassmallarms.com.styleswap.impl;
 
 import android.graphics.Bitmap;
+import com.google.firebase.database.DatabaseReference;
+
+import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 /**
  * Created by gary on 24/10/16.
@@ -8,6 +11,7 @@ import android.graphics.Bitmap;
 
 public class User {
     private String email;
+    FireBaseQueries fireBaseQueries = new FireBaseQueries();
     private String password;
     private Bitmap img;
     private String location;
