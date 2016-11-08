@@ -1,6 +1,7 @@
 package jameshassmallarms.com.styleswap.base;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -21,8 +22,12 @@ public class MainActivity extends AppCompatActivity implements Linker {
     private static final String KEY_IS_LOGGED_IN = "logged_in";
     private static final String KEY_USER_LOGIN = "user_login";
     private BarFragment bottomBar;  //Navigation bar at bottom of screen
+
+    //Linker Interface items
     private boolean isUserLoggedIn;
     private String userLogin;
+    private Bitmap userProfileImg;
+    private boolean userChangedImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements Linker {
             userLogin = savedInstanceState.getString(KEY_USER_LOGIN);
         } else {
             isUserLoggedIn = false;
+            userProfileImg = null;  //this may need to be a database query?
+            userChangedImg = false;
         }
         FragmentManager fragmentManager;
         fragmentManager = getSupportFragmentManager();
@@ -77,6 +84,30 @@ public class MainActivity extends AppCompatActivity implements Linker {
         userLogin = user;
         if (!isUserLoggedIn())
             toggleUserLoggedIn();
+    }
+
+    @Override
+    public Bitmap getUserProfilePic() {
+        return userProfileImg;
+    }
+
+    @Override
+    public void setUserProfilePic(Bitmap img) {
+        this.userProfileImg = img;
+    }
+
+    @Override
+    public void toggleUserChangedImg() {
+        if (userChangedImg) {
+            userChangedImg = false;
+        } else {
+            userChangedImg = true;
+        }
+    }
+
+    @Override
+    public boolean userChangedImg() {
+        return userChangedImg;
     }
 
     @Override

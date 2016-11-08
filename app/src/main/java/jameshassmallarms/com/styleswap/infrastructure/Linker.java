@@ -15,4 +15,12 @@ public interface Linker {
     String getLoggedInUser();
 
     void setLoggedInUser(String user);
+
+    Bitmap getUserProfilePic();
+
+    void setUserProfilePic(Bitmap img);
+
+    void toggleUserChangedImg();
+
+    boolean userChangedImg();
 }

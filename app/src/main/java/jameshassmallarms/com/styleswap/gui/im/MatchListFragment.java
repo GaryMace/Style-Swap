@@ -50,6 +50,7 @@ public class MatchListFragment extends Fragment{
         }, other);*/
 
 
+
         updateUI();
 
         return view;
