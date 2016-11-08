@@ -14,8 +14,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.gui.BarFragment;
+import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
 public class MainActivity extends AppCompatActivity implements Linker {
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements Linker {
     private String userLogin;
     private Bitmap userProfileImg;
     private boolean userChangedImg;
+    private List<Match> cachedMatches;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements Linker {
             isUserLoggedIn = false;
             userProfileImg = null;  //this may need to be a database query?
             userChangedImg = false;
+            cachedMatches = new ArrayList<>();
         }
         FragmentManager fragmentManager;
         fragmentManager = getSupportFragmentManager();
@@ -109,6 +115,24 @@ public class MainActivity extends AppCompatActivity implements Linker {
     public boolean userChangedImg() {
         return userChangedImg;
     }
+
+    @Override
+    public List<Match> getCachedMatches() {
+        return cachedMatches;
+    }
+
+    @Override
+    public void addCachedMatch(Match m) {
+        cachedMatches.add(m);
+    }
+
+    @Override
+    public void removeCachedMatch(Match m) {
+        if (cachedMatches.contains(m)) {
+            cachedMatches.remove(m);
+        }
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {

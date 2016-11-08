@@ -1,16 +1,17 @@
 package jameshassmallarms.com.styleswap.impl;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by gary on 13/10/16.
  */
 
 public class Match {
     private String matchName;
-    private int matchImageKey; //Needs refactoring
+    private Bitmap matchImage;
     private String matchNumber;
 
     public Match() {
-
     }
 
     public String getMatchName() {
@@ -21,12 +22,12 @@ public class Match {
         this.matchName = matchName;
     }
 
-    public int getMatchImageKey() {
-        return matchImageKey;
+    public Bitmap getMatchImageKey() {
+        return matchImage;
     }
 
-    public void setMatchImageKey(int matchImageKey) {
-        this.matchImageKey = matchImageKey;
+    public void setMatchImageKey(Bitmap matchImage) {
+        this.matchImage = matchImage;
     }
 
     public String getMatchNumber() {

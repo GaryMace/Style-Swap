@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,18 +25,19 @@ import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
 public class MatchListFragment extends Fragment{
     private RecyclerView mMatchRecycler;
+    private Button mDeleteMatch;
     private MatchAdapter mAdapter;
+    private Linker linker;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Linker link = (Linker) getActivity();
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_im, container, false);
         mMatchRecycler = (RecyclerView) view
             .findViewById(R.id.fragment_im_recycler);
         mMatchRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-
+        linker = (Linker) getActivity();
         /*FireBaseQueries.executeIfExists(getPhonenumber("GaryMac@live.ie"), new Runnable{
             for (DataSnapshot child: snapshot.getChildren()) {
                 String username = (String) child.child("username").getValue();
@@ -50,29 +52,28 @@ public class MatchListFragment extends Fragment{
         }, other);*/
 
 
-
         updateUI();
+
 
         return view;
     }
 
     private void updateUI() {
-        List<Match> matches = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        boolean firebaseServerHasNewData = false;
+        List<Match> matches = linker.getCachedMatches();
+        if (matches == null) {
 
-            Match m = new Match();
-            m.setMatchImageKey(R.drawable.ja);
-            m.setMatchName("James");
-            m.setMatchNumber("085 766 3464");
-            matches.add(m);
         }
-
-        if (mAdapter == null) {
-            mAdapter = new MatchAdapter(matches);
+        if (firebaseServerHasNewData) {
+            //add new matches
         } else {
-            mAdapter.notifyDataSetChanged();
+            if (mAdapter == null) {
+                mAdapter = new MatchAdapter(matches);
+            } else {
+                mAdapter.notifyDataSetChanged();
+            }
+            mMatchRecycler.setAdapter(mAdapter);
         }
-        mMatchRecycler.setAdapter(mAdapter);
     }
 
     @Override
@@ -84,6 +85,7 @@ public class MatchListFragment extends Fragment{
 
     private class MatchHolder extends RecyclerView.ViewHolder {
         private TextView matchName;
+        private Button deleteMatch;
         private ImageView matchImage;
         private TextView matchNumber;
 
@@ -92,12 +94,25 @@ public class MatchListFragment extends Fragment{
             matchImage = (CircleImageView) itemView.findViewById(R.id.fragment_im_match_image);
             matchName = (TextView) itemView.findViewById(R.id.fragment_im_match_name);
             matchNumber = (TextView) itemView.findViewById(R.id.fragment_im_match_contact);
+            deleteMatch = (Button) itemView.findViewById(R.id.fragment_im_delete_match_button);
         }
 
         public void bindMatch(Match m) {
+            final Match match = m;
             matchName.setText(m.getMatchName());
             matchNumber.setText(m.getMatchNumber());
-            matchImage.setImageResource(m.getMatchImageKey());
+            matchImage.setImageBitmap(m.getMatchImageKey());
+            deleteMatch.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    new Runnable(){
+                        @Override
+                        public void run() {
+                            linker.removeCachedMatch(match);
+                        }
+                    }.run();
+                }
+            });
         }
     }
 
