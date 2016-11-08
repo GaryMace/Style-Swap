@@ -22,17 +22,33 @@ import jameshassmallarms.com.styleswap.infrastructure.Linker;
  * Created by gary on 13/10/16.
  */
 
-public class MatchListFragment extends Fragment {
+public class MatchListFragment extends Fragment{
     private RecyclerView mMatchRecycler;
     private MatchAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Linker link = (Linker) getActivity();
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_im, container, false);
         mMatchRecycler = (RecyclerView) view
             .findViewById(R.id.fragment_im_recycler);
         mMatchRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+
+        /*FireBaseQueries.executeIfExists(getPhonenumber("GaryMac@live.ie"), new Runnable{
+            for (DataSnapshot child: snapshot.getChildren()) {
+                String username = (String) child.child("username").getValue();
+                usernames.add(username);
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                EditFriendsActivity.this,
+                android.R.layout.simple_list_item_multiple_choice,
+                usernames);
+
+            mFriendsList.setAdapter(adapter);
+        }, other);*/
+
 
         updateUI();
 
@@ -63,6 +79,7 @@ public class MatchListFragment extends Fragment {
         super.onResume();
         updateUI();
     }
+
 
     private class MatchHolder extends RecyclerView.ViewHolder {
         private TextView matchName;

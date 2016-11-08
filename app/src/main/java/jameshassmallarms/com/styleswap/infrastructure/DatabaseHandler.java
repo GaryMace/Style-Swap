@@ -99,7 +99,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values = new ContentValues();
         values.put(KEY_IMAGE_KEY, usr.getEmail());
         values.put(KEY_IMAGE, createByteArray(usr.getImg()));           //Adds stock image on User being created.
-
         Log.d(TAG, "put in: " + values);
 
         db.insert(TABLE_IMAGE, null, values);

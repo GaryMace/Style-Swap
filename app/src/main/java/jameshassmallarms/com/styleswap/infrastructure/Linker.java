@@ -1,5 +1,7 @@
 package jameshassmallarms.com.styleswap.infrastructure;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by gary on 21/10/16.
  */
