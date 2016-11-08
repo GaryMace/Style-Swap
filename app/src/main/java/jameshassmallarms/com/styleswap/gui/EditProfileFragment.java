@@ -37,6 +37,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 import static android.app.Activity.RESULT_OK;
@@ -136,6 +137,9 @@ public class EditProfileFragment extends Fragment {
 
         }
 
+        //getPhonenumber()
+        // execute If exsists( runnable)
+        //runable = whatever code i want
 
 //                //example query
 //                editProfileButton.setOnClickListener(new View.OnClickListener() {

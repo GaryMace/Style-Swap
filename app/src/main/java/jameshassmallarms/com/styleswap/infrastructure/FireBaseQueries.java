@@ -120,4 +120,22 @@ public class FireBaseQueries {
         return "Encoding Error";
     }
 
+    public ImageView getUserImage(String email, String imageName){
+        ImageView imageView = null;
+        download(imageView, email, imageName);
+        return imageView;
+    }
+
+    public DatabaseReference getUserNumber(String email){
+        return getUserReferenceByEmail(email).child("phoneNumber");
+    }
+
+    public DatabaseReference getUserItemDescription(String email){
+        return getUserReferenceByEmail(email).child("itemDescription");
+    }
+
+    public DatabaseReference getMatches(String email){
+        return getUserReferenceByEmail(email).child("matches");
+    }
+
 }
