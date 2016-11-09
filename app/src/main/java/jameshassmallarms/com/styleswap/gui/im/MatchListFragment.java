@@ -14,20 +14,22 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
+import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 
 /**
  * Created by gary on 13/10/16.
  */
 
-public class MatchListFragment extends Fragment{
+public class MatchListFragment extends Fragment {
     private RecyclerView mMatchRecycler;
     private FireBaseQueries db;
     private MatchAdapter mAdapter;
@@ -68,7 +70,7 @@ public class MatchListFragment extends Fragment{
     private void test() {
         if (linker.getCachedMatches().isEmpty()) {
             Log.d("TAG", "Matches was empty");
-            Match m1  = new Match();
+            Match m1 = new Match();
             Bitmap img1 = BitmapFactory.decodeResource(getResources(), R.drawable.ja);
             Bitmap img2 = BitmapFactory.decodeResource(getResources(), R.drawable.profilepicexample);
             Bitmap img3 = BitmapFactory.decodeResource(getResources(), R.drawable.ja);
@@ -94,8 +96,16 @@ public class MatchListFragment extends Fragment{
     private void updateUI() {
         boolean firebaseServerHasNewData = false;
         List<Match> matches = linker.getCachedMatches();
-        if (matches == null) {
-            //db.executeIfExsits(db.);
+        DatabaseReference ref = db.getMatches(linker.getLoggedInUser());
+
+        if (matches == null && linker.userLoggedIn()) {
+            /*db.executeIfExists(ref, new QueryMaster() {
+                @Override
+                public void run(DataSnapshot s) {
+                    s.getValue();
+                }
+            });*/
+
         }
         if (firebaseServerHasNewData) {
             //add new matches
@@ -135,10 +145,10 @@ public class MatchListFragment extends Fragment{
             matchName.setText(m.getMatchName());
             matchNumber.setText(m.getMatchNumber());
             matchImage.setImageBitmap(m.getMatchImage());
-            deleteMatch.setOnClickListener(new View.OnClickListener(){
+            deleteMatch.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new Runnable(){
+                    new Runnable() {
                         @Override
                         public void run() {
                             Log.d("TAG", "delete clicked");

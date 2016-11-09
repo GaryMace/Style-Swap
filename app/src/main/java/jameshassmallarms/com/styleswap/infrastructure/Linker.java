@@ -12,7 +12,7 @@ import jameshassmallarms.com.styleswap.impl.Match;
 
 public interface Linker {
 
-    boolean isUserLoggedIn();
+    boolean userLoggedIn();
 
     void toggleUserLoggedIn();
 

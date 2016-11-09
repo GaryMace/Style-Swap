@@ -8,12 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.WindowManager;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,13 +58,13 @@ public class MainActivity extends AppCompatActivity implements Linker {
     }
 
     @Override
-    public boolean isUserLoggedIn() {
+    public boolean userLoggedIn() {
         return isUserLoggedIn;
     }
 
     @Override
     public void toggleUserLoggedIn() {
-        if (isUserLoggedIn()) {
+        if (userLoggedIn()) {
             isUserLoggedIn = false;
         } else {
             isUserLoggedIn = true;
@@ -79,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements Linker {
 
     @Override
     public String getLoggedInUser() {
-        if (isUserLoggedIn())
+        if (userLoggedIn())
             return userLogin;
         else
             return null;
@@ -88,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements Linker {
     @Override
     public void setLoggedInUser(String user) {
         userLogin = user;
-        if (!isUserLoggedIn())
+        if (!userLoggedIn())
             toggleUserLoggedIn();
     }
 
