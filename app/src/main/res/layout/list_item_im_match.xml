@@ -10,7 +10,7 @@
         android:background="@drawable/fragment_im_background"
         android:orientation="horizontal">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/fragment_im_match_image"
             android:layout_width="100dp"
             android:layout_height="wrap_content"

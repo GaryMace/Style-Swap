@@ -1,9 +1,12 @@
 package jameshassmallarms.com.styleswap.gui.im;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.impl.Match;
+import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
 /**
@@ -25,7 +29,7 @@ import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
 public class MatchListFragment extends Fragment{
     private RecyclerView mMatchRecycler;
-    private Button mDeleteMatch;
+    private FireBaseQueries db;
     private MatchAdapter mAdapter;
     private Linker linker;
 
@@ -37,7 +41,11 @@ public class MatchListFragment extends Fragment{
         mMatchRecycler = (RecyclerView) view
             .findViewById(R.id.fragment_im_recycler);
         mMatchRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mMatchRecycler.setHasFixedSize(true);
         linker = (Linker) getActivity();
+        db = new FireBaseQueries();
+
+
         /*FireBaseQueries.executeIfExists(getPhonenumber("GaryMac@live.ie"), new Runnable{
             for (DataSnapshot child: snapshot.getChildren()) {
                 String username = (String) child.child("username").getValue();
@@ -50,19 +58,44 @@ public class MatchListFragment extends Fragment{
 
             mFriendsList.setAdapter(adapter);
         }, other);*/
-
-
+        test();
         updateUI();
 
 
         return view;
     }
 
+    private void test() {
+        if (linker.getCachedMatches().isEmpty()) {
+            Log.d("TAG", "Matches was empty");
+            Match m1  = new Match();
+            Bitmap img1 = BitmapFactory.decodeResource(getResources(), R.drawable.ja);
+            Bitmap img2 = BitmapFactory.decodeResource(getResources(), R.drawable.profilepicexample);
+            Bitmap img3 = BitmapFactory.decodeResource(getResources(), R.drawable.ja);
+            m1.setMatchImage(img1);
+            m1.setMatchName("James");
+            m1.setMatchNumber("085 766 3464");
+
+            Match m2 = new Match();
+            m2.setMatchImage(img2);
+            m2.setMatchName("Alan");
+            m2.setMatchNumber("082 766 2132");
+
+            Match m3 = new Match();
+            m3.setMatchImage(img3);
+            m3.setMatchName("Stock");
+            m3.setMatchNumber("087 432 1234");
+            linker.addCachedMatch(m1);
+            linker.addCachedMatch(m2);
+            linker.addCachedMatch(m3);
+        }
+    }
+
     private void updateUI() {
         boolean firebaseServerHasNewData = false;
         List<Match> matches = linker.getCachedMatches();
         if (matches == null) {
-
+            //db.executeIfExsits(db.);
         }
         if (firebaseServerHasNewData) {
             //add new matches
@@ -91,7 +124,7 @@ public class MatchListFragment extends Fragment{
 
         public MatchHolder(View itemView) {
             super(itemView);
-            matchImage = (CircleImageView) itemView.findViewById(R.id.fragment_im_match_image);
+            matchImage = (ImageView) itemView.findViewById(R.id.fragment_im_match_image);
             matchName = (TextView) itemView.findViewById(R.id.fragment_im_match_name);
             matchNumber = (TextView) itemView.findViewById(R.id.fragment_im_match_contact);
             deleteMatch = (Button) itemView.findViewById(R.id.fragment_im_delete_match_button);
@@ -101,14 +134,18 @@ public class MatchListFragment extends Fragment{
             final Match match = m;
             matchName.setText(m.getMatchName());
             matchNumber.setText(m.getMatchNumber());
-            matchImage.setImageBitmap(m.getMatchImageKey());
+            matchImage.setImageBitmap(m.getMatchImage());
             deleteMatch.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
                     new Runnable(){
                         @Override
                         public void run() {
+                            Log.d("TAG", "delete clicked");
                             linker.removeCachedMatch(match);
+                            matchName.setVisibility(View.GONE);
+                            matchNumber.setVisibility(View.GONE);
+                            matchImage.setVisibility(View.GONE);
                         }
                     }.run();
                 }

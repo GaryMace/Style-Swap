@@ -22,11 +22,11 @@ public class Match {
         this.matchName = matchName;
     }
 
-    public Bitmap getMatchImageKey() {
+    public Bitmap getMatchImage() {
         return matchImage;
     }
 
-    public void setMatchImageKey(Bitmap matchImage) {
+    public void setMatchImage(Bitmap matchImage) {
         this.matchImage = matchImage;
     }
 
