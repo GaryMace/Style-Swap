@@ -24,6 +24,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_login);
 
         etUsername = (EditText) findViewById(R.id.etUsername);
+        etUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         etPassword = (EditText) findViewById(R.id.etPassword);
         ButtonLogin = (Button) findViewById(R.id.ButtonLogin);
         LinkWithRegister = (TextView) findViewById(R.id.LinkWithRegister);

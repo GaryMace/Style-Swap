@@ -10,7 +10,7 @@
         android:background="@drawable/fragment_im_background"
         android:orientation="horizontal">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/fragment_im_match_image"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
@@ -65,7 +65,6 @@
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
             android:orientation="vertical">
-            <!-- Insert delete button here-->
             <Button
                 android:id="@+id/fragment_im_delete_match_button"
                 android:layout_width="25dp"
