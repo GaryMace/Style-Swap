@@ -78,7 +78,7 @@ public class BarFragment extends Fragment {
         private void addBarFragments() {
 
                 BottomBarFragment profile = new BottomBarFragment(new EditProfileFragment(), R.drawable.stock_img, null);
-                BottomBarFragment explore = new BottomBarFragment(new GoodbyeFragment(), R.drawable.style, null);
+                BottomBarFragment explore = new BottomBarFragment(new SwipeButtonsFragment(), R.drawable.style, null);
                 BottomBarFragment matches = new BottomBarFragment(new MatchListFragment(), R.drawable.call, null);
                 bottomBar.setFragmentItems(getFragmentManager(), R.id.bottom_bar_container,
                         profile,
