@@ -10,5 +10,6 @@
     <string name="item_size">\nSize:</string>
     <string name="user_number">Number:</string>
     <string name="user_email">Email:</string>
-
+    <string name="user_name">Name</string>
+    <string name="user_description">Description</string>
 </resources>

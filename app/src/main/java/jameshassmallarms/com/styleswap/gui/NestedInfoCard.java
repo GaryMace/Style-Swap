@@ -1,0 +1,62 @@
+package jameshassmallarms.com.styleswap.gui;
+
+import android.provider.ContactsContract;
+import android.support.v4.app.Fragment;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import jameshassmallarms.com.styleswap.R;
+
+/**
+ * Created by Alan on 25/10/2016.
+ */
+
+public class NestedInfoCard extends Fragment {
+
+
+    private TextView userName;
+    private TextView description;
+    private ImageView userPic;
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        View root = inflater.inflate(R.layout.fragment_user_information, container, false);
+        userName = (TextView) root.findViewById(R.id.fragment_person_username);
+        description = (TextView) root.findViewById(R.id.fragment_item_desc);
+        userPic = (ImageView) root.findViewById(R.id.fragment_swipe_picture);
+        Bundle b = getArguments();
+        if(b != null){
+           String user = b.getString("User");
+           // getUserInfo(user);
+            userName.setText("James");
+            description.setText("This is a test before the database is up and running");
+            userPic.setImageResource(R.drawable.james);
+        }
+
+
+        return root;
+    }
+
+   private void getUserInfo(String u){
+       userName.setText(u);
+   }
+
+
+
+
+}
