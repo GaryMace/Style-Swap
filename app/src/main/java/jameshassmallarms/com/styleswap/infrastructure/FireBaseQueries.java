@@ -135,4 +135,7 @@ public class FireBaseQueries {
         return getUserReferenceByEmail(email).child("matches");
     }
 
+    public DatabaseReference getUserName(String email){
+        return getUserReferenceByEmail(email).child("name");
+    }
 }
