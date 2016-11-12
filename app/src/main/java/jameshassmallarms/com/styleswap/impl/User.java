@@ -14,7 +14,8 @@ import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 public class User {
     private String password;
-    private String location;
+    private double locationLat;
+    private double locationLon;
     private String name;
     private String email;
     private Bitmap img;
@@ -53,12 +54,20 @@ public class User {
         this.phoneNum = phoneNum;
     }
 
-    public String getLocation() {
-        return location;
+    public double getLocationLat() {
+        return locationLat;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public double getLocationLon() {
+        return locationLon;
+    }
+
+    public void setLocationLat(double locationLat) {
+        this.locationLat = locationLat;
+    }
+
+    public void setLocationLon(double locationLon) {
+        this.locationLon = locationLon;
     }
 
     public String getName() {

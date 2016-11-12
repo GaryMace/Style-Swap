@@ -99,6 +99,19 @@ public class MatchListFragment extends Fragment {
        //DatabaseReference ref = db.getMatches(linker.getLoggedInUser());
 
         if (matches == null && linker.userLoggedIn()) {
+
+            /*new Thread(new Runnable() {
+                public void run() {
+                    final Bitmap bitmap =
+                        loadImageFromNetwork("http://example.com/image.png");
+                    mImageView.post(new Runnable() {
+                        public void run() {
+                            mImageView.setImageBitmap(bitmap);
+                        }
+                    });
+                }
+            }).start();*/
+
             /*db.executeIfExists(ref, new QueryMaster() {
                 @Override
                 public void run(DataSnapshot s) {
