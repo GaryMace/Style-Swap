@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import com.google.firebase.database.DatabaseReference;
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 public class Register extends AppCompatActivity{
@@ -45,6 +46,7 @@ public class Register extends AppCompatActivity{
         return true;
     }
 
+    //should use pushNewUserDetails instead
     public void pushUserDetails(){
         DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail(etEmail.getText().toString());
         mUserRef.child("email").setValue(etEmail.getText());//check its unique
@@ -54,4 +56,6 @@ public class Register extends AppCompatActivity{
         mUserRef.child("dressSize").setValue(etDressSize.getText());//should be entered using spinner maybe?
         mUserRef.child("phoneNumber").setValue("");//need value for this
     }
+
+
 }

@@ -3,6 +3,9 @@ package jameshassmallarms.com.styleswap.impl;
 import android.graphics.Bitmap;
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 /**
@@ -10,7 +13,6 @@ import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
  */
 
 public class User {
-    FireBaseQueries fireBaseQueries = new FireBaseQueries();
     private String password;
     private String location;
     private String name;
@@ -19,10 +21,16 @@ public class User {
     private int dressSize;
     private String phoneNum;
     private String bio;
+    public List<Match> iMatched = new ArrayList<>();
+    public List<Match> matchedMe = new ArrayList<>();
 
     public User(String email, String password) {
         this.email = email;
         this.password = password;
+        Match dummy = new Match();
+        dummy.setMatchName("dummy so list exists");
+        this.iMatched.add(dummy);
+        this.matchedMe.add(dummy);
     }
 
     public User(String email) {

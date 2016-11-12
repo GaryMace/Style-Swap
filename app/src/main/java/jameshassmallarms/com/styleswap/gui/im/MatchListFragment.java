@@ -96,7 +96,7 @@ public class MatchListFragment extends Fragment {
     private void updateUI() {
         boolean firebaseServerHasNewData = false;
         List<Match> matches = linker.getCachedMatches();
-        DatabaseReference ref = db.getMatches(linker.getLoggedInUser());
+       //DatabaseReference ref = db.getMatches(linker.getLoggedInUser());
 
         if (matches == null && linker.userLoggedIn()) {
             /*db.executeIfExists(ref, new QueryMaster() {
