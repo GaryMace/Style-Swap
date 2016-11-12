@@ -33,4 +33,8 @@ public interface Linker {
     void addCachedMatch(Match m);
 
     void removeCachedMatch(Match m);
+
+    double getDeviceLat();
+
+    double getDeviceLon();
 }

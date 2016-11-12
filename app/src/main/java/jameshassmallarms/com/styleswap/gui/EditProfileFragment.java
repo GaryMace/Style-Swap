@@ -53,7 +53,7 @@ public class EditProfileFragment extends Fragment {
 
                         @Override
                         public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                fireBaseQueries.executeIfExists(mUserRef, new Runnable() {
+                                /*fireBaseQueries.executeIfExists(mUserRef, new Runnable() {
                                         @Override
                                         public void run() {
                                                 mUserRef.child("itemDescription").setValue(itemDescription.getText().toString());
@@ -63,7 +63,7 @@ public class EditProfileFragment extends Fragment {
                                         public void run() {
 
                                         }
-                                });
+                                });*/
                         }
 
                         @Override

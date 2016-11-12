@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.util.Log;
 
 import java.io.ByteArrayInputStream;
@@ -16,8 +17,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-import jameshassmallarms.com.styleswap.R;
-import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
 
 /**
@@ -37,7 +36,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_USER_SIZE = "user_size";
     private static final String KEY_USER_BIO = "user_bio";
     private static final String KEY_USER_PIC_ID = "user_pic_id";
-    private static final String KEY_USER_LOCATION = "user_location";
+    private static final String KEY_USER_LOCATION_LAT = "user_location_lat";
+    private static final String KEY_USER_LOCATION_LON = "user_location_lon";
 
     private static final String TABLE_IMAGE = "imageTable";
     private static final String I_ID = "id_image";
@@ -71,7 +71,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             KEY_USER_NAME + " TEXT, " +
             KEY_USER_PHONE + " TEXT, " +
             KEY_USER_SIZE + " INTEGER, " +
-            KEY_USER_LOCATION + " TEXT, " +
+            KEY_USER_LOCATION_LAT + " REAL, " +
+            KEY_USER_LOCATION_LON + " REAL, " +
             KEY_USER_BIO + " TEXT, " +
             KEY_USER_PIC_ID + " INTEGER )";
     }
@@ -90,7 +91,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_USER_EMAIL, usr.getEmail());
         values.put(KEY_USER_PHONE, usr.getPhoneNum());
         values.put(KEY_USER_SIZE, usr.getDressSize());
-        values.put(KEY_USER_LOCATION, usr.getLocation());
+        values.put(KEY_USER_LOCATION_LAT, usr.getLocationLat());
+        values.put(KEY_USER_LOCATION_LON, usr.getLocationLon());
         values.put(KEY_USER_BIO, usr.getBio());
         values.put(KEY_USER_PIC_ID, "");
         db.insert(TABLE_USER, null, values);
@@ -118,7 +120,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public User readUserFromDatabase(String email) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
 
         String selectQuery = "SELECT * FROM " + TABLE_USER +
             " WHERE " + KEY_USER_EMAIL + "=\'" + email + "\'";
@@ -134,7 +135,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             usr.setBio(cursor.getString(cursor.getColumnIndex(KEY_USER_BIO)));
 
             //TODO: change the below to update based on GPS.
-            usr.setLocation(cursor.getString(cursor.getColumnIndex(KEY_USER_LOCATION)));
+            usr.setLocationLat(cursor.getDouble(cursor.getColumnIndex(KEY_USER_LOCATION_LAT)));
+            usr.setLocationLon(cursor.getDouble(cursor.getColumnIndex(KEY_USER_LOCATION_LAT)));
             //usr.setImg(cursor.getBlob(cursor.getColumnIndex()));
             Log.d(TAG, "read user successfully with email: " + email);
             return usr;
@@ -145,7 +147,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public String readNameForUser(String email) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
         String selectQuery = "SELECT " + KEY_USER_NAME + " FROM " + TABLE_USER +
             " WHERE " + KEY_USER_EMAIL + "=\'" + email + "\'";
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -210,7 +211,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public String readPhoneForUser(String userName) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
         String selectQuery = "SELECT " + KEY_USER_PHONE + " FROM " + TABLE_USER +
             " WHERE " + KEY_USER_EMAIL + "=\'" + userName + "\'";
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -223,6 +223,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         db.close();
         return phone;
+    }
+
+    public Location readUserLocation(String userName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT " + KEY_USER_LOCATION_LAT + ", " + KEY_USER_LOCATION_LON + " FROM " + TABLE_USER +
+            " WHERE " + KEY_USER_EMAIL + "=\'" + userName + "\'";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        Location location = null; //TODO: get linker version of location and update here as transer
+        if (cursor.moveToFirst()) {
+            Log.d("DB", "trying to get location from user: " + userName);
+            double lat = cursor.getDouble(cursor.getColumnIndex(KEY_USER_LOCATION_LAT));
+            double lon = cursor.getDouble(cursor.getColumnIndex(KEY_USER_LOCATION_LON));
+            Log.d("DB", "Gotlocation from user: " + userName);
+        }
+        db.close();
+        return location;
+    }
+
+    public void updateUserLocation(String userName, String lat, String lon) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_USER_LOCATION_LAT, lat);
+        values.put(KEY_USER_LOCATION_LON, lon);
+        db.update(TABLE_USER, values, KEY_USER_EMAIL + "=\'" + userName + "\'", null);
+        Log.d(TAG, "updated table in: " + values);
+        db.close();
     }
 
     public void updateBioForUser(String userName, String newBio) {
