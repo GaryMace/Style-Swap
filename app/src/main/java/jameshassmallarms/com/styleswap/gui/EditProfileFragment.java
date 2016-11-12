@@ -75,12 +75,12 @@ public class EditProfileFragment extends Fragment {
                 editProfileButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                                User testUser = new User("test@gmail.com", "pass");
-                                fireBaseQueries.pushNewUserDetails(testUser);
-                                Match newMatch = new Match();
-                                newMatch.setMatchName("haymakerStirrat@gmail.com");
-                                fireBaseQueries.addMatch(testUser.getEmail(), "iMatched", newMatch);
-                                //loadImagefromGallery(getView());
+//                                User testUser = new User("test@gmail.com", "pass");
+//                                fireBaseQueries.pushNewUserDetails(testUser);
+//                                Match newMatch = new Match();
+//                                newMatch.setMatchName("haymakerStirrat@gmail.com");
+//                                fireBaseQueries.addMatch(testUser.getEmail(), "iMatched", newMatch);
+                                loadImagefromGallery(getView());
                         }
                 });
 
