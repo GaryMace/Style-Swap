@@ -287,8 +287,9 @@ public class MainActivity extends AppCompatActivity
      * Gary:: Ignore these errors, they're fine
      */
     protected void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-            mGoogleAPIClient, mLocationRequest, this);
+        if (ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED )
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleAPIClient, mLocationRequest, this);
     }
 
     /**
@@ -387,7 +388,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.i(TAG, "Connected to GoogleApiClient");
-        if (mLastLocation == null) {
+        if (mLastLocation == null &&
+            ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
+
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleAPIClient);    //Gary:: Ignore thise error, it's fine
             mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
 
