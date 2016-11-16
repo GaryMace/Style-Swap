@@ -26,7 +26,7 @@ public class GoodbyeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        View view = inflater.inflate(R.layout.activity_main_test, container, false);
+        View view = inflater.inflate(R.layout.fragment_db_test, container, false);
         db = new DatabaseHandler(getContext());
         Button addUser = (Button) view.findViewById(R.id.fragment_exp_add_user);
         final ImageView img = (ImageView) view.findViewById(R.id.test_view);
@@ -40,7 +40,6 @@ public class GoodbyeFragment extends Fragment {
                 Bitmap stockImg = BitmapFactory.decodeResource(getResources(), R.drawable.stock_img);
                 usr.setImg(stockImg);
                 usr.setBio("Hello, I'm Gary");
-                usr.setLocation("Dublin");
                 usr.setDressSize(5);
                 usr.setPhoneNum("085 6969969");
                 usr.setName("Gary");

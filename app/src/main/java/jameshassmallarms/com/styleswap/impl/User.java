@@ -3,6 +3,9 @@ package jameshassmallarms.com.styleswap.impl;
 import android.graphics.Bitmap;
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 /**
@@ -10,19 +13,25 @@ import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
  */
 
 public class User {
-    FireBaseQueries fireBaseQueries = new FireBaseQueries();
     private String password;
-    private String location;
+    private double locationLat;
+    private double locationLon;
     private String name;
     private String email;
     private Bitmap img;
     private int dressSize;
     private String phoneNum;
     private String bio;
+    public List<Match> iMatched = new ArrayList<>();
+    public List<Match> matchedMe = new ArrayList<>();
 
     public User(String email, String password) {
         this.email = email;
         this.password = password;
+        Match dummy = new Match();
+        dummy.setMatchName("dummy so list exists");
+        this.iMatched.add(dummy);
+        this.matchedMe.add(dummy);
     }
 
     public User(String email) {
@@ -45,12 +54,20 @@ public class User {
         this.phoneNum = phoneNum;
     }
 
-    public String getLocation() {
-        return location;
+    public double getLocationLat() {
+        return locationLat;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public double getLocationLon() {
+        return locationLon;
+    }
+
+    public void setLocationLat(double locationLat) {
+        this.locationLat = locationLat;
+    }
+
+    public void setLocationLon(double locationLon) {
+        this.locationLon = locationLon;
     }
 
     public String getName() {
