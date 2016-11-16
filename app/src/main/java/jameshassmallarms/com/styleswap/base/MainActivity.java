@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -50,10 +51,10 @@ public class MainActivity extends AppCompatActivity
     private static final String KEY_USER_LOGIN = "user_login";
     private static final int REQUEST_CHECK_SETTINGS = 1;
     private static final int REQUEST_CHECK_LOCATION_PREFERENCES = 1;
+    private static final String TAG = "debug_main";
 
-    protected static final String TAG = "location-updates-sample";
     //The desired interval for location updates. Inexact. Updates may be more or less frequent.
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 120000;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     //The fastest rate for active location updates. Exact. Updates will never be more frequent
     //than this value.
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
@@ -163,6 +164,11 @@ public class MainActivity extends AppCompatActivity
             .build();
         createLocationRequest();
         getUserLocationFromRequest();
+
+        /*if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+        } else {
+            startLocationUpdates();
+        }*/
     }
 
     protected void createLocationRequest() {
@@ -190,11 +196,13 @@ public class MainActivity extends AppCompatActivity
                         // All location settings are satisfied. The client can
                         // initialize location requests here.
                         checkLocationPermissions();
+                        Log.d(TAG, "Starting location updates");
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         // Location settings are not satisfied, but this can be fixed
                         // by showing the user a dialog.
                         try {
+                            Log.d(TAG, "Resolution required, dont have access to GPS");
                             // Show the dialog by calling startResolutionForResult(),
                             // and check the result in onActivityResult().
                             status.startResolutionForResult(
@@ -205,6 +213,7 @@ public class MainActivity extends AppCompatActivity
                         }
                         break;
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        Log.d(TAG, "Sorry, you're fucked");
                         // Location settings are not satisfied. However, we have no way
                         // to fix the settings so we won't show the dialog.
                         break;
@@ -214,16 +223,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void checkLocationPermissions() {
+
         if (ContextCompat.checkSelfPermission(this,
             Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED ||ContextCompat.checkSelfPermission(this,
+            Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
                 showExplanation("Permission Needed",
                     "We need to access your GPS to use for matching",
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
                     REQUEST_CHECK_LOCATION_PREFERENCES
                 );
             } else {
@@ -284,12 +296,16 @@ public class MainActivity extends AppCompatActivity
     /**
      * Requests location updates from the FusedLocationApi.
      *
-     * Gary:: Ignore these errors, they're fine
      */
     protected void startLocationUpdates() {
-        if (ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED )
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
+            Log.d(TAG, "Location update recieved");
             LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleAPIClient, mLocationRequest, this);
+
+        } else {
+            Log.d(TAG, "Location update failed");
+        }
     }
 
     /**
@@ -387,16 +403,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.i(TAG, "Connected to GoogleApiClient");
+        Log.d(TAG, "Connected to GoogleApiClient");
         if (mLastLocation == null &&
-            ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
+            ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
 
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleAPIClient);    //Gary:: Ignore thise error, it's fine
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleAPIClient);
             mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-
-            /**
-             * Update the lat and lon here
-             */
         }
         // If the user presses the Start Updates button before GoogleApiClient connects, we set
         // mRequestingLocationUpdates to true (see startUpdatesButtonHandler()). Here, we check
@@ -438,9 +450,6 @@ public class MainActivity extends AppCompatActivity
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        /**
-         * Update the lat and lon here
-         */
     }
 
     @Override

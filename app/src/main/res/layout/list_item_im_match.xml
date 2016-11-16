@@ -6,15 +6,17 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/fragment_im_background"
         android:orientation="horizontal">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/fragment_im_match_image"
             android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
             android:src="@drawable/ja"/>
 
         <LinearLayout

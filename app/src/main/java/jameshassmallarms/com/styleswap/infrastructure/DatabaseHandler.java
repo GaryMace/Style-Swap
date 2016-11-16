@@ -225,21 +225,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return phone;
     }
 
-    public Location readUserLocation(String userName) {
+    public LocationTuple readUserLocation(String userName) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "SELECT " + KEY_USER_LOCATION_LAT + ", " + KEY_USER_LOCATION_LON + " FROM " + TABLE_USER +
             " WHERE " + KEY_USER_EMAIL + "=\'" + userName + "\'";
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        Location location = null; //TODO: get linker version of location and update here as transer
+        double lat = 0, lon = 0;
         if (cursor.moveToFirst()) {
             Log.d("DB", "trying to get location from user: " + userName);
-            double lat = cursor.getDouble(cursor.getColumnIndex(KEY_USER_LOCATION_LAT));
-            double lon = cursor.getDouble(cursor.getColumnIndex(KEY_USER_LOCATION_LON));
+            lat = cursor.getDouble(cursor.getColumnIndex(KEY_USER_LOCATION_LAT));
+            lon = cursor.getDouble(cursor.getColumnIndex(KEY_USER_LOCATION_LON));
             Log.d("DB", "Gotlocation from user: " + userName);
         }
         db.close();
-        return location;
+        return new LocationTuple(lat, lon);
     }
 
     public void updateUserLocation(String userName, String lat, String lon) {
