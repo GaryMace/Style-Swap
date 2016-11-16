@@ -42,7 +42,7 @@ public class EditProfileFragment extends Fragment {
                 fireBaseQueries.download(imageView, "haymakerStirrat@gmail.com", "Dress");
                 return  view;
         }
-
+/*
 
         public void onStart(){
                 super.onStart();
@@ -64,6 +64,7 @@ public class EditProfileFragment extends Fragment {
 
                                         }
                                 });
+
                         }
 
                         @Override
@@ -79,6 +80,7 @@ public class EditProfileFragment extends Fragment {
                 });
 
         }
+        */
 
         @Override
         public void onResume() {

@@ -108,7 +108,7 @@ public class SwipeButtonsFragment extends Fragment {
 
 
         Bundle b = new Bundle();
-        b.putString("User", userName);
+        b.putString("UserEmail", userName);
         NestedInfoCard nest = new NestedInfoCard();
         nest.setArguments(b);
         Log.d("tag","Fragment added to stack");
