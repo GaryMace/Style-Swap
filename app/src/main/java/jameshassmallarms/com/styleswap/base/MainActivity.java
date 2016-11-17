@@ -1,13 +1,14 @@
 package jameshassmallarms.com.styleswap.base;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -19,7 +20,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -47,42 +47,51 @@ import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
 public class MainActivity extends AppCompatActivity
     implements Linker, GoogleApiClient.ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
+    // Saved instance state flags
+    protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
+    protected final static String LOCATION_KEY = "location-key";
+    protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
     private static final String KEY_IS_LOGGED_IN = "logged_in";
     private static final String KEY_USER_LOGIN = "user_login";
+
     private static final int REQUEST_CHECK_SETTINGS = 1;
     private static final int REQUEST_CHECK_LOCATION_PREFERENCES = 1;
     private static final String TAG = "debug_main";
+    private BarFragment bottomBar;  //Navigation bar at bottom of screen
 
+    //  GPS API things  //////////////////////////////////////////////////
     //The desired interval for location updates. Inexact. Updates may be more or less frequent.
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     //The fastest rate for active location updates. Exact. Updates will never be more frequent
     //than this value.
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
         UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-
-    // Keys for storing activity state in the Bundle.
-    protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
-    protected final static String LOCATION_KEY = "location-key";
-    protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
-    private BarFragment bottomBar;  //Navigation bar at bottom of screen
-
-    //GPS API things
     private GoogleApiClient mGoogleAPIClient;
     protected LocationRequest mLocationRequest;
     protected Location mLastLocation;
-
     //Tracks the status of the location updates request. Value changes when the user presses the
-    // Start Updates and Stop Updates buttons.
+    //Start Updates and Stop Updates buttons.
     protected Boolean mRequestingLocationUpdates;
     //Time when the location was updated represented as a String.
     protected String mLastUpdateTime;
+    ///////////////////////////////////////////////////////////////////////
+    private static final int GET_USER_LOGIN = 0;
 
-    //User items
-    private int searchRange;
+
+    //FireBase constants
+    public static final String FIREBASE_IMATCHED = "iMatched";
+    public static final String FIREBASE_MATCHED_ME = "matchedMe";
+
+    //Logged in user fields
+    private int mSearchRange;
+    private String mUserLogin;
+    private int mUserSize;
+    private int mUserAge;   //do we care about their age?
+    private String mUserName;
+    private String mUserNumber;
 
     //Linker Interface items
     private boolean isUserLoggedIn;
-    private String userLogin;
     private Bitmap userProfileImg;
     private boolean userChangedImg;
     private List<Match> cachedMatches;
@@ -102,8 +111,10 @@ public class MainActivity extends AppCompatActivity
         //Reload the user-log state if the app closes temporarily.
         if (savedInstanceState != null) {
             isUserLoggedIn = savedInstanceState.getBoolean(KEY_IS_LOGGED_IN);
-            userLogin = savedInstanceState.getString(KEY_USER_LOGIN);
+            mUserLogin = savedInstanceState.getString(KEY_USER_LOGIN);
         } else {
+            startLoginActivityForResult();
+
             isUserLoggedIn = false;
             userProfileImg = null;  //this may need to be a database query?
             userChangedImg = false;
@@ -123,6 +134,43 @@ public class MainActivity extends AppCompatActivity
         fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.replace(R.id.activity_main, bottomBar, getString(R.string.fragment_bottom_bar_id)).commit(); //Swap layout for the bottombar layout resource file
+    }
+
+    private void startLoginActivityForResult() {
+        Intent getLoginIntent = new Intent(getBaseContext(), Login.class);
+        startActivityForResult(getLoginIntent, GET_USER_LOGIN);
+    }
+
+    /**
+     * Deals with the result from the Login. That being the screen where you select a shimmer to connect.
+     * It'll link the sensor you select to the body position you select.
+     * @param requestCode Random
+     * @param resultCode Either RESULT_CANCELED(when no sensor selected) or RESULT_OK(when shimmer selected)
+     * @param data shimmer bluetooth address
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //ACTIVITY.RESULT_OK is -1, ACTIVITY.RESULT_CANCELED = 0
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_CANCELED) {
+            Log.d(TAG, "Register cancelled");
+            //So we can distinguish between a connection and a tab change onResume();
+        } else if (resultCode == Activity.RESULT_OK) {
+            //If they logged into an existing account
+            if (data.getExtras().getBoolean(Login.LOGIN_EXISTING_USER)) {
+                mUserLogin = data.getExtras().getString(Login.LOGIN_USER_EMAIL);
+                //get the rest of the info from firebase with a query
+
+            } else {    //User created a new account
+                mUserLogin = data.getExtras().getString(Register.REGISTER_EMAIL);
+                mUserAge = data.getExtras().getInt(Register.REGISTER_AGE);      //Why do we care about an age?
+                mUserName = data.getExtras().getString(Register.REGISTER_NAME);
+                mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
+                mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
+                String password = data.getExtras().getString(Register.REGISTER_PASSWORD);   //send this to firebase instantly then remove our reference to it
+            }
+        }
     }
 
     /**
@@ -332,14 +380,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public String getLoggedInUser() {
         if (userLoggedIn())
-            return userLogin;
+            return mUserLogin;
         else
             return null;
     }
 
     @Override
     public void setLoggedInUser(String user) {
-        userLogin = user;
+        mUserLogin = user;
         if (!userLoggedIn())
             toggleUserLoggedIn();
     }
@@ -440,7 +488,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        stopLocationUpdates();
+        if (mLastLocation != null)
+            stopLocationUpdates();
     }
 
     /**
@@ -471,7 +520,7 @@ public class MainActivity extends AppCompatActivity
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putBoolean(KEY_IS_LOGGED_IN, isUserLoggedIn);
-        savedInstanceState.putString(KEY_USER_LOGIN, userLogin);
+        savedInstanceState.putString(KEY_USER_LOGIN, mUserLogin);
 
         savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
         savedInstanceState.putParcelable(LOCATION_KEY, mLastLocation);

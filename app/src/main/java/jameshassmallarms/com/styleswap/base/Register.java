@@ -11,6 +11,15 @@ import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 public class Register extends AppCompatActivity{
+    public static final String REGISTER_EMAIL  ="reg_email";
+    public static final String REGISTER_NAME  ="reg_name";
+    public static final String REGISTER_PHONE  ="reg_phone";
+    public static final String REGISTER_PASSWORD  ="reg_pass";
+    public static final String REGISTER_SIZE  ="reg_size";
+    public static final String REGISTER_AGE  ="reg_age";       //Why we need an age?
+    public static final String REGISTER_LOCATION  ="reg_loc"; //Is this needed?
+
+
     Button buttonRegister;
     EditText etName, etLocation, etAge, etUsername, etPassword, etDressSize, etEmail;
     FireBaseQueries fireBaseQueries = new FireBaseQueries();
@@ -56,6 +65,4 @@ public class Register extends AppCompatActivity{
         mUserRef.child("dressSize").setValue(etDressSize.getText());//should be entered using spinner maybe?
         mUserRef.child("phoneNumber").setValue("");//need value for this
     }
-
-
 }

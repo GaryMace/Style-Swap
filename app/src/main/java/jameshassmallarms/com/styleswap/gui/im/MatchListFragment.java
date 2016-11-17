@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.List;
 
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.base.MainActivity;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
@@ -37,10 +38,6 @@ public class MatchListFragment extends Fragment {
     private MatchAdapter mAdapter;
     private Linker linker;
 
-    //Test shit, to be removed
-    private TextView lat;
-    private TextView lon;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,11 +49,6 @@ public class MatchListFragment extends Fragment {
         mMatchRecycler.setHasFixedSize(true);
         linker = (Linker) getActivity();
         db = new FireBaseQueries();
-
-        lat = (TextView) view.findViewById(R.id.lat);
-        lon = (TextView) view.findViewById(R.id.lon);
-        lat.setText("Lat: " + linker.getDeviceLat());
-        lat.setText("Lon: " +linker.getDeviceLon());
 
         /*FireBaseQueries.executeIfExists(getPhonenumber("GaryMac@live.ie"), new Runnable{
             for (DataSnapshot child: snapshot.getChildren()) {
@@ -87,7 +79,7 @@ public class MatchListFragment extends Fragment {
             m1.setMatchImage(Bitmap.createScaledBitmap(img1,200, 200,true));
             m1.setMatchName("James");
             m1.setMatchNumber("085 766 3464");
-
+            db.addMatch("haymakerStirrat@gmail.com", MainActivity.FIREBASE_IMATCHED, m1);
             Match m2 = new Match();
             m2.setMatchImage(Bitmap.createScaledBitmap(img2,200, 200,true));
             m2.setMatchName("Alan");

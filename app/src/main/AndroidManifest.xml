@@ -19,6 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name="jameshassmallarms.com.styleswap.base.Login" />
+        <activity
+            android:name="jameshassmallarms.com.styleswap.base.Register" />
     </application>
 
 </manifest>
