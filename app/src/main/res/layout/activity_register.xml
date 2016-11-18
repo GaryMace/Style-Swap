@@ -14,6 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            android:textSize="16sp"
             android:textColor="@color/colorPrimaryDark"
             android:text="Name" />
 
@@ -21,12 +22,14 @@
             android:id="@+id/etName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:layout_marginBottom="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            android:textSize="16sp"
             android:textColor="@color/colorPrimaryDark"
             android:text="Email" />
 
@@ -34,12 +37,14 @@
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:layout_marginBottom="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            android:textSize="16sp"
             android:textColor="@color/colorPrimaryDark"
             android:text="Age" />
 
@@ -47,12 +52,14 @@
             android:id="@+id/etAge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:layout_marginBottom="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            android:textSize="16sp"
             android:textColor="@color/colorPrimaryDark"
             android:text="Location e.g. Blackrock" />
 
@@ -60,6 +67,7 @@
             android:id="@+id/etLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:layout_marginBottom="10dp" />
 
 
@@ -67,6 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            android:textSize="16sp"
             android:textColor="@color/colorPrimaryDark"
             android:text="Username" />
 
@@ -75,12 +84,14 @@
             android:id="@+id/etUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:layout_marginBottom="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            android:textSize="16sp"
             android:textColor="@color/colorPrimaryDark"
             android:text="Password" />
 
@@ -89,12 +100,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
+            android:textColor="@color/white"
             android:inputType="textPassword" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            android:textSize="16sp"
             android:textColor="@color/colorPrimaryDark"
             android:text="Dress Size" />
 
@@ -102,6 +115,7 @@
             android:id="@+id/etDressSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:layout_marginBottom="10dp" />
 
         <Button
@@ -109,6 +123,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Register"
+            android:textSize="20sp"
             android:textColor="@color/white"
             android:background="@drawable/activity_app_startup_register"/>
 

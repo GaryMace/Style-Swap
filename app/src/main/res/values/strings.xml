@@ -12,4 +12,7 @@
     <string name="user_email">Email:</string>
     <string name="user_name">Name</string>
     <string name="user_description">Description</string>
+
+    <string name="app_start_login">LOG IN</string>
+    <string name="app_start_register">REGISTER</string>
 </resources>
