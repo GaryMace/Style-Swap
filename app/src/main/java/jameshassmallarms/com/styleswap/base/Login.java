@@ -15,6 +15,7 @@ import jameshassmallarms.com.styleswap.R;
 public class Login extends AppCompatActivity implements View.OnClickListener {
     public static final String LOGIN_EXISTING_USER = "login_existing";
     public static final String LOGIN_USER_EMAIL = "login_email";
+    private static final int GET_REGISTER = 3;
 
     Button ButtonLogin;
     EditText etUsername, etPassword;
@@ -51,7 +52,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 break;
 
             case R.id.LinkWithRegister:
-                startActivity(new Intent(this, Register.class));
+                Intent i = new Intent(getBaseContext(), Register.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                startActivity(i);
                 break;
         }
 

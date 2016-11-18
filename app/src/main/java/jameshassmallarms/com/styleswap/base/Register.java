@@ -5,10 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import com.google.firebase.database.DatabaseReference;
 import jameshassmallarms.com.styleswap.R;
-import jameshassmallarms.com.styleswap.impl.User;
-import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 public class Register extends AppCompatActivity{
     public static final String REGISTER_EMAIL  ="reg_email";
@@ -22,7 +19,7 @@ public class Register extends AppCompatActivity{
 
     Button buttonRegister;
     EditText etName, etLocation, etAge, etUsername, etPassword, etDressSize, etEmail;
-    FireBaseQueries fireBaseQueries = new FireBaseQueries();
+    //FireBaseQueries fireBaseQueries = new FireBaseQueries();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +40,7 @@ public class Register extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 if (validRegistrationInfo()){
-                    pushUserDetails();
+                    //pushUserDetails();
                 }
             }
         });
@@ -56,7 +53,7 @@ public class Register extends AppCompatActivity{
     }
 
     //should use pushNewUserDetails instead
-    public void pushUserDetails(){
+    /*public void pushUserDetails(){
         DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail(etEmail.getText().toString());
         mUserRef.child("email").setValue(etEmail.getText());//check its unique
         mUserRef.child("password").setValue(etPassword.getText());//check its a decent password
@@ -64,5 +61,5 @@ public class Register extends AppCompatActivity{
         mUserRef.child("location").setValue(etLocation.getText());//should be gotten from phone prob not entered
         mUserRef.child("dressSize").setValue(etDressSize.getText());//should be entered using spinner maybe?
         mUserRef.child("phoneNumber").setValue("");//need value for this
-    }
+    }*/
 }
