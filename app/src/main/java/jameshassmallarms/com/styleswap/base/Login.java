@@ -56,9 +56,5 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
 
     }
-    //Disables back presses
-    @Override
-    public void onBackPressed() {
-        //Prevent back presses
-    }
+
 }

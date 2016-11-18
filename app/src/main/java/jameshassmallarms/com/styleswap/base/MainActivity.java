@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity
             isUserLoggedIn = savedInstanceState.getBoolean(KEY_IS_LOGGED_IN);
             mUserLogin = savedInstanceState.getString(KEY_USER_LOGIN);
         } else {
-            startLoginActivityForResult();
+            startAppStartupActivityForResult();
 
             isUserLoggedIn = false;
             userProfileImg = null;  //this may need to be a database query?
@@ -136,8 +136,8 @@ public class MainActivity extends AppCompatActivity
         ft.replace(R.id.activity_main, bottomBar, getString(R.string.fragment_bottom_bar_id)).commit(); //Swap layout for the bottombar layout resource file
     }
 
-    private void startLoginActivityForResult() {
-        Intent getLoginIntent = new Intent(getBaseContext(), Login.class);
+    private void startAppStartupActivityForResult() {
+        Intent getLoginIntent = new Intent(getBaseContext(), AppStartupActivtiy.class);
         startActivityForResult(getLoginIntent, GET_USER_LOGIN);
     }
 
