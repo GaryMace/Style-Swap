@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity
     //Time when the location was updated represented as a String.
     protected String mLastUpdateTime;
     ///////////////////////////////////////////////////////////////////////
-    private static final int GET_USER_LOGIN = 0;
-
+    public static final int GET_USER_LOGIN = 0;
+    public static final String GET_LOGIN_STATE = "login_state";
 
     //FireBase constants
     public static final String FIREBASE_IMATCHED = "iMatched";
@@ -113,12 +113,11 @@ public class MainActivity extends AppCompatActivity
             isUserLoggedIn = savedInstanceState.getBoolean(KEY_IS_LOGGED_IN);
             mUserLogin = savedInstanceState.getString(KEY_USER_LOGIN);
         } else {
-            startAppStartupActivityForResult();
-
             isUserLoggedIn = false;
             userProfileImg = null;  //this may need to be a database query?
             userChangedImg = false;
             cachedMatches = new ArrayList<>();
+            startAppStartupActivityForResult(); //Launch the start-up screen
         }
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
@@ -144,9 +143,10 @@ public class MainActivity extends AppCompatActivity
     /**
      * Deals with the result from the Login. That being the screen where you select a shimmer to connect.
      * It'll link the sensor you select to the body position you select.
+     *
      * @param requestCode Random
-     * @param resultCode Either RESULT_CANCELED(when no sensor selected) or RESULT_OK(when shimmer selected)
-     * @param data shimmer bluetooth address
+     * @param resultCode  Either RESULT_CANCELED(when they go back to main screen) or RESULT_OK(when login/register)
+     * @param data        Register / Login data
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -155,20 +155,24 @@ public class MainActivity extends AppCompatActivity
 
         if (resultCode == Activity.RESULT_CANCELED) {
             Log.d(TAG, "Register cancelled");
-            //So we can distinguish between a connection and a tab change onResume();
-        } else if (resultCode == Activity.RESULT_OK) {
-            //If they logged into an existing account
-            if (data.getExtras().getBoolean(Login.LOGIN_EXISTING_USER)) {
-                mUserLogin = data.getExtras().getString(Login.LOGIN_USER_EMAIL);
-                //get the rest of the info from firebase with a query
 
-            } else {    //User created a new account
-                mUserLogin = data.getExtras().getString(Register.REGISTER_EMAIL);
-                mUserAge = data.getExtras().getInt(Register.REGISTER_AGE);      //Why do we care about an age?
-                mUserName = data.getExtras().getString(Register.REGISTER_NAME);
-                mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
-                mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
-                String password = data.getExtras().getString(Register.REGISTER_PASSWORD);   //send this to firebase instantly then remove our reference to it
+        } else if (resultCode == Activity.RESULT_OK) {
+            //First get the result code
+            String loginState = data.getExtras().getString(MainActivity.GET_LOGIN_STATE);
+            if (loginState != null) {
+                if (loginState.equals(Login.LOGIN_EXISTING_USER)) {            //If they logged into an existing account
+                    mUserLogin = data.getExtras().getString(Login.LOGIN_USER_EMAIL);
+                    //get the rest of the info from firebase with a query
+
+                } else if (loginState.equals(Register.REGISTER_NEW_USER)) {      //User created a new account
+                    mUserLogin = data.getExtras().getString(Register.REGISTER_EMAIL);
+                    mUserAge = data.getExtras().getInt(Register.REGISTER_AGE);      //Why do we care about an age?
+                    mUserName = data.getExtras().getString(Register.REGISTER_NAME);
+                    mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
+                    mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
+                    String password = data.getExtras().getString(Register.REGISTER_PASSWORD);   //send this to firebase instantly then remove our reference to it
+                }
+
             }
         }
     }
@@ -261,7 +265,6 @@ public class MainActivity extends AppCompatActivity
                         }
                         break;
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        Log.d(TAG, "Sorry, you're fucked");
                         // Location settings are not satisfied. However, we have no way
                         // to fix the settings so we won't show the dialog.
                         break;
@@ -274,7 +277,7 @@ public class MainActivity extends AppCompatActivity
 
         if (ContextCompat.checkSelfPermission(this,
             Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED ||ContextCompat.checkSelfPermission(this,
+            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
             Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
 
@@ -343,10 +346,9 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Requests location updates from the FusedLocationApi.
-     *
      */
     protected void startLocationUpdates() {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "Location update recieved");
             LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleAPIClient, mLocationRequest, this);
@@ -453,7 +455,7 @@ public class MainActivity extends AppCompatActivity
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(TAG, "Connected to GoogleApiClient");
         if (mLastLocation == null &&
-            ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
+            ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleAPIClient);
             mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());

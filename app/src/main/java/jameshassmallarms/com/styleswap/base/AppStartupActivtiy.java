@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.MediaController;
 import android.widget.VideoView;
 
 import jameshassmallarms.com.styleswap.R;
@@ -19,8 +18,6 @@ import jameshassmallarms.com.styleswap.R;
 
 public class AppStartupActivtiy extends Activity {
     private static final String TAG = "debug_app_startup";
-    private static final int GET_USER_LOGIN = 1;
-    private static final int GET_NEW_USER = 2;
 
     private VideoView mIntroVid;
     private Button mLogin;
@@ -49,6 +46,7 @@ public class AppStartupActivtiy extends Activity {
                 Intent getLoginIntent = new Intent(getBaseContext(), Login.class);
                 getLoginIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 startActivity(getLoginIntent);
+                finish();
             }
         });
 
@@ -59,6 +57,7 @@ public class AppStartupActivtiy extends Activity {
                 Intent getLoginIntent = new Intent(getBaseContext(), Register.class);
                 getLoginIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 startActivity(getLoginIntent);
+                finish();
             }
         });
     }
@@ -81,31 +80,6 @@ public class AppStartupActivtiy extends Activity {
             }
         }
     };
-    /**
-     * Deals with the result from the Login. That being the screen where you select a shimmer to connect.
-     * It'll link the sensor you select to the body position you select.
-     * @param requestCode Random
-     * @param resultCode Either RESULT_CANCELED(when no sensor selected) or RESULT_OK(when shimmer selected)
-     * @param data shimmer bluetooth address
-     */
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //ACTIVITY.RESULT_OK is -1, ACTIVITY.RESULT_CANCELED = 0
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == Activity.RESULT_CANCELED) {
-            Log.d(TAG, "Register cancelled");
-            //So we can distinguish between a connection and a tab change onResume();
-        } else if (resultCode == Activity.RESULT_OK) {
-            //If they logged into an existing account
-            if (true) {
-                //get the rest of the info from firebase with a query
-
-            } else {
-
-            }
-        }
-    }
 
     //Prevent back presses
     @Override

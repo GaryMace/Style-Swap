@@ -8,6 +8,8 @@ import android.widget.EditText;
 import jameshassmallarms.com.styleswap.R;
 
 public class Register extends AppCompatActivity{
+    public static final String REGISTER_NEW_USER = "register_new";
+
     public static final String REGISTER_EMAIL  ="reg_email";
     public static final String REGISTER_NAME  ="reg_name";
     public static final String REGISTER_PHONE  ="reg_phone";
@@ -45,7 +47,13 @@ public class Register extends AppCompatActivity{
             }
         });
 
-
+        /**
+         * If the Register button is clicked, check if user email already exists.
+         *
+         * If they dont "resultIntent.putString(MainActivity.GET_LOGIN_STATE, REGISTER_NEW_USER);
+         * and pass all relevent info back with resultIntent.putString(REGISTER_NAME, "gary); or
+         * whatever
+         */
     }
 
     private boolean validRegistrationInfo(){
