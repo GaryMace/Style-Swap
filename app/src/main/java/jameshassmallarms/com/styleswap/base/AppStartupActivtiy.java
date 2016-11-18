@@ -46,7 +46,7 @@ public class AppStartupActivtiy extends Activity {
                 Intent getLoginIntent = new Intent(getBaseContext(), Login.class);
                 getLoginIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 startActivity(getLoginIntent);
-                finish();
+                //finish();
             }
         });
 
@@ -57,7 +57,7 @@ public class AppStartupActivtiy extends Activity {
                 Intent getLoginIntent = new Intent(getBaseContext(), Register.class);
                 getLoginIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 startActivity(getLoginIntent);
-                finish();
+                //finish();
             }
         });
     }
