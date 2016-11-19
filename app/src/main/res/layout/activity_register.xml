@@ -61,10 +61,10 @@
             android:textStyle="bold"
             android:textSize="16sp"
             android:textColor="@color/colorPrimaryDark"
-            android:text="Location e.g. Blackrock" />
+            android:text="Phone Number" />
 
         <EditText
-            android:id="@+id/etLocation"
+            android:id="@+id/etPhoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"

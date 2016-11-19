@@ -22,17 +22,31 @@ public class User {
     private int dressSize;
     private String phoneNum;
     private String bio;
+    private int age;
     public List<Match> iMatched = new ArrayList<>();
     public List<Match> matchedMe = new ArrayList<>();
 
-    public User(String email, String password) {
+    public User(String name, int age, String email, String password, int dressSize) {
+        this.name = name;
+        this.age = age;
         this.email = email;
         this.password = password;
+        this.dressSize = dressSize;
         Match dummy = new Match();
         dummy.setMatchName("dummy so list exists");
         this.iMatched.add(dummy);
         this.matchedMe.add(dummy);
     }
+
+    public User(String name, String password){
+        this.name = name;
+        this.password = password;
+        Match dummy = new Match();
+        dummy.setMatchName("Dummy so list exists");
+        this.iMatched.add(dummy);
+        this.matchedMe.add(dummy);
+    }
+
 
     public User(String email) {
         this.email = email;
@@ -93,6 +107,8 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    public int getAge(){return age;    }
 
     public void setEmail(String email) {
         this.email = email;
