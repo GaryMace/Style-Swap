@@ -15,4 +15,8 @@
 
     <string name="app_start_login">LOG IN</string>
     <string name="app_start_register">REGISTER</string>
+
+    <string name="test1">This is a test string 1</string>
+    <string name="test2">This is a test string 2</string>
+    <string name="test3">This is a test string 3</string>
 </resources>
