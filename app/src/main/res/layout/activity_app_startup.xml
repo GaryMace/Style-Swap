@@ -32,12 +32,12 @@
                 app:layout_marginTopPercent="8%"
                 app:layout_widthPercent="75%"/>
 
-           <!-- <android.support.v4.view.ViewPager
+           <android.support.v4.view.ViewPager
                 android:id="@+id/activity_app_startup_viewpager"
                 android:layout_centerHorizontal="true"
                 app:layout_heightPercent="15%"
                 app:layout_marginTopPercent="75%"
-                app:layout_widthPercent="75%"/>-->
+                app:layout_widthPercent="75%"/>
         </android.support.percent.PercentRelativeLayout>
 
 
