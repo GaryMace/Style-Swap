@@ -1,51 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-    android:background="@color/black">
+              android:background="@color/black"
+              android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.9">
+
         <VideoView
             android:id="@+id/activity_startup_video"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentTop="true"/>
+
+        <android.support.percent.PercentRelativeLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- causing video to crash-->
+            <ImageView
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/finallogo"
+                app:layout_heightPercent="20%"
+                app:layout_marginTopPercent="8%"
+                app:layout_widthPercent="75%"/>
+
+           <!-- <android.support.v4.view.ViewPager
+                android:id="@+id/activity_app_startup_viewpager"
+                android:layout_centerHorizontal="true"
+                app:layout_heightPercent="15%"
+                app:layout_marginTopPercent="75%"
+                app:layout_widthPercent="75%"/>-->
+        </android.support.percent.PercentRelativeLayout>
+
+
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.1">
+
         <View
             android:id="@+id/activity_startup_separator"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_centerHorizontal="true"/>
+
         <Button
             android:id="@+id/activity_startup_login"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_alignEnd="@id/activity_startup_separator"
             android:layout_alignParentStart="true"
+            android:background="@drawable/activity_app_startup_login"
             android:text="@string/app_start_login"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:background="@drawable/activity_app_startup_login"/>
+            android:textStyle="bold"/>
+
         <Button
             android:id="@+id/activity_startup_register"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_alignStart="@id/activity_startup_separator"
             android:layout_alignParentEnd="true"
+            android:layout_alignStart="@id/activity_startup_separator"
+            android:background="@drawable/activity_app_startup_register"
             android:text="@string/app_start_register"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:background="@drawable/activity_app_startup_register"/>
+            android:textStyle="bold"/>
     </RelativeLayout>
 </LinearLayout>

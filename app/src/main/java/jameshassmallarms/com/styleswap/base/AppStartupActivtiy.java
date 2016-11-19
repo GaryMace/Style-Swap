@@ -1,14 +1,22 @@
 package jameshassmallarms.com.styleswap.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.VideoView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import jameshassmallarms.com.styleswap.R;
 
@@ -39,30 +47,37 @@ public class AppStartupActivtiy extends Activity {
         mLogin = (Button) findViewById(R.id.activity_startup_login);
         mRegister = (Button) findViewById(R.id.activity_startup_register);
 
-        mLogin.setOnClickListener(new View.OnClickListener(){
+        mLogin.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Intent getLoginIntent = new Intent(getBaseContext(), Login.class);
                 getLoginIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 startActivity(getLoginIntent);
-                //finish();
             }
         });
 
-        mRegister.setOnClickListener(new View.OnClickListener(){
+        mRegister.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Intent getLoginIntent = new Intent(getBaseContext(), Register.class);
                 getLoginIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 startActivity(getLoginIntent);
-                //finish();
             }
         });
+
+       /* List<CustomObject> items = new ArrayList<>();
+        items.add(new CustomObject("Hello", "Welcome to StyleSwap. Start swapping old dresses now."));
+        items.add(new CustomObject("Discover", "Find new people to swap dresses with. Unlimited matching available."));
+        items.add(new CustomObject("Chat", "Talk to new people today and start swapping dresses, your options are limitless."));
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.activity_app_startup_viewpager);
+        CustomPagerAdapter customPagerAdapter = new CustomPagerAdapter(this, items);
+        viewPager.setAdapter(customPagerAdapter);*/
     }
 
-    MediaPlayer.OnPreparedListener PreparedListener = new MediaPlayer.OnPreparedListener(){
+    MediaPlayer.OnPreparedListener PreparedListener = new MediaPlayer.OnPreparedListener() {
 
         @Override
         public void onPrepared(MediaPlayer m) {
@@ -84,5 +99,61 @@ public class AppStartupActivtiy extends Activity {
     //Prevent back presses
     @Override
     public void onBackPressed() {
+    }
+
+    public class CustomPagerAdapter extends PagerAdapter {
+
+        List<CustomObject> items;
+        LayoutInflater inflater;
+
+        public CustomPagerAdapter(Context context, List<CustomObject> items) {
+            this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            this.items = items;
+        }
+
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public int getCount() {
+            return items.size();
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+
+            View itemView;
+            itemView = inflater.inflate(R.layout.activity_app_startup_text_slider, container, false);
+
+            TextView topTextItem = (TextView) itemView.findViewById(R.id.activity_app_startup_top_slider);
+            TextView bottomTextItem = (TextView) itemView.findViewById(R.id.activity_app_startup_bottom_slider);
+
+            CustomObject customObject = items.get(position);
+
+            topTextItem.setText(customObject.top);
+            bottomTextItem.setText(customObject.bottom);
+
+            container.addView(itemView);
+
+            return itemView;
+        }
+    }
+
+    public class CustomObject {
+        String top;
+        String bottom;
+
+        public CustomObject(String top, String bottom) {
+            this.top = top;
+            this.bottom = bottom;
+        }
     }
 }
