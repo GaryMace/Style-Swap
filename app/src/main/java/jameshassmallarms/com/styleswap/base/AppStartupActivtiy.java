@@ -29,6 +29,8 @@ import jameshassmallarms.com.styleswap.R;
 
 public class AppStartupActivtiy extends Activity {
     private static final String TAG = "debug_app_startup";
+    private static final long SWITCH_TO_NEXT_MESSAGE_DELAY = 8000;
+    private static final long START_TIMER_DELAY = 0;
 
     private VideoView mIntroVid;
     private Button mLogin;
@@ -37,7 +39,7 @@ public class AppStartupActivtiy extends Activity {
     //Threaded Text display fields
     private Timer mSwipeTimer;
     private int mCurrTextBox = 0;
-    private static final int NUM_TEXT_BOXES_TO_DISPLAY = 5;
+    private static final int NUM_TEXT_BOXES_TO_DISPLAY = 4;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,16 +77,20 @@ public class AppStartupActivtiy extends Activity {
             }
         });
 
-       List<CustomObject> items = new ArrayList<>();
-        items.add(new CustomObject("Hello", "Welcome to StyleSwap. Start swapping old dresses now."));
-        items.add(new CustomObject("Discover", "Find new people to swap dresses with. Unlimited matching available."));
-        items.add(new CustomObject("Chat", "Talk to new people today and start swapping dresses, your options are limitless."));
+        //Messages shown at bootom of screen
+        List<AppStartupMessage> appMessages = new ArrayList<>();
+
+        appMessages.add(new AppStartupMessage("Hello", "Sign up for free to find new people to swap old dresses with."));
+        appMessages.add(new AppStartupMessage("Discover", "Find the dress you've always wanted from another person."));
+        appMessages.add(new AppStartupMessage("Your Matches", "Browse your matches and find the perfect StyleSwap for you."));
+        appMessages.add(new AppStartupMessage("Contact", "Get in touch with your matches to arrange your StyleSwap."));
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.activity_app_startup_viewpager);
-        CustomPagerAdapter customPagerAdapter = new CustomPagerAdapter(this, items);
-        viewPager.setAdapter(customPagerAdapter);
+        AppStartupPagerAdapter appStartupPagerAdapter = new AppStartupPagerAdapter(this, appMessages);
+        viewPager.setAdapter(appStartupPagerAdapter);
 
-       /* //TODO: change this so that it works!!
+
+        //TODO: If a user swipes this overwrites it and puts it 2 or even 3 messages ahead. Swiping should -1 or +1 mCurrTextBox
         final Handler handler = new Handler();
         final Runnable Update = new Runnable() {
             public void run() {
@@ -96,15 +102,18 @@ public class AppStartupActivtiy extends Activity {
         };
 
         mSwipeTimer = new Timer();
-        mSwipeTimer.schedule(new TimerTask() {
-
-            @Override
-            public void run() {
+        mSwipeTimer.schedule(
+            new TimerTask() {
+                @Override
+                public void run() {
                 handler.post(Update);
             }
-        }, 500, 3000);*/
+            },
+            START_TIMER_DELAY,
+            SWITCH_TO_NEXT_MESSAGE_DELAY);
     }
 
+    //Loops video and mutes its sound.
     MediaPlayer.OnPreparedListener PreparedListener = new MediaPlayer.OnPreparedListener() {
 
         @Override
@@ -129,12 +138,19 @@ public class AppStartupActivtiy extends Activity {
     public void onBackPressed() {
     }
 
-    public class CustomPagerAdapter extends PagerAdapter {
 
-        List<CustomObject> items;
+    /**
+     * The following Code relates to the scolling messages seen at the bottom of the AppStartup Login
+     * screen.
+     *
+     * The Adapter is responsible for changing the displayed text when either the timer runs out or
+     * the user scrolls through the texts seen.
+     */
+    public class AppStartupPagerAdapter extends PagerAdapter {
+        List<AppStartupMessage> items;
         LayoutInflater inflater;
 
-        public CustomPagerAdapter(Context context, List<CustomObject> items) {
+        public AppStartupPagerAdapter(Context context, List<AppStartupMessage> items) {
             this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             this.items = items;
         }
@@ -157,31 +173,31 @@ public class AppStartupActivtiy extends Activity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-
             View itemView;
             itemView = inflater.inflate(R.layout.activity_app_startup_text_slider, container, false);
 
             TextView topTextItem = (TextView) itemView.findViewById(R.id.activity_app_startup_top_slider);
             TextView bottomTextItem = (TextView) itemView.findViewById(R.id.activity_app_startup_bottom_slider);
 
-            CustomObject customObject = items.get(position);
+            AppStartupMessage appStartupMessage = items.get(position);
 
-            topTextItem.setText(customObject.top);
-            bottomTextItem.setText(customObject.bottom);
-
+            topTextItem.setText(appStartupMessage.topMsg);          //Set title of next message
+            bottomTextItem.setText(appStartupMessage.bottomMsg);    //Set next message content
             container.addView(itemView);
 
             return itemView;
         }
     }
 
-    public class CustomObject {
-        String top;
-        String bottom;
 
-        public CustomObject(String top, String bottom) {
-            this.top = top;
-            this.bottom = bottom;
+    //Message Wrapper
+    private class AppStartupMessage {
+        String topMsg;
+        String bottomMsg;
+
+        public AppStartupMessage(String topMsg, String bottomMsg) {
+            this.topMsg = topMsg;
+            this.bottomMsg = bottomMsg;
         }
     }
 }

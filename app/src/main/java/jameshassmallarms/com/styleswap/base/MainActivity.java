@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity
     private static final int REQUEST_CHECK_SETTINGS = 1;
     private static final int REQUEST_CHECK_LOCATION_PREFERENCES = 1;
     private static final String TAG = "debug_main";
-    private BarFragment bottomBar;  //Navigation bar at bottom of screen
+    private BarFragment bottomBar;  //Navigation bar at bottomMsg of screen
 
     //  GPS API things  //////////////////////////////////////////////////
     //The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity
     private String mUserName;
     private String mUserNumber;
 
-    //Linker Interface items
+    //Linker Interface appMessages
     private boolean isUserLoggedIn;
     private Bitmap userProfileImg;
     private boolean userChangedImg;
