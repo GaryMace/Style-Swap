@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity
     //Time when the location was updated represented as a String.
     protected String mLastUpdateTime;
     ///////////////////////////////////////////////////////////////////////
-    public static final int GET_USER_LOGIN = 0;
+    public static final int GET_USER_INFORMATION = 0;
     public static final String GET_LOGIN_STATE = "login_state";
 
     //FireBase constants
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity
 
     private void startAppStartupActivityForResult() {
         Intent getLoginIntent = new Intent(getBaseContext(), AppStartupActivtiy.class);
-        startActivityForResult(getLoginIntent, GET_USER_LOGIN);
+        startActivityForResult(getLoginIntent, GET_USER_INFORMATION);
     }
 
     /**
@@ -155,13 +155,13 @@ public class MainActivity extends AppCompatActivity
 
         if (resultCode == Activity.RESULT_CANCELED) {
             Log.d(TAG, "Register cancelled");
-
         } else if (resultCode == Activity.RESULT_OK) {
             //First get the result code
             String loginState = data.getExtras().getString(MainActivity.GET_LOGIN_STATE);
             if (loginState != null) {
                 if (loginState.equals(Login.LOGIN_EXISTING_USER)) {            //If they logged into an existing account
                     mUserLogin = data.getExtras().getString(Login.LOGIN_USER_EMAIL);
+                    Log.d(TAG, "User login email is: " + mUserLogin);
                     //get the rest of the info from firebase with a query
 
                 } else if (loginState.equals(Register.REGISTER_NEW_USER)) {      //User created a new account
