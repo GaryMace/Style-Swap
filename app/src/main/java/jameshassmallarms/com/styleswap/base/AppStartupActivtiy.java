@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ import jameshassmallarms.com.styleswap.R;
 
 public class AppStartupActivtiy extends Activity {
     private static final String TAG = "debug_app_startup";
+    private static final int LOGIN_EXISTING_USER = 1;
+    private static final int REGISTER_NEW_USER = 2;
     private static final long SWITCH_TO_NEXT_MESSAGE_DELAY = 8000;
     private static final long START_TIMER_DELAY = 0;
 
@@ -62,8 +65,7 @@ public class AppStartupActivtiy extends Activity {
             @Override
             public void onClick(View v) {
                 Intent getLoginIntent = new Intent(getBaseContext(), Login.class);
-                getLoginIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-                startActivity(getLoginIntent);
+                startActivityForResult(getLoginIntent, LOGIN_EXISTING_USER);
             }
         });
 
@@ -72,8 +74,7 @@ public class AppStartupActivtiy extends Activity {
             @Override
             public void onClick(View v) {
                 Intent getLoginIntent = new Intent(getBaseContext(), Register.class);
-                getLoginIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-                startActivity(getLoginIntent);
+                startActivityForResult(getLoginIntent, REGISTER_NEW_USER);
             }
         });
 
@@ -133,6 +134,45 @@ public class AppStartupActivtiy extends Activity {
         }
     };
 
+    //TODO: Needs refactoring, not returning intent to main properly
+    /**
+     * Deals with the result from the Login. That being the screen where you select a shimmer to connect.
+     * It'll link the sensor you select to the body position you select.
+     *
+     * @param requestCode Random
+     * @param resultCode  Either RESULT_CANCELED(when they go back to main screen) or RESULT_OK(when login/register)
+     * @param data        Register / Login data
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //ACTIVITY.RESULT_OK is -1, ACTIVITY.RESULT_CANCELED = 0
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_CANCELED) {
+            Log.d(TAG, "Register cancelled");
+        } else if (resultCode == Activity.RESULT_OK) {
+            //First get the result code
+            String loginState = data.getExtras().getString(MainActivity.GET_LOGIN_STATE);
+            if (loginState != null) {
+                Intent mainActivityRes = new Intent();
+                if (loginState.equals(Login.LOGIN_EXISTING_USER)) {            //If they logged into an existing account
+                    mainActivityRes.putExtra(Login.LOGIN_USER_EMAIL, data.getExtras().getString(Login.LOGIN_USER_EMAIL));
+                    //get the rest of the info from firebase with a query
+                    mainActivityRes.putExtra(MainActivity.GET_LOGIN_STATE, LOGIN_EXISTING_USER);
+                    setResult(Activity.RESULT_OK, mainActivityRes);
+                    finish();
+                } else if (loginState.equals(Register.REGISTER_NEW_USER)) {      //User created a new account
+                    /*mUserLogin = data.getExtras().getString(Register.REGISTER_EMAIL);
+                    mUserAge = data.getExtras().getInt(Register.REGISTER_AGE);      //Why do we care about an age?
+                    mUserName = data.getExtras().getString(Register.REGISTER_NAME);
+                    mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
+                    mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
+                    String password = data.getExtras().getString(Register.REGISTER_PASSWORD);*/   //send this to firebase instantly then remove our reference to it
+                }
+
+            }
+        }
+    }
     //Prevent back presses
     @Override
     public void onBackPressed() {

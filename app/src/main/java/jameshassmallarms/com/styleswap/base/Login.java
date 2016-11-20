@@ -1,5 +1,6 @@
 package jameshassmallarms.com.styleswap.base;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,7 +36,17 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         etPassword = (EditText) findViewById(R.id.etPassword);
         ButtonLogin = (Button) findViewById(R.id.ButtonLogin);
         LinkWithRegister = (TextView) findViewById(R.id.LinkWithRegister);
-        ButtonLogin.setOnClickListener(this);
+        ButtonLogin.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent res = new Intent();
+                res.putExtra(MainActivity.GET_LOGIN_STATE, LOGIN_EXISTING_USER);
+                res.putExtra(LOGIN_USER_EMAIL, "garymac@live.ie");
+                setResult(Activity.RESULT_OK, res);
+                finish();
+            }
+        });
         LinkWithRegister.setOnClickListener(this);
 
         /**
