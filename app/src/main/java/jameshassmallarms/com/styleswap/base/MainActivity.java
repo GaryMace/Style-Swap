@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity
                 if (loginState.equals(Login.LOGIN_EXISTING_USER)) {            //If they logged into an existing account
                     mUserLogin = data.getExtras().getString(Login.LOGIN_USER_EMAIL);
                     //get the rest of the info from firebase with a query
+                    Log.d(TAG, "User login is: "+ mUserLogin);
 
                 } else if (loginState.equals(Register.REGISTER_NEW_USER)) {      //User created a new account
                     mUserLogin = data.getExtras().getString(Register.REGISTER_EMAIL);
@@ -171,6 +172,7 @@ public class MainActivity extends AppCompatActivity
                     mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
                     mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
                     String password = data.getExtras().getString(Register.REGISTER_PASSWORD);   //send this to firebase instantly then remove our reference to it
+                    Log.d(TAG, "User registered");
                 }
 
             }

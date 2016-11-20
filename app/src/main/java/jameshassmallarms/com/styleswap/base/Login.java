@@ -42,11 +42,12 @@ public class Login extends AppCompatActivity{
             LinkWithRegister = (TextView) findViewById(R.id.LinkWithRegister);
             ButtonLogin.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    if(etUsername.getText().toString() == null || etPassword.getText().toString() == null){
+                    if(etUsername.getText().toString().isEmpty()|| etPassword.getText().toString().isEmpty()){
                         Toast.makeText(getBaseContext(), "Username or password left empty", Toast.LENGTH_SHORT).show();
                     }else {
-                        boolean loginSuccess;
-                        loginSuccess = attemptLogin();
+                        flag = true;
+                        //boolean loginSuccess;
+                        //loginSuccess = attemptLogin();
                         //if (loginSuccess){
                             String userName = etUsername.getText().toString();
                             String userPassword = etPassword.getText().toString();
@@ -74,16 +75,17 @@ public class Login extends AppCompatActivity{
 
     public boolean attemptLogin(){
         DatabaseReference testString;
+        boolean localFLag;
         testString = newQuery.getUserName(etUsername.getText().toString());
         if(testString.equals(null) == false){
-            flag = true;
+            localFLag = true;
         }
 
         else{
             Log.d("The user doesnt exist", "");
-            flag = false;
+            localFLag = false;
         }
-        return flag;
+        return localFLag;
     }
 }
 

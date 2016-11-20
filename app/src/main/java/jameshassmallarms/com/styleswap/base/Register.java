@@ -32,7 +32,7 @@ public class Register extends AppCompatActivity{
 
     Button buttonRegister;
     EditText etName, etAge, etUsername, etPassword, etDressSize, etEmail, etPhoneNumber;
-    FireBaseQueries fireBaseQueries = new FireBaseQueries();
+   // FireBaseQueries fireBaseQueries = new FireBaseQueries();
     boolean userExists, detailsOkay;
     UserExistsFragment user = new UserExistsFragment();
     boolean overallFlag = false;
@@ -53,15 +53,15 @@ public class Register extends AppCompatActivity{
             buttonRegister.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                        detailsOkay = avoidEmptyDetails();
-                        userExists = checkIfUserExists();
+                        //detailsOkay = avoidEmptyDetails();
+                        //userExists = checkIfUserExists();
 
-                        if (userExists && detailsOkay) {
+                        //if (userExists && detailsOkay) {
                             overallFlag = true;
                             int age = parseInt(etAge.getText().toString());
-                            int dressSize = parseInt(etDressSize.getText().toString());
-                            User newUser = new User(etName.getText().toString(), age, etEmail.getText().toString(), etPassword.getText().toString(), dressSize);
-                            fireBaseQueries.pushNewUserDetails(newUser);
+                            //int dressSize = parseInt(etDressSize.getText().toString());
+                            //User newUser = new User(etName.getText().toString(), age, etEmail.getText().toString(), etPassword.getText().toString(), dressSize);
+                            //fireBaseQueries.pushNewUserDetails(newUser);
 
                             Intent intent = new Intent();
                             intent.putExtra(MainActivity.GET_LOGIN_STATE, REGISTER_NEW_USER);
@@ -72,10 +72,10 @@ public class Register extends AppCompatActivity{
                             intent.putExtra(REGISTER_PHONE, etPhoneNumber.getText().toString());
                             intent.putExtra(REGISTER_SIZE, etDressSize.getText().toString());
                             setResult(Activity.RESULT_OK, intent);
-                        } else {
-                            popUp("User Already exists or you have left out some details");
-                            launchRegister();
-                        }
+                        //} else {
+                           // popUp("User Already exists or you have left out some details");
+                            //launchRegister();
+                        //}
                         ;
 
                 }
@@ -97,35 +97,33 @@ public class Register extends AppCompatActivity{
     }
 
     public void launchLogin(){startActivity(new Intent(this, Login.class));}
-    public void launchRegister(){startActivity(new Intent(this, Register.class));}
 
-
-    private boolean checkIfUserExists(){
-        DatabaseReference checkUser = fireBaseQueries.getUserReferenceByEmail(etEmail.getText().toString());
-        boolean check;
-        if(checkUser == null){
-            check = true; //if user exists doesnt exist we know we have a new user so want to push the details
-
-        }
-        else{
-            check = false; //otherwise we want to create a pop up saying account already exists and then giving another login attempt
-            popUp("That email already exists. Try logging in");
-            launchLogin();
-        }
-        return check;
-    }
-
-    public boolean avoidEmptyDetails(){
-        boolean flag;
-        if(etName.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty() || etEmail.getText().toString().isEmpty() || etDressSize.getText().toString().isEmpty()){
-            popUp("Problem with registration. Make sure all fields are filled");
-            popUp("Please start again");
-           flag = false;
-        }
-        else{
-            flag = true;
-        }
-        return flag;
-    }
+//    private boolean checkIfUserExists(){
+//        DatabaseReference checkUser = fireBaseQueries.getUserReferenceByEmail(etEmail.getText().toString());
+//        boolean check;
+//        if(checkUser == null){
+//            check = true; //if user exists doesnt exist we know we have a new user so want to push the details
+//
+//        }
+//        else{
+//            check = false; //otherwise we want to create a pop up saying account already exists and then giving another login attempt
+//            popUp("That email already exists. Try logging in");
+//            launchLogin();
+//        }
+//        return check;
+//    }
+//
+//    public boolean avoidEmptyDetails(){
+//        boolean flag;
+//        if(etName.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty() || etEmail.getText().toString().isEmpty() || etDressSize.getText().toString().isEmpty()){
+//            popUp("Problem with registration. Make sure all fields are filled");
+//            popUp("Please start again");
+//           flag = false;
+//        }
+//        else{
+//            flag = true;
+//        }
+//        return flag;
+//    }
 }
 
