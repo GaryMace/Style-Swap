@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity
     private boolean userChangedImg;
     private List<Match> cachedMatches;
 
+    //TODO: relaunching app re-asks for login if logged in! fix it!
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
