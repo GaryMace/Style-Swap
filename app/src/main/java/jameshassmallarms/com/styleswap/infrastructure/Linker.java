@@ -3,8 +3,10 @@ package jameshassmallarms.com.styleswap.infrastructure;
 import android.graphics.Bitmap;
 
 import java.util.List;
+import java.util.Queue;
 
 import jameshassmallarms.com.styleswap.impl.Match;
+import jameshassmallarms.com.styleswap.impl.User;
 
 /**
  * Created by gary on 21/10/16.
@@ -37,4 +39,8 @@ public interface Linker {
     double getDeviceLat();
 
     double getDeviceLon();
+
+    Queue<User> getCachedUsers();
+
+    void setCachedUsers(Queue<User> users);
 }

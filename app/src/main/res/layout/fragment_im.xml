@@ -3,7 +3,8 @@
               android:id="@+id/fragment_im"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="vertical"
+    android:background="@color/login_grey">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,14 +17,14 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:text="@string/fragment_im_matches_title"
-            android:textColor="@color/forest_green"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="15sp"
             android:textStyle="bold"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/separatorsDark"/>
+            android:background="@color/match_sep"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

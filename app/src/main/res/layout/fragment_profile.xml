@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="50dp"
-    >
+    android:background="@color/login_grey">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:text="Nugs, 21"
             android:id="@+id/profileinfo"
-            android:textColor="@android:color/background_dark"
+            android:textColor="@color/white"
             android:textSize="9pt"
             android:layout_gravity="center"/>
 

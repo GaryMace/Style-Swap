@@ -1,0 +1,20 @@
+<tabs>
+    <tab
+        id="@+id/tab_profile"
+        icon="@drawable/stock_img"
+        title=""
+        barColorWhenSelected="#303F9F"
+        activeColor="#FFFFFF"/>
+    <tab
+        id="@+id/tab_search"
+        icon="@drawable/style"
+        title=""
+        barColorWhenSelected="#303F9F"
+        activeColor="#FFFFFF"/>
+    <tab
+        id="@+id/tab_contact"
+        icon="@drawable/call"
+        title=""
+        barColorWhenSelected="#303F9F"
+        activeColor="#FFFFFF"/>
+</tabs>

@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/fragment_buttons_screen"
-        android:background="@drawable/fragment_im_background">
+        android:background="@color/login_grey">
 
     <FrameLayout
         android:layout_width="match_parent"
