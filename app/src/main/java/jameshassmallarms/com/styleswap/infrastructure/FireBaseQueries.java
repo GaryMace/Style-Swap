@@ -131,8 +131,6 @@ public class FireBaseQueries {
         return imageView;
     }
 
-
-
     public DatabaseReference getUserNumber(String email){
         return getUserReferenceByEmail(email).child("phoneNumber");
     }
@@ -161,7 +159,7 @@ public class FireBaseQueries {
     public void addMatch (String email, String matchType, final Match newMatch){
         final DatabaseReference userRef;
 
-        if (matchType.equals("iMatched"))
+        if (matchType.equals("bothMatched"))
             userRef = getIMatched(email);
         else if (matchType.equals("matchedMe"))
             userRef = getMatchedme(email);
@@ -183,7 +181,7 @@ public class FireBaseQueries {
     public void removeMatch (String email, String matchType, final Match newMatch){
         final DatabaseReference userRef;
 
-        if (matchType.equals("iMatched"))
+        if (matchType.equals("bothMatched"))
             userRef = getIMatched(email);
         else if (matchType.equals("matchedMe"))
             userRef = getMatchedme(email);

@@ -13,7 +13,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
@@ -37,11 +42,15 @@ public class EditProfileFragment extends Fragment {
         FireBaseQueries fireBaseQueries = new FireBaseQueries();
         DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail("haymakerStirrat@gmail.com");//users email programatically
         ImageView imageView ;
-
+        GeoFire geoFire = new GeoFire(mUserRef);
+        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(38.7832, -122.4056), 0.6);
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
+
+                geoFire.setLocation(mUserRef.getKey(), new GeoLocation(38.7853889, -122.4056963));
+
                 View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
                 editProfileButton = (Button) view.findViewById(R.id.editPhotoButton);
                 editProfileButton2 = (Button) view.findViewById(R.id.editPhotoButton2);
@@ -77,7 +86,34 @@ public class EditProfileFragment extends Fragment {
                 editProfileButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                                loadImagefromGallery(getView());
+                                //loadImagefromGallery(getView());
+                                geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                                        @Override
+                                        public void onKeyEntered(String key, GeoLocation location) {
+                                                System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+
+                                        }
+
+                                        @Override
+                                        public void onKeyExited(String key) {
+                                                System.out.println(String.format("Key %s is no longer in the search area", key));
+                                        }
+
+                                        @Override
+                                        public void onKeyMoved(String key, GeoLocation location) {
+                                                System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
+                                        }
+
+                                        @Override
+                                        public void onGeoQueryReady() {
+                                                System.out.println("All initial data has been loaded and events have been fired!");
+                                        }
+
+                                        @Override
+                                        public void onGeoQueryError(DatabaseError error) {
+                                                System.err.println("There was an error with this query: " + error);
+                                        }
+                                });
                         }
                 });
 
