@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -34,15 +35,22 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import jameshassmallarms.com.styleswap.R;
-import jameshassmallarms.com.styleswap.gui.BarFragment;
+import jameshassmallarms.com.styleswap.gui.EditProfileFragment;
+import jameshassmallarms.com.styleswap.gui.SwipeButtonsFragment;
+import jameshassmallarms.com.styleswap.gui.im.MatchListFragment;
 import jameshassmallarms.com.styleswap.impl.Match;
+import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
 public class MainActivity extends AppCompatActivity
@@ -57,7 +65,6 @@ public class MainActivity extends AppCompatActivity
     private static final int REQUEST_CHECK_SETTINGS = 1;
     private static final int REQUEST_CHECK_LOCATION_PREFERENCES = 1;
     private static final String TAG = "debug_main";
-    private BarFragment bottomBar;  //Navigation bar at bottomMsg of screen
 
     //  GPS API things  //////////////////////////////////////////////////
     //The desired interval for location updates. Inexact. Updates may be more or less frequent.
@@ -96,6 +103,14 @@ public class MainActivity extends AppCompatActivity
     private boolean userChangedImg;
     private List<Match> cachedMatches;
 
+    //Bar fragments
+    private EditProfileFragment mEditProfile;
+    private SwipeButtonsFragment mSwipeButtons;
+    private MatchListFragment mMatchList;
+
+    //Queue of Users for SwipeButton
+    private Queue<User> cachedUsers;
+
     //TODO: relaunching app re-asks for login if logged in! fix it!
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,14 +121,39 @@ public class MainActivity extends AppCompatActivity
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
         // ...but notify us that it happened.
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH, WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
+        if (mEditProfile == null) {
+            mEditProfile = new EditProfileFragment();
+            mSwipeButtons = new SwipeButtonsFragment();
+            mMatchList = new MatchListFragment();
+        }
 
-        bottomBar = new BarFragment();
+        BottomBar bottomBar = (BottomBar) findViewById(R.id.activity_main_bottombar);
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                FragmentManager fragmentManager;
+                fragmentManager = getSupportFragmentManager();
+                FragmentTransaction ft = fragmentManager.beginTransaction();
+                if (tabId == R.id.tab_profile) {
+                    // The tab with id R.id.tab_favorites was selected,
+                    // change your content accordingly.
+                    ft.replace(R.id.activity_main_fragment_container, mEditProfile, getString(R.string.fragment_bottom_bar_id)).commit();
+                } else if (tabId == R.id.tab_search) {
+                    ft.replace(R.id.activity_main_fragment_container, mSwipeButtons, getString(R.string.fragment_bottom_bar_id)).commit();
+
+                } else if (tabId == R.id.tab_contact) {
+                    ft.replace(R.id.activity_main_fragment_container, mMatchList, getString(R.string.fragment_bottom_bar_id)).commit();
+                }
+            }
+        });
 
         //Reload the user-log state if the app closes temporarily.
         if (savedInstanceState != null) {
+
             isUserLoggedIn = savedInstanceState.getBoolean(KEY_IS_LOGGED_IN);
             mUserLogin = savedInstanceState.getString(KEY_USER_LOGIN);
         } else {
+            cachedUsers = new PriorityQueue<>();
             isUserLoggedIn = false;
             userProfileImg = null;  //this may need to be a database query?
             userChangedImg = false;
@@ -129,11 +169,6 @@ public class MainActivity extends AppCompatActivity
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
         // API.
         buildGoogleAPIClient();
-
-        FragmentManager fragmentManager;
-        fragmentManager = getSupportFragmentManager();
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.activity_main, bottomBar, getString(R.string.fragment_bottom_bar_id)).commit(); //Swap layout for the bottombar layout resource file
     }
 
     private void startAppStartupActivityForResult() {
@@ -450,6 +485,19 @@ public class MainActivity extends AppCompatActivity
             return mLastLocation.getLongitude();
         else
             return 0;
+    }
+
+    @Override
+    public Queue<User> getCachedUsers() {
+        if (cachedUsers != null)
+            return cachedUsers;
+        else
+            return null;
+    }
+
+    @Override
+    public void setCachedUsers(Queue<User> users) {
+        cachedUsers = users;
     }
 
     @Override
