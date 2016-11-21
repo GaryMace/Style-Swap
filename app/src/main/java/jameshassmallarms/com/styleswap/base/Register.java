@@ -98,6 +98,7 @@ public class Register extends AppCompatActivity{
 
     public void launchLogin(){startActivity(new Intent(this, Login.class));}
 
+    
 //    private boolean checkIfUserExists(){
 //        DatabaseReference checkUser = fireBaseQueries.getUserReferenceByEmail(etEmail.getText().toString());
 //        boolean check;
