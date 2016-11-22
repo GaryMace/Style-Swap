@@ -54,7 +54,7 @@ import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
 public class MainActivity extends AppCompatActivity
-        implements Linker, GoogleApiClient.ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
+    implements Linker, GoogleApiClient.ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
     // Saved instance state flags
     protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
     protected final static String LOCATION_KEY = "location-key";
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
     //The fastest rate for active location updates. Exact. Updates will never be more frequent
     //than this value.
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
-            UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+        UPDATE_INTERVAL_IN_MILLISECONDS / 2;
     private GoogleApiClient mGoogleAPIClient;
     protected LocationRequest mLocationRequest;
     protected Location mLastLocation;
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity
     public static final String GET_LOGIN_STATE = "login_state";
 
     //FireBase constants
-    public static final String FIREBASE_IMATCHED = "bothMatched";
+    public static final String FIREBASE_BOTH_MATCHED = "bothMatched";
     public static final String FIREBASE_MATCHED_ME = "matchedMe";
 
     //Logged in user fields
@@ -148,19 +148,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        //Reload the user-log state if the app closes temporarily.
-        if (savedInstanceState != null) {
 
-            isUserLoggedIn = savedInstanceState.getBoolean(KEY_IS_LOGGED_IN);
-            mUserLogin = savedInstanceState.getString(KEY_USER_LOGIN);
-        } else {
-            cachedUsers = new PriorityQueue<>();
-            isUserLoggedIn = false;
-            userProfileImg = null;  //this may need to be a database query?
-            userChangedImg = false;
-            cachedMatches = new ArrayList<>();
-            startAppStartupActivityForResult(); //Launch the start-up screen
-        }
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
 
@@ -198,9 +186,8 @@ public class MainActivity extends AppCompatActivity
             if (loginState != null) {
                 if (loginState.equals(Login.LOGIN_EXISTING_USER)) {            //If they logged into an existing account
                     mUserLogin = data.getExtras().getString(Login.LOGIN_USER_EMAIL);
-                    Log.d(TAG, "User login email is: " + mUserLogin);
-                    //get the rest of the info from firebase with a query
-                    Log.d(TAG, "User login is: "+ mUserLogin);
+                    toggleUserLoggedIn();
+                    Log.d(TAG, "User login email is: " + "\""+mUserLogin+"\"");
 
                 } else if (loginState.equals(Register.REGISTER_NEW_USER)) {      //User created a new account
                     mUserLogin = data.getExtras().getString(Register.REGISTER_EMAIL);
@@ -224,11 +211,16 @@ public class MainActivity extends AppCompatActivity
     private void updateValuesFromBundle(Bundle savedInstanceState) {
         Log.i(TAG, "Updating values from bundle");
         if (savedInstanceState != null) {
+            //Reload the user-log state if the app closes temporarily.
+
+            isUserLoggedIn = savedInstanceState.getBoolean(KEY_IS_LOGGED_IN);
+            mUserLogin = savedInstanceState.getString(KEY_USER_LOGIN);
+
             // Update the value of mRequestingLocationUpdates from the Bundle, and make sure that
             // the Start Updates and Stop Updates buttons are correctly enabled or disabled.
             if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
                 mRequestingLocationUpdates = savedInstanceState.getBoolean(
-                        REQUESTING_LOCATION_UPDATES_KEY);
+                    REQUESTING_LOCATION_UPDATES_KEY);
                 //setButtonsEnabledState();
             }
 
@@ -244,15 +236,22 @@ public class MainActivity extends AppCompatActivity
             if (savedInstanceState.keySet().contains(LAST_UPDATED_TIME_STRING_KEY)) {
                 mLastUpdateTime = savedInstanceState.getString(LAST_UPDATED_TIME_STRING_KEY);
             }
+        } else {
+            cachedUsers = new PriorityQueue<>();
+            isUserLoggedIn = false;
+            userProfileImg = null;  //this may need to be a database query?
+            userChangedImg = false;
+            cachedMatches = new ArrayList<>();
+            startAppStartupActivityForResult(); //Launch the start-up screen
         }
     }
 
     protected synchronized void buildGoogleAPIClient() {
         mGoogleAPIClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .addApi(LocationServices.API)
+            .build();
         createLocationRequest();
         getUserLocationFromRequest();
 
@@ -271,11 +270,11 @@ public class MainActivity extends AppCompatActivity
 
     protected void getUserLocationFromRequest() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(mLocationRequest);
+            .addLocationRequest(mLocationRequest);
 
         PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(mGoogleAPIClient,
-                        builder.build());
+            LocationServices.SettingsApi.checkLocationSettings(mGoogleAPIClient,
+                builder.build());
         result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
             @Override
             public void onResult(@NonNull LocationSettingsResult result) {
@@ -297,8 +296,8 @@ public class MainActivity extends AppCompatActivity
                             // Show the dialog by calling startResolutionForResult(),
                             // and check the result in onActivityResult().
                             status.startResolutionForResult(
-                                    MainActivity.this,
-                                    REQUEST_CHECK_SETTINGS);
+                                MainActivity.this,
+                                REQUEST_CHECK_SETTINGS);
                         } catch (IntentSender.SendIntentException e) {
                             // Ignore the error.
                         }
@@ -315,26 +314,26 @@ public class MainActivity extends AppCompatActivity
     private void checkLocationPermissions() {
 
         if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+            Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+            Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
                 showExplanation("Permission Needed",
-                        "We need to access your GPS to use for matching",
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        REQUEST_CHECK_LOCATION_PREFERENCES
+                    "We need to access your GPS to use for matching",
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    REQUEST_CHECK_LOCATION_PREFERENCES
                 );
             } else {
 
                 // No explanation needed, we can request the permission.
 
                 ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        REQUEST_CHECK_LOCATION_PREFERENCES);
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_CHECK_LOCATION_PREFERENCES);
 
                 // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                 // app-defined int constant. The callback method gets the
@@ -349,18 +348,18 @@ public class MainActivity extends AppCompatActivity
                                  final int permissionRequestCode) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        requestPermission(permission, permissionRequestCode);
-                    }
-                });
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    requestPermission(permission, permissionRequestCode);
+                }
+            });
         builder.create().show();
     }
 
     private void requestPermission(String permissionName, int permissionRequestCode) {
         ActivityCompat.requestPermissions(this,
-                new String[]{permissionName}, permissionRequestCode);
+            new String[]{permissionName}, permissionRequestCode);
     }
 
     @Override
@@ -370,7 +369,7 @@ public class MainActivity extends AppCompatActivity
             case REQUEST_CHECK_LOCATION_PREFERENCES: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startLocationUpdates();
                 } else {
                     //Nothing
@@ -390,7 +389,7 @@ public class MainActivity extends AppCompatActivity
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "Location update recieved");
             LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleAPIClient, mLocationRequest, this);
+                mGoogleAPIClient, mLocationRequest, this);
 
         } else {
             Log.d(TAG, "Location update failed");
@@ -463,6 +462,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void setCachedMatches(List<Match> cachedMatches) {
+        if (cachedMatches != null)
+            this.cachedMatches = cachedMatches;
+    }
+
+    @Override
     public void addCachedMatch(Match m) {
         cachedMatches.add(m);
     }
@@ -507,7 +512,7 @@ public class MainActivity extends AppCompatActivity
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(TAG, "Connected to GoogleApiClient");
         if (mLastLocation == null &&
-                ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleAPIClient);
             mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());

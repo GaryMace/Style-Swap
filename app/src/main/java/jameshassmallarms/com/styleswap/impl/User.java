@@ -1,12 +1,9 @@
 package jameshassmallarms.com.styleswap.impl;
 
 import android.graphics.Bitmap;
-import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 /**
  * Created by gary on 24/10/16.
@@ -33,7 +30,7 @@ public class User {
         this.password = password;
         this.dressSize = dressSize;
         Match dummy = new Match();
-        dummy.setMatchName("dummy so list exists");
+        dummy.setMatchMail("dummy so list exists");
         this.iMatched.add(dummy);
         this.matchedMe.add(dummy);
     }
@@ -42,7 +39,7 @@ public class User {
         this.name = name;
         this.password = password;
         Match dummy = new Match();
-        dummy.setMatchName("Dummy so list exists");
+        dummy.setMatchMail("Dummy so list exists");
         this.iMatched.add(dummy);
         this.matchedMe.add(dummy);
     }
@@ -126,7 +123,7 @@ public class User {
 
     public Match toMatch(){
         Match m = new Match();
-        m.setMatchName(this.getName());
+        m.setMatchMail(this.getName());
         return m;
     }
 }

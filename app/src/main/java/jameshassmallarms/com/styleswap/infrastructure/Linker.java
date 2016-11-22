@@ -32,6 +32,8 @@ public interface Linker {
 
     List<Match> getCachedMatches();
 
+    void setCachedMatches(List<Match> cachedMatches);
+
     void addCachedMatch(Match m);
 
     void removeCachedMatch(Match m);

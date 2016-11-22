@@ -42,7 +42,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             public void onClick(View v) {
                 Intent res = new Intent();
                 res.putExtra(MainActivity.GET_LOGIN_STATE, LOGIN_EXISTING_USER);
-                res.putExtra(LOGIN_USER_EMAIL, "garymac@live.ie");
+                res.putExtra(LOGIN_USER_EMAIL, "Garymac@live.ie");
                 setResult(Activity.RESULT_OK, res);
                 finish();
             }

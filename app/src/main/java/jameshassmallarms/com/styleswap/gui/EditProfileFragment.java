@@ -171,5 +171,5 @@ public class EditProfileFragment extends Fragment {
 //                                User testUser = new User("test@gmail.com", "pass");
 //                                fireBaseQueries.pushNewUserDetails(testUser);
 //                                Match newMatch = new Match();
-//                                newMatch.setMatchName("haymakerStirrat@gmail.com");
+//                                newMatch.setMatchMail("haymakerStirrat@gmail.com");
 //                                fireBaseQueries.addMatch(testUser.getEmail(), "iMatched", newMatch);
