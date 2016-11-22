@@ -50,7 +50,7 @@ public class AppStartupActivtiy extends Activity {
         setContentView(R.layout.activity_app_startup);
 
         mIntroVid = (VideoView)
-            findViewById(R.id.activity_startup_video);
+                findViewById(R.id.activity_startup_video);
         String path = "android.resource://" + getPackageName() + "/" + R.raw.views;
         mIntroVid.setVideoURI(Uri.parse(path));
 
@@ -104,14 +104,14 @@ public class AppStartupActivtiy extends Activity {
 
         mSwipeTimer = new Timer();
         mSwipeTimer.schedule(
-            new TimerTask() {
-                @Override
-                public void run() {
-                handler.post(Update);
-            }
-            },
-            START_TIMER_DELAY,
-            SWITCH_TO_NEXT_MESSAGE_DELAY);
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        handler.post(Update);
+                    }
+                },
+                START_TIMER_DELAY,
+                SWITCH_TO_NEXT_MESSAGE_DELAY);
     }
 
     //Loops video and mutes its sound.
@@ -158,7 +158,7 @@ public class AppStartupActivtiy extends Activity {
                 if (loginState.equals(Login.LOGIN_EXISTING_USER)) {            //If they logged into an existing account
                     mainActivityRes.putExtra(Login.LOGIN_USER_EMAIL, data.getExtras().getString(Login.LOGIN_USER_EMAIL));
                     //get the rest of the info from firebase with a query
-                    mainActivityRes.putExtra(MainActivity.GET_LOGIN_STATE, LOGIN_EXISTING_USER);
+                    mainActivityRes.putExtra(MainActivity.GET_LOGIN_STATE, Login.LOGIN_EXISTING_USER);
                     setResult(Activity.RESULT_OK, mainActivityRes);
                     finish();
                 } else if (loginState.equals(Register.REGISTER_NEW_USER)) {      //User created a new account

@@ -41,13 +41,13 @@ public class FireBaseQueries {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
-    public DatabaseReference getUserReferenceByEmail(String email){
+    public DatabaseReference getUserReferenceByEmail(String email) {
         return mRootRef.child("Users").child(encodeKey(email));
     }
 
-    public void uploadImageView(ImageView image, String userID, String imageName){
+    public void uploadImageView(ImageView image, String userID, String imageName) {
 
-        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child(userID+"/"+imageName);
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child(userID + "/" + imageName);
 
         image.setDrawingCacheEnabled(true);
         image.buildDrawingCache();
@@ -71,33 +71,33 @@ public class FireBaseQueries {
         });
     }
 
-    public void download(final ImageView imageView, String username, String imagename ) {
+    public void download(final ImageView imageView, String username, String imagename) {
 
-        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child(username+"/"+imagename);
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child(username + "/" + imagename);
 
         final long ONE_MEGABYTE = 1024 * 1024;
         picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                @Override
-                public void onSuccess(byte[] bytes) {
-                        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        imageView.setImageBitmap(bmp);
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                imageView.setImageBitmap(bmp);
 
-                }
+            }
         }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                        // Handle any errors
-                }
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
         });
     }
 
 
-    public void executeIfExists(DatabaseReference databaseReference, final QueryMaster q){
+    public void executeIfExists(DatabaseReference databaseReference, final QueryMaster q) {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists())
+                if (dataSnapshot.exists())
                     q.run(dataSnapshot);
             }
 
@@ -107,56 +107,57 @@ public class FireBaseQueries {
         });
     }
 
-    private String encodeKey(String key){
+    private String encodeKey(String key) {
         try {
-            return  URLEncoder.encode(key, "UTF-8").replace(".", "%2E");
+            return URLEncoder.encode(key, "UTF-8").replace(".", "%2E");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return "Encoding Error";
     }
 
-    private String decodeKey(String key){
+    private String decodeKey(String key) {
         try {
-            return  URLDecoder.decode(key, "UTF-8").replace("2%E", ".");
+            return URLDecoder.decode(key, "UTF-8").replace("2%E", ".");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return "Encoding Error";
     }
 
-    public ImageView getUserImage(String email, String imageName){
+    public ImageView getUserImage(String email, String imageName) {
         ImageView imageView = null;
         download(imageView, email, imageName);
         return imageView;
     }
 
-    public DatabaseReference getUserNumber(String email){
+
+    public DatabaseReference getUserNumber(String email) {
         return getUserReferenceByEmail(email).child("phoneNumber");
     }
 
-    public DatabaseReference getUserItemDescription(String email){
+    public DatabaseReference getUserItemDescription(String email) {
         return getUserReferenceByEmail(email).child("itemDescription");
     }
 
-    public DatabaseReference getIMatched(String email){
-        return getUserReferenceByEmail(email).child("iMatched");
+    public DatabaseReference getIMatched(String email) {
+        return getUserReferenceByEmail(email).child("bothMatched");
     }
 
-    public DatabaseReference getMatchedme(String email){
+    public DatabaseReference getMatchedme(String email) {
         return getUserReferenceByEmail(email).child("matchedMe");
     }
 
-    public DatabaseReference getUserName(String email){
+    public DatabaseReference getUserName(String email) {
         return getUserReferenceByEmail(email).child("name");
     }
 
-    public void pushNewUserDetails(User newUser){
+    public void pushNewUserDetails(User newUser) {
         DatabaseReference mUserRef = getUserReferenceByEmail(newUser.getEmail());
         mUserRef.setValue(newUser);
     }
 
-    public void addMatch (String email, String matchType, final Match newMatch){
+    public void addMatch(String email, String matchType, final Match newMatch) {
         final DatabaseReference userRef;
 
         if (matchType.equals("bothMatched"))
@@ -166,10 +167,11 @@ public class FireBaseQueries {
         else
             return;
 
-        executeIfExists(userRef, new QueryMaster(){
+        executeIfExists(userRef, new QueryMaster() {
             @Override
             public void run(DataSnapshot s) {
-                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {};
+                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
+                };
                 ArrayList<Match> update = s.getValue(t);
                 update.add(newMatch);
                 userRef.setValue(update);
@@ -178,22 +180,18 @@ public class FireBaseQueries {
         });
     }
 
-    public void removeMatch (String email, String matchType, final Match newMatch){
+    public void removeMatch(String email, String matchType, final int position) {
         final DatabaseReference userRef;
 
-        if (matchType.equals("bothMatched"))
-            userRef = getIMatched(email);
-        else if (matchType.equals("matchedMe"))
-            userRef = getMatchedme(email);
-        else
-            return;
+        userRef = getMatchedme(email);
 
-        executeIfExists(userRef, new QueryMaster(){
+        executeIfExists(userRef, new QueryMaster() {
             @Override
             public void run(DataSnapshot s) {
-                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {};
+                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
+                };
                 ArrayList<Match> update = s.getValue(t);
-                update.remove(newMatch);
+                update.remove(position);
                 userRef.setValue(update);
 
             }
