@@ -39,9 +39,10 @@ public class EditProfileFragment extends Fragment {
         private EditText itemDescription;
         private Button editProfileButton;
         private Button editProfileButton2;
+        private String userEmail = "haymakerStirrat@gmail.com";
         FireBaseQueries fireBaseQueries = new FireBaseQueries();
-        DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail("haymakerStirrat@gmail.com");//users email programatically
-        ImageView imageView ;
+        DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail(userEmail);//users email programatically
+        ImageView imageView;
 
 
         @Override
@@ -55,13 +56,13 @@ public class EditProfileFragment extends Fragment {
                 itemDescription = (EditText) view.findViewById(R.id.itemDescription);
 
                 imageView = (ImageView) view.findViewById(R.id.profileImage);
-                fireBaseQueries.download(imageView, "haymakerStirrat@gmail.com", "Dress");
-                return  view;
+                fireBaseQueries.download(imageView, userEmail);
+                return view;
 
         }
 
 
-        public void onStart(){
+        public void onStart() {
                 super.onStart();
                 editProfileButton2.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -115,7 +116,7 @@ public class EditProfileFragment extends Fragment {
                                 && null != data) {
                                 // Get the Image from data
                                 imageView.setImageURI(data.getData());
-                                fireBaseQueries.uploadImageView(imageView, "haymakerStirrat@gmail.com", "Dress");
+                                fireBaseQueries.uploadImageView(imageView, userEmail);
 
                         } else {
                                 Toast.makeText(getActivity(), "You haven't picked Image", Toast.LENGTH_LONG).show();
@@ -126,50 +127,4 @@ public class EditProfileFragment extends Fragment {
 
         }
 
-        //getPhonenumber()
-        // execute If exsists( runnable)
-        //runable = whatever code i want
-
-//                //example query
-//                editProfileButton.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//
-//                               mRootRef.child("Users").orderByChild("itemDescription").startAt("good dress").endAt("good dress").addListenerForSingleValueEvent(new ValueEventListener() {
-//                                       @Override
-//                                       public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                                               System.out.println(dataSnapshot.getValue().toString());
-//                                       }
-//
-//                                       @Override
-//                                       public void onCancelled(DatabaseError databaseError) {
-//
-//                                       }
-//                               });
-//                        }
-//                });
-
 }
-//        Uri selectedImage = data.get
-//        String[] filePathColumn = { MediaStore.Images.Media.DATA };
-//
-//        // Get the cursor
-//        Cursor cursor = getContext().getContentResolver().query(selectedImage,
-//                filePathColumn, null, null, null);
-//// Move to first row
-//cursor.moveToFirst();
-//
-//        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//        imgDecodableString = cursor.getString(columnIndex);
-//        File f = new File(imgDecodableString);
-//        System.out.println(BitmapFactory.decodeFile(f.getAbsolutePath()));
-//        cursor.close();
-//// Set the Image in ImageView after decoding the String
-//imageView.setImageBitmap(BitmapFactory.decodeFile(imgDecodableString));
-
-//                                User testUser = new User("test@gmail.com", "pass");
-//                                fireBaseQueries.pushNewUserDetails(testUser);
-//                                Match newMatch = new Match();
-//                                newMatch.setMatchMail("haymakerStirrat@gmail.com");
-//                                fireBaseQueries.addMatch(testUser.getEmail(), "iMatched", newMatch);

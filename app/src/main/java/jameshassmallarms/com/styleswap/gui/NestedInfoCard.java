@@ -59,7 +59,7 @@ public class NestedInfoCard extends Fragment {
         if (b != null) {
             String user = b.getString("UserEmail");
             // getUserInfo(user);
-            test.download(userPic, user, "Dress");
+            test.download(userPic, user);
             DatabaseReference tester = test.getUserItemDescription(user);
             test.executeIfExists(tester, q);
            // test.executeIfExists(tester, P);

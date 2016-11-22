@@ -39,6 +39,7 @@ import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
+import jameshassmallarms.com.styleswap.infrastructure.Linker;
 import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 
 /**
@@ -54,6 +55,7 @@ public class SwipeButtonsFragment extends Fragment {
     private FragmentTransaction transaction;
     private ArrayList<NestedInfoCard> nestedCards;
     private int count;
+    private Linker linker = (Linker)getActivity();
     private String userName = "haymakerStirrat@gmail.com";
     private FireBaseQueries fireBaseQueries = new FireBaseQueries();
     private ArrayList<Match> matchs = new ArrayList<>();
@@ -63,6 +65,7 @@ public class SwipeButtonsFragment extends Fragment {
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // set the view
+
         View root = inflater.inflate(R.layout.fragment_swipe_buttons, container, false);
         count = 0;
         nestedCards = new ArrayList<NestedInfoCard>();
@@ -81,7 +84,7 @@ public class SwipeButtonsFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-
+        //System.out.println(linker.getLoggedInUser());
         for(int i = 0; i < LOADING_SIZE; i++){
             NestedInfoCard card = loadFragment();
             nestedCards.add(card);
@@ -146,7 +149,7 @@ public class SwipeButtonsFragment extends Fragment {
     //TODO dont match if matched recently
     private void getNewMatchs(){
         //users email
-        DatabaseReference mUserRef = FirebaseDatabase.getInstance().getReference().child("UserLocation").child("haymakerStirrat%40gmail%2Ecom");
+        DatabaseReference mUserRef = fireBaseQueries.getUserLocationReferenceByEmail(userName);
         final GeoFire geoFire = new GeoFire(mUserRef.getParent());
 
 
@@ -207,7 +210,7 @@ public class SwipeButtonsFragment extends Fragment {
 
     private void getMatchs(){
 
-        final DatabaseReference matchedMe = fireBaseQueries.getMatchedme("haymakerStirrat@gmail.com");//users email
+        final DatabaseReference matchedMe = fireBaseQueries.getMatchedme(userName);//users email
         fireBaseQueries.executeIfExists(matchedMe, new QueryMaster() {
             @Override
             public void run(DataSnapshot s) {
