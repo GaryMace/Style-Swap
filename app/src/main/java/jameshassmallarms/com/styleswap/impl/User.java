@@ -123,4 +123,10 @@ public class User {
     public void setImg(Bitmap img) {
         this.img = img;
     }
+
+    public Match toMatch(){
+        Match m = new Match();
+        m.setMatchName(this.getName());
+        return m;
+    }
 }

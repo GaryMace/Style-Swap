@@ -37,4 +37,8 @@ public class Match {
     public void setMatchNumber(String matchNumber) {
         this.matchNumber = matchNumber;
     }
+
+    public String toString(){
+        return this.getMatchName();
+    }
 }

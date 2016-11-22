@@ -28,6 +28,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -55,7 +56,7 @@ public class SwipeButtonsFragment extends Fragment {
     private int count;
     private String userName = "haymakerStirrat@gmail.com";
     private FireBaseQueries fireBaseQueries = new FireBaseQueries();
-    private ArrayList<User> matchs = new ArrayList<>();
+    private ArrayList<Match> matchs = new ArrayList<>();
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,14 +66,14 @@ public class SwipeButtonsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_swipe_buttons, container, false);
         count = 0;
         nestedCards = new ArrayList<NestedInfoCard>();
-         nestedCard = new NestedInfoCard();
-         transaction = getChildFragmentManager().beginTransaction();
+        nestedCard = new NestedInfoCard();
+        transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.fragment_match_frame, nestedCard, "TAG").commit();
 
 
         likeObject = (ImageButton) root.findViewById(R.id.fragment_yes_button);
         dislikeObject = (ImageButton) root.findViewById(R.id.fragment_no_button);
-
+        getMatchs();
 
         return root;
     }
@@ -91,7 +92,6 @@ public class SwipeButtonsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 count++;
-                getMatchs();
                 if(count == LOADING_SIZE ){
                     fillFragments();
                 }
@@ -144,24 +144,12 @@ public class SwipeButtonsFragment extends Fragment {
         }
     }
     //TODO dont match if matched recently
-    private void getMatchs(){
+    private void getNewMatchs(){
         //users email
         DatabaseReference mUserRef = FirebaseDatabase.getInstance().getReference().child("UserLocation").child("haymakerStirrat%40gmail%2Ecom");
-//        DatabaseReference mUserRef1 = FirebaseDatabase.getInstance().getReference().child("UserLocation").child("haymakerStirrat%40gmail%2Ecom");
-//        DatabaseReference mUserRef2 = FirebaseDatabase.getInstance().getReference().child("UserLocation").child("jameshassmallarms%40gmail%2Ecom");
-//        DatabaseReference mUserRef3 = FirebaseDatabase.getInstance().getReference().child("UserLocation").child("nerthandrake%40gmail%2Ecom");
-//        matchs.clear();
         final GeoFire geoFire = new GeoFire(mUserRef.getParent());
-//        final GeoFire geoFire1 = new GeoFire(mUserRef.getParent());
-//        final GeoFire geoFire2 = new GeoFire(mUserRef2.getParent());
-//        final GeoFire geoFire3 = new GeoFire(mUserRef3.getParent());
-        //geoFire.setLocation(mUserRef.getKey(), new GeoLocation(38.7853889, -122.4056973));
-//        geoFire1.setLocation(mUserRef1.getKey(), new GeoLocation(38.7853889, -122.4056973));
-//        geoFire2.setLocation(mUserRef2.getKey(), new GeoLocation(38.7853889, -122.4056973));
-//        geoFire3.setLocation(mUserRef3.getKey(), new GeoLocation(38.7853889, -122.4056973));
 
-        //return;
-        matchs.clear();
+
         geoFire.getLocation(mUserRef.getKey(), new LocationCallback() {
             @Override
             public void onLocationResult(String key, GeoLocation location) {
@@ -177,7 +165,9 @@ public class SwipeButtonsFragment extends Fragment {
 
                                     User user = s.getValue(User.class);
                                     if (user.getDressSize() == 8)//my dress size
-                                        matchs.add(user);
+                                        matchs.add(user.toMatch());
+
+                                    System.out.println(matchs);
                                 }
                             });
                         }
@@ -213,6 +203,29 @@ public class SwipeButtonsFragment extends Fragment {
             }
         });
 
+    }
+
+    private void getMatchs(){
+
+        final DatabaseReference matchedMe = fireBaseQueries.getMatchedme("haymakerStirrat@gmail.com");//users email
+        fireBaseQueries.executeIfExists(matchedMe, new QueryMaster() {
+            @Override
+            public void run(DataSnapshot s) {
+                matchs.clear();
+                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
+                };
+                ArrayList<Match> update = s.getValue(t);
+                if (update.size() > 1){
+                    for (int i = 1; i < update.size() ; i++) {
+                        matchs.add(update.get(i));
+                        update.remove(i);
+                    }
+                    //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
+                }
+
+                getNewMatchs();
+            }
+        });
     }
 
 }
