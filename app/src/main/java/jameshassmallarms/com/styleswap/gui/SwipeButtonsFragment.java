@@ -17,10 +17,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
+import com.firebase.geofire.LocationCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -28,6 +36,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.impl.Match;
+import jameshassmallarms.com.styleswap.impl.User;
+import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
+import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 
 /**
  * Created by Alan on 25/10/2016.
@@ -43,7 +55,8 @@ public class SwipeButtonsFragment extends Fragment {
     private ArrayList<NestedInfoCard> nestedCards;
     private int count;
     private String userName = "haymakerStirrat@gmail.com";
-
+    private FireBaseQueries fireBaseQueries = new FireBaseQueries();
+    private ArrayList<Match> matchs = new ArrayList<>();
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,14 +66,14 @@ public class SwipeButtonsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_swipe_buttons, container, false);
         count = 0;
         nestedCards = new ArrayList<NestedInfoCard>();
-         nestedCard = new NestedInfoCard();
-         transaction = getChildFragmentManager().beginTransaction();
+        nestedCard = new NestedInfoCard();
+        transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.fragment_match_frame, nestedCard, "TAG").commit();
 
 
         likeObject = (ImageButton) root.findViewById(R.id.fragment_yes_button);
         dislikeObject = (ImageButton) root.findViewById(R.id.fragment_no_button);
-
+        getMatchs();
 
         return root;
     }
@@ -130,9 +143,89 @@ public class SwipeButtonsFragment extends Fragment {
             nestedCards.add(card);
         }
     }
+    //TODO dont match if matched recently
+    private void getNewMatchs(){
+        //users email
+        DatabaseReference mUserRef = FirebaseDatabase.getInstance().getReference().child("UserLocation").child("haymakerStirrat%40gmail%2Ecom");
+        final GeoFire geoFire = new GeoFire(mUserRef.getParent());
 
 
+        geoFire.getLocation(mUserRef.getKey(), new LocationCallback() {
+            @Override
+            public void onLocationResult(String key, GeoLocation location) {
+                if (location != null) {
+                    GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), 10);//my search radius
+                    geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                        @Override
+                        public void onKeyEntered(String key, GeoLocation location) {
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(key);
+                            fireBaseQueries.executeIfExists(ref, new QueryMaster() {
+                                @Override
+                                public void run(DataSnapshot s) {
 
+                                    User user = s.getValue(User.class);
+                                    if (user.getDressSize() == 8)//my dress size
+                                        matchs.add(user.toMatch());
 
+                                    System.out.println(matchs);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onKeyExited(String key) {
+
+                        }
+
+                        @Override
+                        public void onKeyMoved(String key, GeoLocation location) {
+
+                        }
+
+                        @Override
+                        public void onGeoQueryReady() {
+
+                        }
+
+                        @Override
+                        public void onGeoQueryError(DatabaseError error) {
+
+                        }
+                    });
+                } else {
+                    System.out.println(String.format("There is no location for key %s in GeoFire", key));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.err.println("There was an error getting the GeoFire location: " + databaseError);
+            }
+        });
+
+    }
+
+    private void getMatchs(){
+
+        final DatabaseReference matchedMe = fireBaseQueries.getMatchedme("haymakerStirrat@gmail.com");//users email
+        fireBaseQueries.executeIfExists(matchedMe, new QueryMaster() {
+            @Override
+            public void run(DataSnapshot s) {
+                matchs.clear();
+                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
+                };
+                ArrayList<Match> update = s.getValue(t);
+                if (update.size() > 1){
+                    for (int i = 1; i < update.size() ; i++) {
+                        matchs.add(update.get(i));
+                        update.remove(i);
+                    }
+                    //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
+                }
+
+                getNewMatchs();
+            }
+        });
+    }
 
 }

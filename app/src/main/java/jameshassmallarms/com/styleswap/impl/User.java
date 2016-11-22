@@ -47,6 +47,8 @@ public class User {
         this.matchedMe.add(dummy);
     }
 
+    public User(){}
+
 
     public User(String email) {
         this.email = email;
@@ -120,5 +122,11 @@ public class User {
 
     public void setImg(Bitmap img) {
         this.img = img;
+    }
+
+    public Match toMatch(){
+        Match m = new Match();
+        m.setMatchName(this.getName());
+        return m;
     }
 }

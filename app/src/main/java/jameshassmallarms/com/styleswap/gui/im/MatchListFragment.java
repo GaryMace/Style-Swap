@@ -18,7 +18,9 @@ import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.GenericTypeIndicator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jameshassmallarms.com.styleswap.R;
@@ -44,7 +46,7 @@ public class MatchListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_im, container, false);
 
         mMatchRecycler = (RecyclerView) view
-            .findViewById(R.id.fragment_im_recycler);
+                .findViewById(R.id.fragment_im_recycler);
         mMatchRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         mMatchRecycler.setHasFixedSize(true);
         linker = (Linker) getActivity();
@@ -62,11 +64,35 @@ public class MatchListFragment extends Fragment {
 
             mFriendsList.setAdapter(adapter);
         }, other);*/
-        test();
-        updateUI();
+//        test();
+//
+//        updateUI();
 
+        getMatches("Garymac@live.ie");
 
         return view;
+    }
+
+    public void getMatches(String email) {
+        final DatabaseReference userRef;
+        userRef = db.getMatchedme(email);
+
+        db.executeIfExists(userRef, new QueryMaster() {
+            @Override
+            public void run(DataSnapshot s) {
+                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
+                };
+                ArrayList<Match> update = s.getValue(t);
+
+                if (linker.getCachedMatches().isEmpty()) {
+                    for (Match m : update) {
+                        linker.getCachedMatches().add(m);
+                    }
+                }
+
+                updateUI();
+            }
+        });
     }
 
     private void test() {
@@ -76,17 +102,17 @@ public class MatchListFragment extends Fragment {
             Bitmap img1 = BitmapFactory.decodeResource(getResources(), R.drawable.ja);
             Bitmap img2 = BitmapFactory.decodeResource(getResources(), R.drawable.profilepicexample);
             Bitmap img3 = BitmapFactory.decodeResource(getResources(), R.drawable.ja);
-            m1.setMatchImage(Bitmap.createScaledBitmap(img1,200, 200,true));
+            m1.setMatchImage(Bitmap.createScaledBitmap(img1, 200, 200, true));
             m1.setMatchName("James");
             m1.setMatchNumber("085 766 3464");
             db.addMatch("haymakerStirrat@gmail.com", MainActivity.FIREBASE_IMATCHED, m1);
             Match m2 = new Match();
-            m2.setMatchImage(Bitmap.createScaledBitmap(img2,200, 200,true));
+            m2.setMatchImage(Bitmap.createScaledBitmap(img2, 200, 200, true));
             m2.setMatchName("Alan");
             m2.setMatchNumber("082 766 2132");
 
             Match m3 = new Match();
-            m3.setMatchImage(Bitmap.createScaledBitmap(img3,200, 200,true));
+            m3.setMatchImage(Bitmap.createScaledBitmap(img3, 200, 200, true));
             m3.setMatchName("Stock");
             m3.setMatchNumber("087 432 1234");
             linker.addCachedMatch(m1);
@@ -96,42 +122,12 @@ public class MatchListFragment extends Fragment {
     }
 
     private void updateUI() {
-        boolean firebaseServerHasNewData = false;
-        List<Match> matches = linker.getCachedMatches();
-       //DatabaseReference ref = db.getMatches(linker.getLoggedInUser());
-
-        if (matches == null && linker.userLoggedIn()) {
-
-            /*new Thread(new Runnable() {
-                public void run() {
-                    final Bitmap bitmap =
-                        loadImageFromNetwork("http://example.com/image.png");
-                    mImageView.post(new Runnable() {
-                        public void run() {
-                            mImageView.setImageBitmap(bitmap);
-                        }
-                    });
-                }
-            }).start();*/
-
-            /*db.executeIfExists(ref, new QueryMaster() {
-                @Override
-                public void run(DataSnapshot s) {
-                    s.getValue();
-                }
-            });*/
-
-        }
-        if (firebaseServerHasNewData) {
-            //add new matches
+        if (mAdapter == null) {
+            mAdapter = new MatchAdapter(linker.getCachedMatches());
         } else {
-            if (mAdapter == null) {
-                mAdapter = new MatchAdapter(matches);
-            } else {
-                mAdapter.notifyDataSetChanged();
-            }
-            mMatchRecycler.setAdapter(mAdapter);
+            mAdapter.notifyDataSetChanged();
         }
+        mMatchRecycler.setAdapter(mAdapter);
     }
 
     @Override
@@ -169,11 +165,13 @@ public class MatchListFragment extends Fragment {
 
         public void removeAt(int position) {
             linker.getCachedMatches().remove(position);
+
+            db.removeMatch("Garymac@live.ie", "bothMatched", position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, matches.size());
         }
 
-        public class MatchHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public class MatchHolder extends RecyclerView.ViewHolder {
             private TextView matchName;
             private Button deleteMatch;
             private ImageView matchImage;
@@ -185,26 +183,25 @@ public class MatchListFragment extends Fragment {
                 matchName = (TextView) itemView.findViewById(R.id.fragment_im_match_name);
                 matchNumber = (TextView) itemView.findViewById(R.id.fragment_im_match_contact);
                 deleteMatch = (Button) itemView.findViewById(R.id.fragment_im_delete_match_button);
-                deleteMatch.setOnClickListener(this);   //why did it take me so long to realise this was missing....FFUUUUU
+                deleteMatch.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        int newPosition = getAdapterPosition();
+
+                        Log.d("TAG", "removed Image at position" + newPosition);
+                        removeAt(getAdapterPosition());
+                        notifyItemRangeChanged(newPosition, matches.size());
+                        notifyItemChanged(newPosition);
+                    }
+                });   //why did it take me so long to realise this was missing....FFUUUUU
             }
 
             public void bindMatch(Match m) {
                 matchName.setText(m.getMatchName());
                 matchNumber.setText(m.getMatchNumber());
-                matchImage.setImageBitmap(m.getMatchImage());
-            }
-
-            @Override
-            public void onClick(View v) {
-                int newPosition = this.getAdapterPosition();
-
-                if(v.equals(deleteMatch)){
-                    Log.d("TAG", "removed Image at position" + newPosition);
-                    removeAt(getAdapterPosition());
-                    notifyItemRangeChanged(newPosition, matches.size());
-                    notifyItemChanged(newPosition);
-                    //TODO: I dont think this removes it completely, kappa it does for sure.. maybe?
-                }
+                db.download(matchImage, m.getMatchName(), "Dress");
+                //matchImage.setImageBitmap(m.getMatchImage());
             }
         }
     }
