@@ -17,8 +17,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
+import com.firebase.geofire.LocationCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -28,6 +35,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.impl.Match;
+import jameshassmallarms.com.styleswap.impl.User;
+import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
+import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 
 /**
  * Created by Alan on 25/10/2016.
@@ -43,7 +54,8 @@ public class SwipeButtonsFragment extends Fragment {
     private ArrayList<NestedInfoCard> nestedCards;
     private int count;
     private String userName = "haymakerStirrat@gmail.com";
-
+    private FireBaseQueries fireBaseQueries = new FireBaseQueries();
+    private ArrayList<User> matchs = new ArrayList<>();
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,6 +91,7 @@ public class SwipeButtonsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 count++;
+                getMatchs();
                 if(count == LOADING_SIZE ){
                     fillFragments();
                 }
@@ -130,9 +143,79 @@ public class SwipeButtonsFragment extends Fragment {
             nestedCards.add(card);
         }
     }
+    //TODO dont match if matched recently
+    private void getMatchs(){
+        //users email
+        DatabaseReference mUserRef = FirebaseDatabase.getInstance().getReference().child("UserLocation").child("haymakerStirrat%40gmail%2Ecom");
+//        DatabaseReference mUserRef1 = FirebaseDatabase.getInstance().getReference().child("UserLocation").child("haymakerStirrat%40gmail%2Ecom");
+//        DatabaseReference mUserRef2 = FirebaseDatabase.getInstance().getReference().child("UserLocation").child("jameshassmallarms%40gmail%2Ecom");
+//        DatabaseReference mUserRef3 = FirebaseDatabase.getInstance().getReference().child("UserLocation").child("nerthandrake%40gmail%2Ecom");
+//        matchs.clear();
+        final GeoFire geoFire = new GeoFire(mUserRef.getParent());
+//        final GeoFire geoFire1 = new GeoFire(mUserRef.getParent());
+//        final GeoFire geoFire2 = new GeoFire(mUserRef2.getParent());
+//        final GeoFire geoFire3 = new GeoFire(mUserRef3.getParent());
+        //geoFire.setLocation(mUserRef.getKey(), new GeoLocation(38.7853889, -122.4056973));
+//        geoFire1.setLocation(mUserRef1.getKey(), new GeoLocation(38.7853889, -122.4056973));
+//        geoFire2.setLocation(mUserRef2.getKey(), new GeoLocation(38.7853889, -122.4056973));
+//        geoFire3.setLocation(mUserRef3.getKey(), new GeoLocation(38.7853889, -122.4056973));
 
+        //return;
+        geoFire.getLocation(mUserRef.getKey(), new LocationCallback() {
+            @Override
+            public void onLocationResult(String key, GeoLocation location) {
+                if (location != null) {
+                    GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), 10);//my search radius
+                    geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                        @Override
+                        public void onKeyEntered(String key, GeoLocation location) {
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(key);
+                            System.out.println(key);
+                            System.out.println(ref);
+                            fireBaseQueries.executeIfExists(ref, new QueryMaster() {
+                                @Override
+                                public void run(DataSnapshot s) {
 
+                                    User user = s.getValue(User.class);
+                                    if (user.getDressSize() == 8)//my dress size
+                                        matchs.add(user);
 
+                                    System.out.println(matchs);
+                                }
+                            });
+                        }
 
+                        @Override
+                        public void onKeyExited(String key) {
+
+                        }
+
+                        @Override
+                        public void onKeyMoved(String key, GeoLocation location) {
+
+                        }
+
+                        @Override
+                        public void onGeoQueryReady() {
+
+                        }
+
+                        @Override
+                        public void onGeoQueryError(DatabaseError error) {
+
+                        }
+                    });
+                } else {
+                    System.out.println(String.format("There is no location for key %s in GeoFire", key));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.err.println("There was an error getting the GeoFire location: " + databaseError);
+            }
+        });
+
+    }
 
 }

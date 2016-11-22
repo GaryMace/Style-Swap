@@ -42,14 +42,11 @@ public class EditProfileFragment extends Fragment {
         FireBaseQueries fireBaseQueries = new FireBaseQueries();
         DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail("haymakerStirrat@gmail.com");//users email programatically
         ImageView imageView ;
-        GeoFire geoFire = new GeoFire(mUserRef);
-        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(38.7832, -122.4056), 0.6);
+
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
-
-                geoFire.setLocation(mUserRef.getKey(), new GeoLocation(38.7853889, -122.4056963));
 
                 View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
                 editProfileButton = (Button) view.findViewById(R.id.editPhotoButton);
@@ -86,34 +83,8 @@ public class EditProfileFragment extends Fragment {
                 editProfileButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                                //loadImagefromGallery(getView());
-                                geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-                                        @Override
-                                        public void onKeyEntered(String key, GeoLocation location) {
-                                                System.out.println(String.format("Key %s entered the search area at [%f,%f]", key, location.latitude, location.longitude));
+                                loadImagefromGallery(getView());
 
-                                        }
-
-                                        @Override
-                                        public void onKeyExited(String key) {
-                                                System.out.println(String.format("Key %s is no longer in the search area", key));
-                                        }
-
-                                        @Override
-                                        public void onKeyMoved(String key, GeoLocation location) {
-                                                System.out.println(String.format("Key %s moved within the search area to [%f,%f]", key, location.latitude, location.longitude));
-                                        }
-
-                                        @Override
-                                        public void onGeoQueryReady() {
-                                                System.out.println("All initial data has been loaded and events have been fired!");
-                                        }
-
-                                        @Override
-                                        public void onGeoQueryError(DatabaseError error) {
-                                                System.err.println("There was an error with this query: " + error);
-                                        }
-                                });
                         }
                 });
 
