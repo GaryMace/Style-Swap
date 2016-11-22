@@ -518,11 +518,12 @@ public class MainActivity extends AppCompatActivity
         if (mRequestingLocationUpdates) {
             startLocationUpdates();
         }
+        mGoogleAPIClient.connect();
     }
 
     protected void onStart() {
         super.onStart();
-        mGoogleAPIClient.connect();
+
     }
 
     @Override

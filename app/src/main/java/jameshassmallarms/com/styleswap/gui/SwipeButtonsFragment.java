@@ -161,6 +161,7 @@ public class SwipeButtonsFragment extends Fragment {
 //        geoFire3.setLocation(mUserRef3.getKey(), new GeoLocation(38.7853889, -122.4056973));
 
         //return;
+        matchs.clear();
         geoFire.getLocation(mUserRef.getKey(), new LocationCallback() {
             @Override
             public void onLocationResult(String key, GeoLocation location) {
@@ -170,8 +171,6 @@ public class SwipeButtonsFragment extends Fragment {
                         @Override
                         public void onKeyEntered(String key, GeoLocation location) {
                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(key);
-                            System.out.println(key);
-                            System.out.println(ref);
                             fireBaseQueries.executeIfExists(ref, new QueryMaster() {
                                 @Override
                                 public void run(DataSnapshot s) {
@@ -179,8 +178,6 @@ public class SwipeButtonsFragment extends Fragment {
                                     User user = s.getValue(User.class);
                                     if (user.getDressSize() == 8)//my dress size
                                         matchs.add(user);
-
-                                    System.out.println(matchs);
                                 }
                             });
                         }
