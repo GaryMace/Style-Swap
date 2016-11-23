@@ -48,7 +48,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 /*FireBaseQueries fb = new FireBaseQueries();
-
                 Match m = new Match();
                 m.setMatchName("Nerthan");
                 m.setMatchMail("nerthandrake@gmail.com");
@@ -61,7 +60,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 setResult(Activity.RESULT_OK, res);
                 FireBaseQueries firebase = new FireBaseQueries();
                 String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-                
                 firebase.getUserToken("Garymac@live.ie").setValue(refreshedToken);
 
                 finish();
@@ -80,7 +78,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()){ //need a switch statement to see which button was clicked in login
+        switch (v.getId()) { //need a switch statement to see which button was clicked in login
             case R.id.activity_login_button:
 
 
@@ -94,7 +92,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
 
     }
-
+}
 //    private void onTokenRefresh(DatabaseReference userToken) {
 //        FireBaseQueries firebase = new FireBaseQueries();
 //        // Get updated InstanceID token.
@@ -107,8 +105,4 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 //        firebase.getUserToken(refreshedToken);
 //
 //    }
-
-
-
-}
 

@@ -64,6 +64,7 @@ public class ChatAdapter extends BaseAdapter {
                     .findViewById(R.id.fragment_im_my_bubble);
                 parent_layout = (LinearLayout) vi
                     .findViewById(R.id.fragment_im_my_bubble_parent);
+                imgView.setImageBitmap(ChatIm.my_img);
             } else {
                 vi = inflater.inflate(R.layout.chat_bubble_match, null);
                 msg = (TextView) vi.findViewById(R.id.fragment_im_match_msg);
@@ -72,9 +73,9 @@ public class ChatAdapter extends BaseAdapter {
                     .findViewById(R.id.fragment_im_match_bubble);
                 parent_layout = (LinearLayout) vi
                     .findViewById(R.id.fragment_im_match_bubble_parent);
+                imgView.setImageBitmap(ChatIm.match_img);
             }
         msg.setText(message.body);
-        imgView.setImageBitmap(ChatIm.img);
 
         // if message is mine then align to right
         if (message.isMine) {
