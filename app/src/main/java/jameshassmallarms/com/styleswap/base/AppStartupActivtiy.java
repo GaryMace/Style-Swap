@@ -134,7 +134,6 @@ public class AppStartupActivtiy extends Activity {
         }
     };
 
-    //TODO: Needs refactoring, not returning intent to main properly
     /**
      * Deals with the result from the Login. That being the screen where you select a shimmer to connect.
      * It'll link the sensor you select to the body position you select.

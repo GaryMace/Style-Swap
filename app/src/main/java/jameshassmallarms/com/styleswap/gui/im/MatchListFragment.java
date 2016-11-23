@@ -65,7 +65,7 @@ public class MatchListFragment extends Fragment {
 
     public void getMatches(String email) {
         final DatabaseReference userRef;
-        userRef = db.getMatchedme(email);
+        userRef = db.getBothMatched(email);
 
         db.executeIfExists(userRef, new QueryMaster() {
             @Override
@@ -93,7 +93,9 @@ public class MatchListFragment extends Fragment {
             public void onSuccess(byte[] bytes) {
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 imageView.setImageBitmap(bmp);
-                linker.getCachedMatches().get(position).setMatchImage(((BitmapDrawable)imageView.getDrawable()).getBitmap());
+                linker.getCachedMatches()
+                    .get(position)
+                    .setMatchImage(((BitmapDrawable)imageView.getDrawable()).getBitmap());
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -191,6 +193,7 @@ public class MatchListFragment extends Fragment {
                     matchImage.setImageBitmap(m.getMatchImage());
                 else
                     download(matchImage, m.getMatchMail(), "Dress", getAdapterPosition());
+                Log.d("TAG", "Mail is: \"" +m.getMatchMail() + "\"");
             }
         }
     }

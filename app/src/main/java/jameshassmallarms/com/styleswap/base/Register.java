@@ -26,8 +26,8 @@ public class Register extends AppCompatActivity{
     public static final String REGISTER_AGE  ="reg_age";       //Why we need an age?
 
 
-    Button buttonRegister;
-    EditText mName, mAge, mUsername, mPassword, mDressSize, mEmail, mPhoneNumber;
+    private Button buttonRegister;
+    private EditText mName, mAge, mUsername, mPassword, mDressSize, mEmail, mPhoneNumber;
    // FireBaseQueries fireBaseQueries = new FireBaseQueries();
     boolean userExists, detailsOkay;
     UserExistsFragment user = new UserExistsFragment();

@@ -10,14 +10,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.impl.Match;
+import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
     public static final String LOGIN_USER_EMAIL = "login_email";
     public static final String LOGIN_EXISTING_USER = "login_existing";
-    Button mLoginButton;
-    EditText mUserName, mUserPassword;
-    TextView mLaunchRegister;
+    private Button mLoginButton;
+    private EditText mUserName, mUserPassword;
+    private TextView mLaunchRegister;
 
 
     @Override
@@ -40,6 +42,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
             @Override
             public void onClick(View v) {
+                /*FireBaseQueries fb = new FireBaseQueries();
+
+                Match m = new Match();
+                m.setMatchName("Nerthan");
+                m.setMatchMail("nerthandrake@gmail.com");
+                m.setMatchNumber("083 376 9282");
+                fb.addMatch("Garymac@live.ie", MainActivity.FIREBASE_BOTH_MATCHED, m);*/
+
                 Intent res = new Intent();
                 res.putExtra(MainActivity.GET_LOGIN_STATE, LOGIN_EXISTING_USER);
                 res.putExtra(LOGIN_USER_EMAIL, "Garymac@live.ie");
@@ -61,7 +71,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch(v.getId()){ //need a switch statement to see which button was clicked in login
-            case R.id.ButtonLogin:
+            case R.id.activity_login_button:
 
 
                 break;
