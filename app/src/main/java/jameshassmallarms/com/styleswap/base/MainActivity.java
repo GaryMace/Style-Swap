@@ -48,6 +48,7 @@ import java.util.Queue;
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.gui.EditProfileFragment;
 import jameshassmallarms.com.styleswap.gui.SwipeButtonsFragment;
+import jameshassmallarms.com.styleswap.gui.im.ChatIm;
 import jameshassmallarms.com.styleswap.gui.im.MatchListFragment;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity
     private EditProfileFragment mEditProfile;
     private SwipeButtonsFragment mSwipeButtons;
     private MatchListFragment mMatchList;
+    private ChatIm mChat;
 
     //Queue of Users for SwipeButton
     private Queue<User> cachedUsers;
@@ -125,6 +127,7 @@ public class MainActivity extends AppCompatActivity
             mEditProfile = new EditProfileFragment();
             mSwipeButtons = new SwipeButtonsFragment();
             mMatchList = new MatchListFragment();
+            mChat = new ChatIm();
         }
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.activity_main_bottombar);

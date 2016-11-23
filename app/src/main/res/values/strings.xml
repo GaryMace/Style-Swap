@@ -15,4 +15,6 @@
 
     <string name="app_start_login">LOG IN</string>
     <string name="app_start_register">REGISTER</string>
+
+    <string name="fragment_im_write_msg">Write a message&#8230;</string>
 </resources>

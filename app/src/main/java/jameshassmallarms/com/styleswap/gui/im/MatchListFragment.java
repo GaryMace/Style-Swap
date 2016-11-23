@@ -63,6 +63,7 @@ public class MatchListFragment extends Fragment {
         return view;
     }
 
+    //TODO: ignore first item in list! it's the dummy field
     public void getMatches(String email) {
         final DatabaseReference userRef;
         userRef = db.getBothMatched(email);
