@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.impl.Match;
+import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 
@@ -49,7 +50,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 m.setMatchMail("nerthandrake@gmail.com");
                 m.setMatchNumber("083 376 9282");
                 fb.addMatch("Garymac@live.ie", MainActivity.FIREBASE_BOTH_MATCHED, m);*/
-
                 Intent res = new Intent();
                 res.putExtra(MainActivity.GET_LOGIN_STATE, LOGIN_EXISTING_USER);
                 res.putExtra(LOGIN_USER_EMAIL, "Garymac@live.ie");

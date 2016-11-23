@@ -35,7 +35,7 @@ public class GoodbyeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 User usr = new User("Garymac@live.ie", "password");
-                //Add stock img when new login!
+                //Add stock match_img when new login!
                 //This logic should be something very similar to what will be used when we want to register a new user
                 Bitmap stockImg = BitmapFactory.decodeResource(getResources(), R.drawable.stock_img);
                 usr.setImg(stockImg);

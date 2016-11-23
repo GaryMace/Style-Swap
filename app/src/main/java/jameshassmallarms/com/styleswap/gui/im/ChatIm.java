@@ -1,7 +1,6 @@
 package jameshassmallarms.com.styleswap.gui.im;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,13 +16,16 @@ import java.util.Random;
 
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
+import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
 /**
  * Created by gary on 23/11/16.
  */
 
 public class ChatIm extends Fragment implements View.OnClickListener {
-    public static Bitmap img;
+    public static Bitmap match_img;
+    public static Bitmap my_img;
+    private Linker linker;
     private EditText msg_edittext;
     private String user1 = "khushi", user2 = "khushi1";
     private Random random;
@@ -35,9 +37,11 @@ public class ChatIm extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_im_chat, container, false);
+        linker = (Linker) getActivity();
+        my_img = linker.getUserProfilePic();
         random = new Random();
         Log.d("TAG", "Arg size: "+getArguments().size());
-        img = DatabaseHandler.getBitmapFromBlob(getArguments().getByteArray(MatchListFragment.ARGUMENT_MATCH_IMAGE));
+        match_img = DatabaseHandler.getBitmapFromBlob(getArguments().getByteArray(MatchListFragment.ARGUMENT_MATCH_IMAGE));
 
         msg_edittext = (EditText) view.findViewById(R.id.messageEditText);
         msgListView = (ListView) view.findViewById(R.id.msgListView);
