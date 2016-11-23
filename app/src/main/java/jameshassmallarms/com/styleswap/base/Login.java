@@ -4,12 +4,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
+import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
@@ -44,6 +51,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 res.putExtra(MainActivity.GET_LOGIN_STATE, LOGIN_EXISTING_USER);
                 res.putExtra(LOGIN_USER_EMAIL, "Garymac@live.ie");
                 setResult(Activity.RESULT_OK, res);
+                FireBaseQueries firebase = new FireBaseQueries();
+                String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+                
+                firebase.getUserToken("Garymac@live.ie").setValue(refreshedToken);
+
                 finish();
             }
         });
@@ -75,4 +87,20 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     }
 
+//    private void onTokenRefresh(DatabaseReference userToken) {
+//        FireBaseQueries firebase = new FireBaseQueries();
+//        // Get updated InstanceID token.
+//        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+//        //Log.d(TAG, "Refreshed token: " + refreshedToken);
+//
+//        // If you want to send messages to this application instance or
+//        // manage this apps subscriptions on the server side, send the
+//        // Instance ID token to your app server.
+//        firebase.getUserToken(refreshedToken);
+//
+//    }
+
+
+
 }
+

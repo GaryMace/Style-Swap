@@ -154,6 +154,10 @@ public class FireBaseQueries {
         mUserRef.setValue(newUser);
     }
 
+    public DatabaseReference getUserToken(String email) {
+        return getUserReferenceByEmail(email).child("messageToken");
+    }
+
     public void addMatch(String email, String matchType, final Match newMatch) {
         final DatabaseReference userRef;
 
