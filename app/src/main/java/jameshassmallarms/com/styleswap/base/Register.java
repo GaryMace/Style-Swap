@@ -10,12 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.firebase.database.DatabaseReference;
-
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.gui.UserExistsFragment;
-import jameshassmallarms.com.styleswap.impl.User;
-import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 import static java.lang.Integer.parseInt;
 
@@ -31,7 +27,7 @@ public class Register extends AppCompatActivity{
 
 
     Button buttonRegister;
-    EditText etName, etAge, etUsername, etPassword, etDressSize, etEmail, etPhoneNumber;
+    EditText mName, mAge, mUsername, mPassword, mDressSize, mEmail, mPhoneNumber;
    // FireBaseQueries fireBaseQueries = new FireBaseQueries();
     boolean userExists, detailsOkay;
     UserExistsFragment user = new UserExistsFragment();
@@ -42,13 +38,13 @@ public class Register extends AppCompatActivity{
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_register);
 
-            etName = (EditText) findViewById(R.id.etName);
-            etAge = (EditText) findViewById(R.id.etAge);
-            etEmail = (EditText) findViewById(R.id.etEmail);
-            etUsername = (EditText) findViewById(R.id.etEmail);
-            etPassword = (EditText) findViewById(R.id.etPassword);
-            etDressSize = (EditText) findViewById(R.id.etDressSize);
-            etPhoneNumber = (EditText) findViewById(R.id.etPhoneNumber);
+            mName = (EditText) findViewById(R.id.activity_register_username);
+            mAge = (EditText) findViewById(R.id.activity_register_age);
+            mEmail = (EditText) findViewById(R.id.activity_register_email);
+            mUsername = (EditText) findViewById(R.id.activity_register_email);
+            mPassword = (EditText) findViewById(R.id.activity_register_password);
+            mDressSize = (EditText) findViewById(R.id.activity_register_size);
+            mPhoneNumber = (EditText) findViewById(R.id.activity_register_number);
             buttonRegister = (Button) findViewById(R.id.ButtonRegister);
             buttonRegister.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -58,19 +54,19 @@ public class Register extends AppCompatActivity{
 
                         //if (userExists && detailsOkay) {
                             overallFlag = true;
-                            int age = parseInt(etAge.getText().toString());
-                            //int dressSize = parseInt(etDressSize.getText().toString());
-                            //User newUser = new User(etName.getText().toString(), age, etEmail.getText().toString(), etPassword.getText().toString(), dressSize);
+                            int age = parseInt(mAge.getText().toString());
+                            //int dressSize = parseInt(mDressSize.getText().toString());
+                            //User newUser = new User(mName.getText().toString(), age, mEmail.getText().toString(), mUserPassword.getText().toString(), dressSize);
                             //fireBaseQueries.pushNewUserDetails(newUser);
 
                             Intent intent = new Intent();
                             intent.putExtra(MainActivity.GET_LOGIN_STATE, REGISTER_NEW_USER);
-                            intent.putExtra(REGISTER_EMAIL, etEmail.getText().toString());
-                            intent.putExtra(REGISTER_NAME, etName.getText().toString());
+                            intent.putExtra(REGISTER_EMAIL, mEmail.getText().toString());
+                            intent.putExtra(REGISTER_NAME, mName.getText().toString());
                             intent.putExtra(REGISTER_AGE, age);
-                            intent.putExtra(REGISTER_PASSWORD, etPassword.getText().toString());
-                            intent.putExtra(REGISTER_PHONE, etPhoneNumber.getText().toString());
-                            intent.putExtra(REGISTER_SIZE, etDressSize.getText().toString());
+                            intent.putExtra(REGISTER_PASSWORD, mPassword.getText().toString());
+                            intent.putExtra(REGISTER_PHONE, mPhoneNumber.getText().toString());
+                            intent.putExtra(REGISTER_SIZE, mDressSize.getText().toString());
                             setResult(Activity.RESULT_OK, intent);
                         //} else {
                            // popUp("User Already exists or you have left out some details");
@@ -100,7 +96,7 @@ public class Register extends AppCompatActivity{
 
     
 //    private boolean checkIfUserExists(){
-//        DatabaseReference checkUser = fireBaseQueries.getUserReferenceByEmail(etEmail.getText().toString());
+//        DatabaseReference checkUser = fireBaseQueries.getUserReferenceByEmail(mEmail.getText().toString());
 //        boolean check;
 //        if(checkUser == null){
 //            check = true; //if user exists doesnt exist we know we have a new user so want to push the details
@@ -116,7 +112,7 @@ public class Register extends AppCompatActivity{
 //
 //    public boolean avoidEmptyDetails(){
 //        boolean flag;
-//        if(etName.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty() || etEmail.getText().toString().isEmpty() || etDressSize.getText().toString().isEmpty()){
+//        if(mName.getText().toString().isEmpty() || mUserPassword.getText().toString().isEmpty() || mEmail.getText().toString().isEmpty() || mDressSize.getText().toString().isEmpty()){
 //            popUp("Problem with registration. Make sure all fields are filled");
 //            popUp("Please start again");
 //           flag = false;

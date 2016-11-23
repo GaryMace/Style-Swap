@@ -15,9 +15,9 @@ import jameshassmallarms.com.styleswap.R;
 public class Login extends AppCompatActivity implements View.OnClickListener {
     public static final String LOGIN_USER_EMAIL = "login_email";
     public static final String LOGIN_EXISTING_USER = "login_existing";
-    Button ButtonLogin;
-    EditText etUsername, etPassword;
-    TextView LinkWithRegister;
+    Button mLoginButton;
+    EditText mUserName, mUserPassword;
+    TextView mLaunchRegister;
 
 
     @Override
@@ -25,18 +25,18 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        etUsername = (EditText) findViewById(R.id.etUsername);
-        etUsername.setOnClickListener(new View.OnClickListener() {
+        mUserName = (EditText) findViewById(R.id.activity_login_username);
+        mUserName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
 
-        etPassword = (EditText) findViewById(R.id.etPassword);
-        ButtonLogin = (Button) findViewById(R.id.ButtonLogin);
-        LinkWithRegister = (TextView) findViewById(R.id.LinkWithRegister);
-        ButtonLogin.setOnClickListener(new View.OnClickListener() {
+        mUserPassword = (EditText) findViewById(R.id.activity_login_password);
+        mLoginButton = (Button) findViewById(R.id.activity_login_button);
+        mLaunchRegister = (TextView) findViewById(R.id.activity_login_launch_register);
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -47,7 +47,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 finish();
             }
         });
-        LinkWithRegister.setOnClickListener(this);
+        mLaunchRegister.setOnClickListener(this);
 
         /**
          * If the login button is clicked, check if user exists.
@@ -66,7 +66,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
                 break;
 
-            case R.id.LinkWithRegister:
+            case R.id.activity_login_launch_register:
                 Intent i = new Intent(getBaseContext(), Register.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 startActivity(i);

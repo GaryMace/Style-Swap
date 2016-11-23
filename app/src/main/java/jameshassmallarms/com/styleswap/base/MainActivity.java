@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity
                     mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
                     mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
                     String password = data.getExtras().getString(Register.REGISTER_PASSWORD);   //send this to firebase instantly then remove our reference to it
-                    Log.d(TAG, "User registered");
+                    Log.d(TAG, "User registered to email: " + mUserLogin);
                 }
 
             }
