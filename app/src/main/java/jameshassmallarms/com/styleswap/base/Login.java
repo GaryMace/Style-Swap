@@ -16,7 +16,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
-
+import jameshassmallarms.com.styleswap.messaging.MyFirebaseInstanceIDService;
 
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
@@ -59,10 +59,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 res.putExtra(MainActivity.GET_LOGIN_STATE, LOGIN_EXISTING_USER);
                 res.putExtra(LOGIN_USER_EMAIL, "Garymac@live.ie");
                 setResult(Activity.RESULT_OK, res);
-                FireBaseQueries firebase = new FireBaseQueries();
-                String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-                
-                firebase.getUserToken("Garymac@live.ie").setValue(refreshedToken);
+                MyFirebaseInstanceIDService test = new MyFirebaseInstanceIDService();
+                test.onTokenRefresh();
 
                 finish();
             }
