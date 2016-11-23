@@ -3,6 +3,7 @@ package jameshassmallarms.com.styleswap.gui;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,19 +35,7 @@ public class NestedInfoCard extends Fragment {
     private ImageView userPic;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-    QueryMaster q = new QueryMaster() {
-        @Override
-        public void run(DataSnapshot s) {
-            description.setText(s.getValue().toString());
-        }
-    };
 
-    QueryMaster P = new QueryMaster() {
-        @Override
-        public void run(DataSnapshot s) {
-            userName.setText(s.getValue().toString());
-        }
-    };
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,6 +51,7 @@ public class NestedInfoCard extends Fragment {
             String user = b.getString("UserName");
             String email = b.getString("Email");
             String desc = b.getString("Description");
+            Log.d("YOLO", email);
             userName.setText(user);
             description.setText(desc);
             test.download(userPic,email);
