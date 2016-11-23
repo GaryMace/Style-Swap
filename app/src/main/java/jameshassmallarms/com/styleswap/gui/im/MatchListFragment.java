@@ -33,6 +33,7 @@ import java.util.List;
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.base.MainActivity;
 import jameshassmallarms.com.styleswap.impl.Match;
+import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
 import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
@@ -42,6 +43,8 @@ import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
  */
 
 public class MatchListFragment extends Fragment {
+    public static final String ARGUMENT_MATCH_IMAGE = "match_img";
+    public static final String ARGUMENT_MATCH_NAME = "match_name";
     private static final String REVERT_TO_TAG = "match_list_fragment";
     private RecyclerView mMatchRecycler;
     private FireBaseQueries db;
@@ -199,6 +202,14 @@ public class MatchListFragment extends Fragment {
                         Log.d("TAG", "Clicked Match, launching im fragment");
                         FragmentTransaction ft = fragmentManager.beginTransaction();
                         ChatIm chatFragment = new ChatIm();
+
+                        Bundle argData = new Bundle();
+                        //Pass match data to fragment we're about to launch
+                        byte[] img = DatabaseHandler.createByteArray(((BitmapDrawable)matchImage.getDrawable()).getBitmap());
+                        argData.putByteArray(ARGUMENT_MATCH_IMAGE, img);
+                        argData.putString(ARGUMENT_MATCH_NAME, matchName.getText().toString());
+                        chatFragment.setArguments(argData);
+
                         ft.addToBackStack(MatchListFragment.REVERT_TO_TAG);
                         ft.replace(R.id.activity_main_fragment_container, chatFragment, getString(R.string.fragment_im_id)).commit();
                         return false;

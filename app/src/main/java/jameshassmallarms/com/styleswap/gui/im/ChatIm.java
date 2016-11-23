@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
 
 /**
  * Created by gary on 23/11/16.
@@ -34,8 +36,8 @@ public class ChatIm extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_im_chat, container, false);
         random = new Random();
-        img = BitmapFactory.decodeResource(getResources(), R.drawable.james);
-        img = (Bitmap.createScaledBitmap(img,200, 150,true));
+        Log.d("TAG", "Arg size: "+getArguments().size());
+        img = DatabaseHandler.getBitmapFromBlob(getArguments().getByteArray(MatchListFragment.ARGUMENT_MATCH_IMAGE));
 
         msg_edittext = (EditText) view.findViewById(R.id.messageEditText);
         msgListView = (ListView) view.findViewById(R.id.msgListView);
