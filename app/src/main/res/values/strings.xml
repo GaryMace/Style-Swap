@@ -4,6 +4,7 @@
     <string name="fragment_bottom_bar_id">TAG</string>
     <string name="fragment_im_id">TAG</string>
     <string name="fragment_edit_profle_id">TAG</string>
+    <string name="fragment_profile_id">TAG</string>
     <string name="bottom_bar_hello">Hello</string>
     <string name="bottom_bar_bye">GoodBye</string>
     <string name="fragment_im_matches_title">MATCHES</string>
@@ -22,4 +23,16 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="dress_sizes">
+        <item>2</item>
+        <item>4</item>
+        <item>6</item>
+        <item>8</item>
+        <item>10</item>
+        <item>12</item>
+        <item>14</item>
+        <item>16</item>
+        <item>18</item>
+        <item>20</item>
+    </string-array>
 </resources>

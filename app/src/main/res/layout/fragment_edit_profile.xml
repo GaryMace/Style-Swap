@@ -15,15 +15,6 @@
             android:layout_height="0dp"
             android:layout_weight="60">
 
-            <ImageView
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:layout_gravity="center"
-                android:src="@drawable/ja"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:id="@+id/profileImage" />
-
             <Button
                 android:id="@+id/editPhotoButton"
                 android:layout_width="wrap_content"
@@ -35,16 +26,26 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
 
+            <ImageView
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:src="@drawable/ja"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                android:id="@+id/profileImage"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true" />
+
             <Button
                 android:id="@+id/editPhotoButton2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Edit"
+                android:text="Done"
                 android:background="@drawable/activity_app_startup_register"
                 android:textColor="@android:color/white"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentStart="true" />
 
 
         </RelativeLayout>
@@ -104,7 +105,7 @@
             android:layout_width="match_parent"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:hint="@string/user_email"
+            android:hint="Name"
             android:textColor="@color/white"
             android:textColorHint="@color/colorPrimaryDark"
             android:layout_weight="10"/>

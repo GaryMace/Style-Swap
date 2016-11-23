@@ -3,14 +3,20 @@ package jameshassmallarms.com.styleswap.gui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
@@ -24,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.gui.im.ProfileFragment;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
@@ -35,7 +42,7 @@ import static android.app.Activity.RESULT_OK;
  * Created by gary on 10/10/16.
  */
 
-public class EditProfileFragment extends Fragment {
+public class EditProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
         private EditText itemDescription;
         private Button editProfileButton;
         private Button editProfileButton2;
@@ -43,7 +50,8 @@ public class EditProfileFragment extends Fragment {
         FireBaseQueries fireBaseQueries = new FireBaseQueries();
         DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail(userEmail);//users email programatically
         ImageView imageView;
-
+        private static final String REVERT_TO_TAG = "edit_profile_fragment";
+        public Spinner spinner;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,6 +65,10 @@ public class EditProfileFragment extends Fragment {
 
                 imageView = (ImageView) view.findViewById(R.id.profileImage);
                 fireBaseQueries.download(imageView, userEmail);
+                spinner = (Spinner) view.findViewById(R.id.spinner1);
+                ArrayAdapter adapter = ArrayAdapter.createFromResource(this.getActivity(),R.array.dress_sizes,android.R.layout.simple_spinner_item);
+                spinner.setAdapter(adapter);
+                spinner.setOnItemSelectedListener(this);
                 return view;
 
         }
@@ -76,6 +88,13 @@ public class EditProfileFragment extends Fragment {
                                                 mUserRef.child("itemDescription").setValue(itemDescription.getText().toString());
                                         }
                                 });
+                                FragmentManager manager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction ft = manager.beginTransaction();
+                                ProfileFragment editProf = new ProfileFragment();
+
+
+                                ft.addToBackStack(EditProfileFragment.REVERT_TO_TAG);
+                                ft.replace(R.id.activity_main_fragment_container, editProf, getString(R.string.fragment_profile_id)).commit();
 
                         }
                 });
@@ -127,4 +146,14 @@ public class EditProfileFragment extends Fragment {
 
         }
 
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                TextView myText = (TextView) view;
+                Toast.makeText(this.getActivity(), "You Selected "+myText.getText(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
 }

@@ -13,16 +13,15 @@
         android:orientation="vertical">
 
         <TextView
-            android:text="Press picture to Go to App"
+            android:text="Press picture to Edit Profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:scaleType="fitXY"
             android:id="@+id/profileinstruc"
-            android:textColor="@color/black" />
+            android:textColor="@color/white" />
 
         <ImageButton
-            android:onClick="goToMain"
             android:layout_width="100dp"
             android:layout_height="100dp"
             app:srcCompat="@drawable/profilepicexample"
@@ -37,7 +36,7 @@
             android:layout_height="wrap_content"
             android:text="Name N/A"
             android:id="@+id/profileinfo"
-            android:textColor="@android:color/background_dark"
+            android:textColor="@android:color/white"
             android:textSize="8pt"
             android:layout_gravity="center"/>
 
@@ -46,7 +45,7 @@
             android:layout_height="wrap_content"
             android:text="Age N/A"
             android:id="@+id/profileinfo2"
-            android:textColor="@android:color/background_dark"
+            android:textColor="@android:color/white"
             android:textSize="8pt"
             android:layout_gravity="center" />
 
@@ -55,7 +54,7 @@
             android:layout_height="wrap_content"
             android:text="Comment N/A"
             android:id="@+id/profileinfo3"
-            android:textColor="?android:attr/textColorHint"
+            android:textColor="@android:color/white"
             android:textSize="6pt"
             android:layout_gravity="center" />
 
@@ -72,7 +71,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/profilesettings"
                 android:background="@drawable/circlebutton"
-                android:onClick="goToSettings"
                 android:layout_alignBaseline="@+id/profilecamera"
                 android:layout_alignBottom="@+id/profilecamera"
                 android:layout_alignParentRight="true"
@@ -81,7 +79,6 @@
                 android:layout_marginEnd="28dp" />
 
             <Button
-                android:onClick="openCamera"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:id="@+id/profilecamera"
