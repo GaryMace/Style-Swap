@@ -34,12 +34,17 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
+import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
+
+import static android.R.attr.description;
 
 /**
  * Created by Alan on 25/10/2016.
@@ -48,15 +53,35 @@ import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 public class SwipeButtonsFragment extends Fragment {
 
     public static final int LOADING_SIZE  = 10;
+    private BlankFragment blank;
     private ImageButton likeObject;
     private  ImageButton dislikeObject;
+    private String description;
+    private TextView userName;
     private Fragment nestedCard;
     private FragmentTransaction transaction;
     private ArrayList<NestedInfoCard> nestedCards;
+    private Queue<NestedInfoCard> nestedQueue;
+    private boolean active;
     private int count;
-    private String userName = "haymakerStirrat@gmail.com";
+   // private String userName = "haymakerStirrat@gmail.com";
     private FireBaseQueries fireBaseQueries = new FireBaseQueries();
     private ArrayList<Match> matchs = new ArrayList<>();
+    private DatabaseHandler convert = new DatabaseHandler(getContext());
+
+    QueryMaster q = new QueryMaster() {
+        @Override
+        public void run(DataSnapshot s) {
+            description = s.getValue().toString();
+        }
+    };
+
+    QueryMaster P = new QueryMaster() {
+        @Override
+        public void run(DataSnapshot s) {
+            userName.setText(s.getValue().toString());
+        }
+    };
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,15 +90,31 @@ public class SwipeButtonsFragment extends Fragment {
         // set the view
         View root = inflater.inflate(R.layout.fragment_swipe_buttons, container, false);
         count = 0;
+        blank = new BlankFragment();
         nestedCards = new ArrayList<NestedInfoCard>();
         nestedCard = new NestedInfoCard();
-        transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.fragment_match_frame, nestedCard, "TAG").commit();
+        nestedQueue = new LinkedList<NestedInfoCard>();
+
 
 
         likeObject = (ImageButton) root.findViewById(R.id.fragment_yes_button);
         dislikeObject = (ImageButton) root.findViewById(R.id.fragment_no_button);
         getMatchs();
+
+        if(matchs.isEmpty()){
+            loadBlankFragment();
+        }
+        else{
+            NestedInfoCard card = loadFragment(matchs.get(0));
+            nestedQueue.add(card);
+            matchs.remove(0);
+
+            replaceFragment(nestedQueue.poll());
+
+        }
+
+
+
 
         return root;
     }
@@ -81,33 +122,56 @@ public class SwipeButtonsFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        if(!matchs.isEmpty()){
+            NestedInfoCard card = loadFragment(matchs.get(0));
+            nestedQueue.add(card);
+            matchs.remove(0);
 
-        for(int i = 0; i < LOADING_SIZE; i++){
-            NestedInfoCard card = loadFragment();
-            nestedCards.add(card);
+            replaceFragment(nestedQueue.poll());
         }
+
+
+        fillQueue();
 
 
         likeObject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                count++;
-                if(count == LOADING_SIZE ){
-                    fillFragments();
+                if(active) {
+                    if (nestedQueue.isEmpty()) {
+                        loadBlankFragment();
+                    } else {
+                        replaceFragment(nestedQueue.poll());
+                    }
                 }
-                replaceFragment(nestedCards.get(count));
 
+                else{
+                    getMatchs();
+                    fillQueue();
+                    replaceFragment(nestedQueue.poll());
+
+                }
             }
         });
 
         dislikeObject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                count++;
-                if(count == LOADING_SIZE){
-                    fillFragments();
+
+                if(active) {
+                    if (nestedQueue.isEmpty()) {
+                        loadBlankFragment();
+                    } else {
+                        replaceFragment(nestedQueue.poll());
+                    }
                 }
-                replaceFragment(nestedCards.get(count));
+
+                  else{
+                    getMatchs();
+                    fillQueue();
+                    replaceFragment(nestedQueue.poll());
+                }
+
 
 
             }
@@ -115,13 +179,17 @@ public class SwipeButtonsFragment extends Fragment {
 
     }
 
-    private NestedInfoCard loadFragment(){
+    private NestedInfoCard loadFragment(Match user){
         //Need to add in a query to get name description and picture
-
-
+        String u = user.getMatchName();
+        Bitmap pic = user.getMatchImage();
+        String desc = user.getMatchNumber();
+        byte[] picture  = DatabaseHandler.createByteArray(pic);
 
         Bundle b = new Bundle();
-        b.putString("UserEmail", userName);
+        b.putString("UserName", u);
+        b.putString("Description", desc);
+       // b.putByteArray("pic", picture);
         NestedInfoCard nest = new NestedInfoCard();
         nest.setArguments(b);
         Log.d("tag","Fragment added to stack");
@@ -132,18 +200,19 @@ public class SwipeButtonsFragment extends Fragment {
         transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_match_frame,nest,"TAG").commit();
         Log.d("Fragment","Replaced");
+        active = true;
     }
 
-    private void fillFragments(){
-        count = 0;
-
-        nestedCards.clear();
-        for(int i = 0; i < LOADING_SIZE; i++){
-            NestedInfoCard card = loadFragment();
-            nestedCards.add(card);
-        }
-    }
-    //TODO dont match if matched recently
+//    private void fillFragments(){
+//        count = 0;
+//
+//        nestedCards.clear();
+//        for(int i = 0; i < LOADING_SIZE; i++){
+//            NestedInfoCard card = loadFragment();
+//            nestedCards.add(card);
+//        }
+//    }
+//    //TODO dont match if matched recently
     private void getNewMatchs(){
         //users email
         DatabaseReference mUserRef = FirebaseDatabase.getInstance().getReference().child("UserLocation").child("haymakerStirrat%40gmail%2Ecom");
@@ -228,4 +297,16 @@ public class SwipeButtonsFragment extends Fragment {
         });
     }
 
+    private void loadBlankFragment(){
+        transaction = getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.fragment_match_frame, blank, "TAG").commit();
+        active = false;
+    }
+
+    private void fillQueue(){
+        for(int i = 0; i < matchs.size(); i++){
+            NestedInfoCard card = loadFragment(matchs.get(i));
+            nestedQueue.add(card);
+        }
+    }
 }

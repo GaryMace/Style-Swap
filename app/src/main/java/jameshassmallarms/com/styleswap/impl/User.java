@@ -127,6 +127,8 @@ public class User {
     public Match toMatch(){
         Match m = new Match();
         m.setMatchName(this.getName());
+        m.setMatchImage(this.img);
+        //m.setbio = this.bio;
         return m;
     }
 }

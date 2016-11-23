@@ -20,6 +20,8 @@ import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 
+import static jameshassmallarms.com.styleswap.R.drawable.james;
+
 /**
  * Created by Alan on 25/10/2016.
  */
@@ -57,14 +59,17 @@ public class NestedInfoCard extends Fragment {
         userPic = (ImageView) root.findViewById(R.id.fragment_swipe_picture);
         Bundle b = getArguments();
         if (b != null) {
-            String user = b.getString("UserEmail");
+            String user = b.getString("UserName");
+            userName.setText(user);
+            description.setText("Testing the name only");
+            userPic.setImageResource(R.drawable.james);
             // getUserInfo(user);
-            test.download(userPic, user, "Dress");
+            /*test.download(userPic, user, "Dress");
             DatabaseReference tester = test.getUserItemDescription(user);
             test.executeIfExists(tester, q);
            // test.executeIfExists(tester, P);
             userName.setText("Kill me");
-
+*/
         }
         return root;
     }
