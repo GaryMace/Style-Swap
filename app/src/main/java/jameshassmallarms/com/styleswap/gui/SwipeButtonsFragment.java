@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -83,9 +84,8 @@ public class SwipeButtonsFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_swipe_buttons, container, false);
         blank = new BlankFragment();
-        linker = (Linker)getActivity();/*
+        linker = (Linker)getActivity();
         nestedCards = new ArrayList<NestedInfoCard>();
->>>>>>> Updated Login*/
         nestedCard = new NestedInfoCard();
         nestedQueue = new LinkedList<NestedInfoCard>();
 

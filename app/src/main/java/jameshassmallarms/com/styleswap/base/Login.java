@@ -21,6 +21,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
+import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 import jameshassmallarms.com.styleswap.messaging.MyFirebaseInstanceIDService;
 
 
@@ -71,8 +72,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 MyFirebaseInstanceIDService test = new MyFirebaseInstanceIDService();
                 test.onTokenRefresh();
 
-                finish();/*
-=======
+                finish();
                 if (submissionFilled()) {
                     final String userName = mUserName.getText().toString();
                     final String password = mUserPassword.getText().toString();
@@ -109,7 +109,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 } else {
                     Toast.makeText(getBaseContext(), "Email or password was left empty!", Toast.LENGTH_SHORT).show();
                 }
->>>>>>> Updated Login*/
             }
         });
         mLaunchRegister.setOnClickListener(this);
