@@ -60,7 +60,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 setResult(Activity.RESULT_OK, res);
                 FireBaseQueries firebase = new FireBaseQueries();
                 String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+<<<<<<< HEAD
 
+=======
+                
+>>>>>>> cfc71bb537deb9896f664899752e2886f5257fd6
                 firebase.getUserToken("Garymac@live.ie").setValue(refreshedToken);
 
                 finish();
@@ -109,4 +113,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
 
 
+<<<<<<< HEAD
 }
+=======
+}
+
+>>>>>>> cfc71bb537deb9896f664899752e2886f5257fd6
