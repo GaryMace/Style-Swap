@@ -45,7 +45,7 @@ public class FireBaseQueries {
 
     public void uploadImageView(ImageView image, String userID) {
 
-        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child(userID + "/" + "Dress");
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(userID + "/" + "Dress");
 
         image.setDrawingCacheEnabled(true);
         image.buildDrawingCache();
@@ -71,7 +71,7 @@ public class FireBaseQueries {
 
     public void download(final ImageView imageView, String username) {
 
-        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child(username + "/" + "Dress");
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(username + "/" + "Dress.png");
 
         final long ONE_MEGABYTE = 1024 * 1024;
         picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
