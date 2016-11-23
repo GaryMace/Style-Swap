@@ -52,6 +52,7 @@ import jameshassmallarms.com.styleswap.gui.EditProfileFragment;
 import jameshassmallarms.com.styleswap.gui.SwipeButtonsFragment;
 import jameshassmallarms.com.styleswap.gui.im.ChatIm;
 import jameshassmallarms.com.styleswap.gui.im.MatchListFragment;
+import jameshassmallarms.com.styleswap.gui.im.ProfileFragment;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
@@ -110,6 +111,7 @@ public class MainActivity extends AppCompatActivity
     private EditProfileFragment mEditProfile;
     private SwipeButtonsFragment mSwipeButtons;
     private MatchListFragment mMatchList;
+    private ProfileFragment mProfileFragment;
     private ChatIm mChat;
 
     //Queue of Users for SwipeButton
@@ -130,6 +132,7 @@ public class MainActivity extends AppCompatActivity
             mEditProfile = new EditProfileFragment();
             mSwipeButtons = new SwipeButtonsFragment();
             mMatchList = new MatchListFragment();
+            mProfileFragment = new ProfileFragment();
             mChat = new ChatIm();
         }
 
@@ -144,7 +147,7 @@ public class MainActivity extends AppCompatActivity
                 if (tabId == R.id.tab_profile) {
                     // The tab with id R.id.tab_favorites was selected,
                     // change your content accordingly.
-                    ft.replace(R.id.activity_main_fragment_container, mEditProfile, getString(R.string.fragment_bottom_bar_id)).commit();
+                    ft.replace(R.id.activity_main_fragment_container, mProfileFragment, getString(R.string.fragment_bottom_bar_id)).commit();
                 } else if (tabId == R.id.tab_search) {
                     ft.replace(R.id.activity_main_fragment_container, mSwipeButtons, getString(R.string.fragment_bottom_bar_id)).commit();
 
