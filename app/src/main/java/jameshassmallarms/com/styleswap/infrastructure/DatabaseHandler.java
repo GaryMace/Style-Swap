@@ -24,7 +24,7 @@ import jameshassmallarms.com.styleswap.impl.User;
  */
 
 public class DatabaseHandler extends SQLiteOpenHelper {
-    private static final String TAG = "handler";
+    private static final String TAG = "debug_db";
     private static final String DATABASE_NAME = "StyleSwap";
     private static final int DATABASE_VERSION = 7;
 
@@ -32,6 +32,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String R_ID = "id_remember";
     private static final String KEY_REMEMBER_EMAIL = "remember_mail";
     private static final String KEY_REMEMBER_PASSWORD = "remember_pass";
+    private static final String KEY_REMEMBER_ME = "remember_me";
 
     private static final String TABLE_USER = "userTable";
     private static final String U_ID = "id_user";
@@ -75,7 +76,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return "CREATE TABLE " + TABLE_REMEMBER_ME + " ( " +
             R_ID + " INTEGER PRIMARY KEY, " +
             KEY_REMEMBER_EMAIL + " TEXT, " +
-            KEY_REMEMBER_PASSWORD + " INTEGER )";
+            KEY_REMEMBER_PASSWORD + " TEXT, " +
+            KEY_REMEMBER_ME + " INTEGER )";
     }
 
     private String createUserTable() {
@@ -91,11 +93,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             KEY_USER_PIC_ID + " INTEGER )";
     }
 
-    public void addDetails(String email, int password) {
+    public void addDetails(String email, String password, int rememberMe) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_REMEMBER_EMAIL, email);
         values.put(KEY_REMEMBER_PASSWORD, password);
+        values.put(KEY_REMEMBER_ME, rememberMe);
         db.insert(TABLE_REMEMBER_ME, null, values);
         Log.d(TAG, "put in: " + values);
 
@@ -112,7 +115,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void updatePassword(int password) {
+    public void updateRememberMe(int rememberMe) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_REMEMBER_ME, rememberMe);
+        db.update(TABLE_REMEMBER_ME, values, R_ID + "=\'" + 1 + "\'", null);
+        Log.d(TAG, "updated table in: " + values);
+        db.close();
+    }
+
+    public void updatePassword(String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -122,7 +135,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public String getEmail() {
+    public String readEmail() {
         SQLiteDatabase db = this.getWritableDatabase();
 
         String selectQuery = "SELECT * FROM " + TABLE_REMEMBER_ME;
@@ -138,20 +151,47 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return email;
     }
 
-    public int getPassword() {
+    public String readPassword() {
         SQLiteDatabase db = this.getWritableDatabase();
 
         String selectQuery = "SELECT * FROM " + TABLE_REMEMBER_ME;
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        int email = 0;
+        String password = null;
         if (cursor.moveToFirst()) {
-            email = cursor.getInt(cursor.getColumnIndex(KEY_REMEMBER_PASSWORD));
+            password = cursor.getString(cursor.getColumnIndex(KEY_REMEMBER_PASSWORD));
             //usr.setImg(cursor.getBlob(cursor.getColumnIndex()));
             Log.d(TAG, "read user successfully with email");
         }
 
-        return email;
+        return password;
+    }
+
+    public boolean readRememberMe() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String selectQuery = "SELECT * FROM " + TABLE_REMEMBER_ME;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        int rememberMe = 0;
+        if (cursor.moveToFirst()) {
+            rememberMe = cursor.getInt(cursor.getColumnIndex(KEY_REMEMBER_ME));
+            //usr.setImg(cursor.getBlob(cursor.getColumnIndex()));
+            Log.d(TAG, "read user successfully with email");
+        }
+
+        if (rememberMe == 1)
+            return true;
+        else
+            return false;
+    }
+
+    public void deleteEntry() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(TABLE_REMEMBER_ME, R_ID + "=\'" + 1 + "\'", null);
+        Log.d(TAG, "deleted entry in Table");
+        db.close();
     }
 
 ///////////////////////////////////////////////////////////////////////////////

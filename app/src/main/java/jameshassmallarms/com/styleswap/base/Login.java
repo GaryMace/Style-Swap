@@ -7,14 +7,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 import jameshassmallarms.com.styleswap.messaging.MyFirebaseInstanceIDService;
 
@@ -22,9 +27,14 @@ import jameshassmallarms.com.styleswap.messaging.MyFirebaseInstanceIDService;
 public class Login extends AppCompatActivity implements View.OnClickListener {
     public static final String LOGIN_USER_EMAIL = "login_email";
     public static final String LOGIN_EXISTING_USER = "login_existing";
+    private static final String TAG = "debug_login";
+    private static final int REMEMBER_ME = 1;
+    private DatabaseHandler localDb;
+    private FireBaseQueries firebaseDb;
     private Button mLoginButton;
     private EditText mUserName, mUserPassword;
     private TextView mLaunchRegister;
+    private CheckBox mRememberMe;
 
 
     @Override
@@ -32,17 +42,17 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        firebaseDb = new FireBaseQueries();
+        localDb = new DatabaseHandler(getBaseContext());
+
         mUserName = (EditText) findViewById(R.id.activity_login_username);
-        mUserName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
         mUserPassword = (EditText) findViewById(R.id.activity_login_password);
         mLoginButton = (Button) findViewById(R.id.activity_login_button);
         mLaunchRegister = (TextView) findViewById(R.id.activity_login_launch_register);
+        mRememberMe = (CheckBox) findViewById(R.id.activity_login_remember_me);
+
+        loadRememberDataIfExists();
+
         mLoginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -61,7 +71,45 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 MyFirebaseInstanceIDService test = new MyFirebaseInstanceIDService();
                 test.onTokenRefresh();
 
-                finish();
+                finish();/*
+=======
+                if (submissionFilled()) {
+                    final String userName = mUserName.getText().toString();
+                    final String password = mUserPassword.getText().toString();
+                    //if ()
+                    executeIfExists(firebaseDb.getPassword(userName), new QueryMaster() {
+                        @Override
+                        public void run(DataSnapshot s) {
+                            String fbPassword = s.getValue(String.class);
+                            if (password.equals(fbPassword)) {      //Login successfully
+                                if (mRememberMe.isChecked()) {      //Do they want us to remember their login details
+                                    String storedEmail = localDb.readEmail();
+                                    if (storedEmail != null && !storedEmail.equals(userName)) { //If local details are out-of-date, update them.
+
+                                        localDb.updateEmail(userName);
+                                        localDb.updatePassword(fbPassword);
+                                        localDb.updateRememberMe(REMEMBER_ME);
+                                    } else if (storedEmail == null){
+                                        localDb.addDetails(userName, password, REMEMBER_ME);
+                                    }
+                                } else {
+                                    localDb.deleteEntry();
+                                }
+                                Log.d(TAG, "Login Successful: " + userName);
+                                Intent res = new Intent();
+                                res.putExtra(MainActivity.GET_LOGIN_STATE, LOGIN_EXISTING_USER);
+                                res.putExtra(LOGIN_USER_EMAIL, userName);
+                                setResult(Activity.RESULT_OK, res);
+                                finish();
+                            } else {
+                                Toast.makeText(getBaseContext(), "Whoops, password was wrong!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else {
+                    Toast.makeText(getBaseContext(), "Email or password was left empty!", Toast.LENGTH_SHORT).show();
+                }
+>>>>>>> Updated Login*/
             }
         });
         mLaunchRegister.setOnClickListener(this);
@@ -73,6 +121,40 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
          * and pass the email back!
          */
 
+    }
+
+    private void loadRememberDataIfExists() {
+        String savedEmail = localDb.readEmail();
+        if (savedEmail != null) {
+            mUserName.setText(savedEmail);
+            mUserPassword.setText(localDb.readPassword());
+            mRememberMe.setChecked(localDb.readRememberMe());
+        } else {
+            Log.d(TAG, "User didn't want to be remembered");
+        }
+    }
+
+    public void executeIfExists(DatabaseReference databaseReference, final QueryMaster q) {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    q.run(dataSnapshot);
+                } else {    //user name doesn;t exist
+                    Toast.makeText(getBaseContext(), "That UserName doesn't exist!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private boolean submissionFilled() {
+        return mUserName.getText() != null && mUserPassword.getText() != null;
     }
 
     @Override

@@ -24,7 +24,6 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.PendingResult;
@@ -128,6 +127,12 @@ public class MainActivity extends AppCompatActivity
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
         // ...but notify us that it happened.
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH, WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
+        mRequestingLocationUpdates = false;
+        mLastUpdateTime = "";
+
+        // Update values using data stored in the Bundle.
+        updateValuesFromBundle(savedInstanceState);
+
         if (mEditProfile == null) {
             mEditProfile = new EditProfileFragment();
             mSwipeButtons = new SwipeButtonsFragment();
@@ -156,14 +161,6 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-
-
-        mRequestingLocationUpdates = false;
-        mLastUpdateTime = "";
-
-        // Update values using data stored in the Bundle.
-        updateValuesFromBundle(savedInstanceState);
-
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
         // API.
         buildGoogleAPIClient();
@@ -413,13 +410,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean userLoggedIn() {
+    public boolean isUserLoggedIn() {
         return isUserLoggedIn;
     }
 
     @Override
     public void toggleUserLoggedIn() {
-        if (userLoggedIn()) {
+        if (isUserLoggedIn()) {
             isUserLoggedIn = false;
         } else {
             isUserLoggedIn = true;
@@ -428,7 +425,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public String getLoggedInUser() {
-        if (userLoggedIn())
+        if (isUserLoggedIn())
             return mUserLogin;
         else
             return null;
@@ -437,7 +434,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void setLoggedInUser(String user) {
         mUserLogin = user;
-        if (!userLoggedIn())
+        if (!isUserLoggedIn())
             toggleUserLoggedIn();
     }
 

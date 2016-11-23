@@ -80,7 +80,7 @@ public class ChatIm extends Fragment implements View.OnClickListener {
             msg_edittext.setText("");
 
             /** Test Messages*/
-            /*final ChatMessage chatMessage1 = new ChatMessage(userMe, userMatch,
+            final ChatMessage chatMessage1 = new ChatMessage(userMe, userMatch,
                 "Hello Joe! I like ducks", "" + random.nextInt(1000), true);
             chatMessage.setMsgID();
             chatMessage.body = message;
@@ -102,7 +102,7 @@ public class ChatIm extends Fragment implements View.OnClickListener {
             chatMessage.Time = DateTime.getCurrentTime();
             chatAdapter.add(chatMessage1);
             chatAdapter.add(chatMessage3);
-            chatAdapter.add(chatMessage2);*/
+            chatAdapter.add(chatMessage2);
 
             chatAdapter.add(chatMessage);
             chatAdapter.notifyDataSetChanged();

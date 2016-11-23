@@ -14,7 +14,7 @@ import jameshassmallarms.com.styleswap.impl.User;
 
 public interface Linker {
 
-    boolean userLoggedIn();
+    boolean isUserLoggedIn();
 
     void toggleUserLoggedIn();
 

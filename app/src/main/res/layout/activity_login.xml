@@ -58,6 +58,13 @@
         android:textSize="16sp"
         android:textColor="@color/colorPrimaryDark"/>
 
+    <CheckBox
+        android:id="@+id/activity_login_remember_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="Remember me?"/>
+
 
 
 </LinearLayout>

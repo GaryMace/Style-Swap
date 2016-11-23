@@ -127,6 +127,10 @@ public class FireBaseQueries {
         return getUserReferenceByEmail(email).child("phoneNumber");
     }
 
+    public DatabaseReference getPassword(String email) {
+        return getUserReferenceByEmail(email).child("password");
+    }
+
     public DatabaseReference getUserItemDescription(String email) {
         return getUserReferenceByEmail(email).child("itemDescription");
     }
