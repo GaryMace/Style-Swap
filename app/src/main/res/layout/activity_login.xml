@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"/>
 
     <EditText
-        android:id="@+id/etUsername"
+        android:id="@+id/activity_login_username"
         android:layout_width="match_parent"
         android:layout_marginBottom="10dp"
         android:textColor="@color/white"
@@ -31,7 +31,7 @@
         android:textColor="@color/colorPrimaryDark"/>
 
     <EditText
-        android:id="@+id/etPassword"
+        android:id="@+id/activity_login_password"
         android:layout_width="match_parent"
         android:layout_marginBottom="10dp"
         android:inputType="textPassword"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/ButtonLogin"
+        android:id="@+id/activity_login_button"
         android:text="Log in"
         android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
@@ -49,7 +49,7 @@
         android:background="@drawable/activity_app_startup_register"/>
 
     <TextView
-        android:id="@+id/LinkWithRegister"
+        android:id="@+id/activity_login_launch_register"
         android:layout_width="wrap_content"
         android:text="Sign Up here"
         android:layout_gravity="center_horizontal"

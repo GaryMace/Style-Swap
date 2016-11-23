@@ -2,23 +2,30 @@ package jameshassmallarms.com.styleswap.gui.im;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +33,7 @@ import java.util.List;
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.base.MainActivity;
 import jameshassmallarms.com.styleswap.impl.Match;
+import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
 import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
@@ -35,15 +43,20 @@ import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
  */
 
 public class MatchListFragment extends Fragment {
+    public static final String ARGUMENT_MATCH_IMAGE = "match_img";
+    public static final String ARGUMENT_MATCH_NAME = "match_name";
+    private static final String REVERT_TO_TAG = "match_list_fragment";
     private RecyclerView mMatchRecycler;
     private FireBaseQueries db;
     private MatchAdapter mAdapter;
-    private Linker linker;
+    private Linker linker;                      //Linker is an interface that lets us get cached data from MainActivity quickly
+    private FragmentManager fragmentManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_im, container, false);
+        fragmentManager = getActivity().getSupportFragmentManager();
 
         mMatchRecycler = (RecyclerView) view
                 .findViewById(R.id.fragment_im_recycler);
@@ -52,30 +65,17 @@ public class MatchListFragment extends Fragment {
         linker = (Linker) getActivity();
         db = new FireBaseQueries();
 
-        /*FireBaseQueries.executeIfExists(getPhonenumber("GaryMac@live.ie"), new Runnable{
-            for (DataSnapshot child: snapshot.getChildren()) {
-                String username = (String) child.child("username").getValue();
-                usernames.add(username);
-            }
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                EditFriendsActivity.this,
-                android.R.layout.simple_list_item_multiple_choice,
-                usernames);
-
-            mFriendsList.setAdapter(adapter);
-        }, other);*/
-//        test();
-//
-//        updateUI();
-
-        getMatches("Garymac@live.ie");
+        //TODO: Store cached matches in database, reload them so this doesn't skip layout due to empty adapter
+        //updateUI();
+        getMatches(linker.getLoggedInUser());   //Get matches from firebase for the current logged in user
 
         return view;
     }
 
+    //TODO: ignore first item in list! it's the dummy field
     public void getMatches(String email) {
         final DatabaseReference userRef;
-        userRef = db.getMatchedme(email);
+        userRef = db.getBothMatched(email);
 
         db.executeIfExists(userRef, new QueryMaster() {
             @Override
@@ -83,57 +83,55 @@ public class MatchListFragment extends Fragment {
                 GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
                 };
                 ArrayList<Match> update = s.getValue(t);
+                if (linker.getCachedMatches().isEmpty() ||
+                    update.size() > linker.getCachedMatches().size() ||
+                    update.size() < linker.getCachedMatches().size() ) {
 
-                if (linker.getCachedMatches().isEmpty()) {
-                    for (Match m : update) {
-                        linker.getCachedMatches().add(m);
-                    }
+                    linker.setCachedMatches(update);
                 }
-
                 updateUI();
             }
         });
     }
+    public void download(final ImageView imageView, String username, String imagename, final int position) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child(username + "/" + imagename);
 
-    private void test() {
-        if (linker.getCachedMatches().isEmpty()) {
-            Log.d("TAG", "Matches was empty");
-            Match m1 = new Match();
-            Bitmap img1 = BitmapFactory.decodeResource(getResources(), R.drawable.ja);
-            Bitmap img2 = BitmapFactory.decodeResource(getResources(), R.drawable.profilepicexample);
-            Bitmap img3 = BitmapFactory.decodeResource(getResources(), R.drawable.ja);
-            m1.setMatchImage(Bitmap.createScaledBitmap(img1, 200, 200, true));
-            m1.setMatchName("James");
-            m1.setMatchNumber("085 766 3464");
-            db.addMatch("haymakerStirrat@gmail.com", MainActivity.FIREBASE_IMATCHED, m1);
-            Match m2 = new Match();
-            m2.setMatchImage(Bitmap.createScaledBitmap(img2, 200, 200, true));
-            m2.setMatchName("Alan");
-            m2.setMatchNumber("082 766 2132");
+        final long ONE_MEGABYTE = 1024 * 1024;
+        picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                imageView.setImageBitmap(bmp);
+                linker.getCachedMatches()
+                    .get(position)
+                    .setMatchImage(((BitmapDrawable)imageView.getDrawable()).getBitmap());
 
-            Match m3 = new Match();
-            m3.setMatchImage(Bitmap.createScaledBitmap(img3, 200, 200, true));
-            m3.setMatchName("Stock");
-            m3.setMatchNumber("087 432 1234");
-            linker.addCachedMatch(m1);
-            linker.addCachedMatch(m2);
-            linker.addCachedMatch(m3);
-        }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
     }
 
     private void updateUI() {
-        if (mAdapter == null) {
-            mAdapter = new MatchAdapter(linker.getCachedMatches());
-        } else {
-            mAdapter.notifyDataSetChanged();
+        if (!linker.getCachedMatches().isEmpty()) {
+            if (mAdapter == null) {
+                mAdapter = new MatchAdapter(linker.getCachedMatches());
+            } else {
+                mAdapter.notifyDataSetChanged();
+            }
+            mMatchRecycler.setAdapter(mAdapter);
         }
-        mMatchRecycler.setAdapter(mAdapter);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         updateUI();
+        //getMatches(linker.getLoggedInUser());
     }
 
 
@@ -154,7 +152,7 @@ public class MatchListFragment extends Fragment {
         @Override
         public void onBindViewHolder(MatchHolder holder, int position) {
             Match match = matches.get(position);
-            holder.bindMatch(match);
+            holder.bindMatch(match);                                //Bind this.match to a visible list item in the adapter
 
         }
 
@@ -166,12 +164,13 @@ public class MatchListFragment extends Fragment {
         public void removeAt(int position) {
             linker.getCachedMatches().remove(position);
 
-            db.removeMatch("Garymac@live.ie", "bothMatched", position);
+            db.removeMatch(linker.getLoggedInUser(), MainActivity.FIREBASE_BOTH_MATCHED, position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, matches.size());
         }
 
         public class MatchHolder extends RecyclerView.ViewHolder {
+            private LinearLayout mListItemContainer;
             private TextView matchName;
             private Button deleteMatch;
             private ImageView matchImage;
@@ -179,6 +178,7 @@ public class MatchListFragment extends Fragment {
 
             public MatchHolder(View itemView) {
                 super(itemView);
+                mListItemContainer = (LinearLayout) itemView.findViewById(R.id.fragment_im_list_item);
                 matchImage = (ImageView) itemView.findViewById(R.id.fragment_im_match_image);
                 matchName = (TextView) itemView.findViewById(R.id.fragment_im_match_name);
                 matchNumber = (TextView) itemView.findViewById(R.id.fragment_im_match_contact);
@@ -190,18 +190,42 @@ public class MatchListFragment extends Fragment {
                         int newPosition = getAdapterPosition();
 
                         Log.d("TAG", "removed Image at position" + newPosition);
-                        removeAt(getAdapterPosition());
-                        notifyItemRangeChanged(newPosition, matches.size());
+                        removeAt(getAdapterPosition());                                 //Remove this user from my bothMatched list locally and on Firebase
+                        notifyItemRangeChanged(newPosition, matches.size());            //Remove user from visible list locally
                         notifyItemChanged(newPosition);
                     }
                 });   //why did it take me so long to realise this was missing....FFUUUUU
+                mListItemContainer.setOnLongClickListener(new View.OnLongClickListener() {
+
+                    @Override
+                    public boolean onLongClick(View v) {                        //Launch IM fragment and add this fragment to back stack
+                        Log.d("TAG", "Clicked Match, launching im fragment");
+                        FragmentTransaction ft = fragmentManager.beginTransaction();
+                        ChatIm chatFragment = new ChatIm();
+
+                        Bundle argData = new Bundle();
+                        //Pass match data to fragment we're about to launch
+                        byte[] img = DatabaseHandler.createByteArray(((BitmapDrawable)matchImage.getDrawable()).getBitmap());
+                        argData.putByteArray(ARGUMENT_MATCH_IMAGE, img);
+                        argData.putString(ARGUMENT_MATCH_NAME, matchName.getText().toString());
+                        chatFragment.setArguments(argData);
+
+                        ft.addToBackStack(MatchListFragment.REVERT_TO_TAG);
+                        ft.replace(R.id.activity_main_fragment_container, chatFragment, getString(R.string.fragment_im_id)).commit();
+                        return false;
+                    }
+                });
             }
 
             public void bindMatch(Match m) {
                 matchName.setText(m.getMatchName());
                 matchNumber.setText(m.getMatchNumber());
-                db.download(matchImage, m.getMatchName(), "Dress");
-                //matchImage.setImageBitmap(m.getMatchImage());
+
+                if (m.getMatchImage() != null)                  //We already have this matches image locally so don't re-download it
+                    matchImage.setImageBitmap(m.getMatchImage());
+                else
+                    download(matchImage, m.getMatchMail(), "Dress", getAdapterPosition());  //We don't have it locally so download it
+                Log.d("TAG", "Mail is: \"" +m.getMatchMail() + "\"");
             }
         }
     }

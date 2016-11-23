@@ -65,6 +65,7 @@ public class NestedInfoCard extends Fragment {
             userPic.setImageResource(R.drawable.james);
             // getUserInfo(user);
             /*test.download(userPic, user, "Dress");
+            test.download(userPic, user);
             DatabaseReference tester = test.getUserItemDescription(user);
             test.executeIfExists(tester, q);
            // test.executeIfExists(tester, P);

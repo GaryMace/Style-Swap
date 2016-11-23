@@ -294,13 +294,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    private byte[] createByteArray(Bitmap bitmap) {
+    public static byte[] createByteArray(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         return stream.toByteArray();
     }
 
-    private Bitmap getBitmapFromBlob(byte[] bytes) {
+    public static Bitmap getBitmapFromBlob(byte[] bytes) {
         return BitmapFactory.decodeByteArray(
             bytes, 0,
             bytes.length);

@@ -42,6 +42,7 @@ import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
+import jameshassmallarms.com.styleswap.infrastructure.Linker;
 import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 
 import static android.R.attr.description;
@@ -57,14 +58,14 @@ public class SwipeButtonsFragment extends Fragment {
     private ImageButton likeObject;
     private  ImageButton dislikeObject;
     private String description;
-    private TextView userName;
+    private TextView userNameView;
     private Fragment nestedCard;
     private FragmentTransaction transaction;
     private ArrayList<NestedInfoCard> nestedCards;
     private Queue<NestedInfoCard> nestedQueue;
+    private String userName = "haymakerStirrat@gmail.com";
     private boolean active;
-    private int count;
-   // private String userName = "haymakerStirrat@gmail.com";
+    private Linker linker;
     private FireBaseQueries fireBaseQueries = new FireBaseQueries();
     private ArrayList<Match> matchs = new ArrayList<>();
     private DatabaseHandler convert = new DatabaseHandler(getContext());
@@ -79,7 +80,7 @@ public class SwipeButtonsFragment extends Fragment {
     QueryMaster P = new QueryMaster() {
         @Override
         public void run(DataSnapshot s) {
-            userName.setText(s.getValue().toString());
+            userNameView.setText(s.getValue().toString());
         }
     };
 
@@ -88,10 +89,10 @@ public class SwipeButtonsFragment extends Fragment {
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // set the view
+
         View root = inflater.inflate(R.layout.fragment_swipe_buttons, container, false);
-        count = 0;
         blank = new BlankFragment();
-        nestedCards = new ArrayList<NestedInfoCard>();
+        linker = (Linker)getActivity();
         nestedCard = new NestedInfoCard();
         nestedQueue = new LinkedList<NestedInfoCard>();
 
@@ -122,74 +123,70 @@ public class SwipeButtonsFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if(!matchs.isEmpty()){
+        if (!matchs.isEmpty()) {
             NestedInfoCard card = loadFragment(matchs.get(0));
             nestedQueue.add(card);
             matchs.remove(0);
-
             replaceFragment(nestedQueue.poll());
         }
+            Log.d("TAG", "prafff: " + linker.getLoggedInUser());
+            //System.out.println(linker.getLoggedInUser());
 
 
-        fillQueue();
+            fillQueue();
 
 
-        likeObject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(active) {
-                    if (nestedQueue.isEmpty()) {
-                        loadBlankFragment();
+            likeObject.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (active) {
+                        if (nestedQueue.isEmpty()) {
+                            loadBlankFragment();
+                        } else {
+                            replaceFragment(nestedQueue.poll());
+                        }
                     } else {
+                        getMatchs();
+                        fillQueue();
                         replaceFragment(nestedQueue.poll());
+
                     }
                 }
+            });
 
-                else{
-                    getMatchs();
-                    fillQueue();
-                    replaceFragment(nestedQueue.poll());
+            dislikeObject.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                }
-            }
-        });
-
-        dislikeObject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(active) {
-                    if (nestedQueue.isEmpty()) {
-                        loadBlankFragment();
+                    if (active) {
+                        if (nestedQueue.isEmpty()) {
+                            loadBlankFragment();
+                        } else {
+                            replaceFragment(nestedQueue.poll());
+                        }
                     } else {
+                        getMatchs();
+                        fillQueue();
                         replaceFragment(nestedQueue.poll());
                     }
+
+
                 }
+            });
 
-                  else{
-                    getMatchs();
-                    fillQueue();
-                    replaceFragment(nestedQueue.poll());
-                }
-
-
-
-            }
-        });
-
-    }
+        }
 
     private NestedInfoCard loadFragment(Match user){
         //Need to add in a query to get name description and picture
         String u = user.getMatchName();
         Bitmap pic = user.getMatchImage();
         String desc = user.getMatchNumber();
-        byte[] picture  = DatabaseHandler.createByteArray(pic);
+       // byte[] picture  = DatabaseHandler.createByteArray(pic);
 
         Bundle b = new Bundle();
         b.putString("UserName", u);
         b.putString("Description", desc);
-       // b.putByteArray("pic", picture);
+        //b.putByteArray("pic", picture);
         NestedInfoCard nest = new NestedInfoCard();
         nest.setArguments(b);
         Log.d("tag","Fragment added to stack");
@@ -215,7 +212,7 @@ public class SwipeButtonsFragment extends Fragment {
 //    //TODO dont match if matched recently
     private void getNewMatchs(){
         //users email
-        DatabaseReference mUserRef = FirebaseDatabase.getInstance().getReference().child("UserLocation").child("haymakerStirrat%40gmail%2Ecom");
+        DatabaseReference mUserRef = fireBaseQueries.getUserLocationReferenceByEmail(userName);
         final GeoFire geoFire = new GeoFire(mUserRef.getParent());
 
 
@@ -276,7 +273,7 @@ public class SwipeButtonsFragment extends Fragment {
 
     private void getMatchs(){
 
-        final DatabaseReference matchedMe = fireBaseQueries.getMatchedme("haymakerStirrat@gmail.com");//users email
+        final DatabaseReference matchedMe = fireBaseQueries.getMatchedme(userName);//users email
         fireBaseQueries.executeIfExists(matchedMe, new QueryMaster() {
             @Override
             public void run(DataSnapshot s) {

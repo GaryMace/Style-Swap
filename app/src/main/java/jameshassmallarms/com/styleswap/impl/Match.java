@@ -8,18 +8,19 @@ import android.graphics.Bitmap;
 
 public class Match {
     private String matchName;
+    private String matchMail;
     private Bitmap matchImage;
     private String matchNumber;
 
     public Match() {
     }
 
-    public String getMatchName() {
-        return matchName;
+    public String getMatchMail() {
+        return matchMail;
     }
 
-    public void setMatchName(String matchName) {
-        this.matchName = matchName;
+    public void setMatchMail(String matchMail) {
+        this.matchMail = matchMail;
     }
 
     public Bitmap getMatchImage() {
@@ -39,6 +40,14 @@ public class Match {
     }
 
     public String toString(){
-        return this.getMatchName();
+        return this.getMatchMail();
+    }
+
+    public String getMatchName() {
+        return matchName;
+    }
+
+    public void setMatchName(String matchName) {
+        this.matchName = matchName;
     }
 }

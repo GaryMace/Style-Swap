@@ -4,18 +4,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Xml;
 import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -26,9 +23,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
@@ -45,9 +39,13 @@ public class FireBaseQueries {
         return mRootRef.child("Users").child(encodeKey(email));
     }
 
-    public void uploadImageView(ImageView image, String userID, String imageName) {
+    public DatabaseReference getUserLocationReferenceByEmail(String email) {
+        return mRootRef.child("UserLocation").child(encodeKey(email));
+    }
 
-        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child(userID + "/" + imageName);
+    public void uploadImageView(ImageView image, String userID) {
+
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child(userID + "/" + "Dress");
 
         image.setDrawingCacheEnabled(true);
         image.buildDrawingCache();
@@ -71,9 +69,9 @@ public class FireBaseQueries {
         });
     }
 
-    public void download(final ImageView imageView, String username, String imagename) {
+    public void download(final ImageView imageView, String username) {
 
-        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child(username + "/" + imagename);
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child(username + "/" + "Dress");
 
         final long ONE_MEGABYTE = 1024 * 1024;
         picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -125,13 +123,6 @@ public class FireBaseQueries {
         return "Encoding Error";
     }
 
-    public ImageView getUserImage(String email, String imageName) {
-        ImageView imageView = null;
-        download(imageView, email, imageName);
-        return imageView;
-    }
-
-
     public DatabaseReference getUserNumber(String email) {
         return getUserReferenceByEmail(email).child("phoneNumber");
     }
@@ -140,7 +131,7 @@ public class FireBaseQueries {
         return getUserReferenceByEmail(email).child("itemDescription");
     }
 
-    public DatabaseReference getIMatched(String email) {
+    public DatabaseReference getBothMatched(String email) {
         return getUserReferenceByEmail(email).child("bothMatched");
     }
 
@@ -157,11 +148,15 @@ public class FireBaseQueries {
         mUserRef.setValue(newUser);
     }
 
+    public DatabaseReference getUserToken(String email) {
+        return getUserReferenceByEmail(email).child("messageToken");
+    }
+
     public void addMatch(String email, String matchType, final Match newMatch) {
         final DatabaseReference userRef;
 
         if (matchType.equals("bothMatched"))
-            userRef = getIMatched(email);
+            userRef = getBothMatched(email);
         else if (matchType.equals("matchedMe"))
             userRef = getMatchedme(email);
         else
