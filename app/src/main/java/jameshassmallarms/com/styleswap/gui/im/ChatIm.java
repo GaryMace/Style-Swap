@@ -1,7 +1,6 @@
 package jameshassmallarms.com.styleswap.gui.im;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,15 +16,19 @@ import java.util.Random;
 
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
+import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
 /**
  * Created by gary on 23/11/16.
  */
 
 public class ChatIm extends Fragment implements View.OnClickListener {
-    public static Bitmap img;
+    public static Bitmap match_img;                         //Matched users img
+    public static Bitmap my_img;                            //Logged in user img
+    private Linker linker;
     private EditText msg_edittext;
-    private String user1 = "khushi", user2 = "khushi1";
+    private String userMe;       //This is the logged in user
+    private String userMatch;                               //This is the matched user's name
     private Random random;
     public static ArrayList<ChatMessage> chatlist;
     public static ChatAdapter chatAdapter;
@@ -35,9 +38,14 @@ public class ChatIm extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_im_chat, container, false);
+        linker = (Linker) getActivity();
         random = new Random();
+
         Log.d("TAG", "Arg size: "+getArguments().size());
-        img = DatabaseHandler.getBitmapFromBlob(getArguments().getByteArray(MatchListFragment.ARGUMENT_MATCH_IMAGE));
+        my_img = linker.getUserProfilePic();
+        match_img = DatabaseHandler.getBitmapFromBlob(getArguments().getByteArray(MatchListFragment.ARGUMENT_MATCH_IMAGE));
+        userMe = linker.getLoggedInUser();
+        userMatch = getArguments().getString(MatchListFragment.ARGUMENT_MATCH_NAME);
 
         msg_edittext = (EditText) view.findViewById(R.id.messageEditText);
         msgListView = (ListView) view.findViewById(R.id.msgListView);
@@ -63,7 +71,7 @@ public class ChatIm extends Fragment implements View.OnClickListener {
     public void sendTextMessage(View v) {
         String message = msg_edittext.getEditableText().toString();
         if (!message.equalsIgnoreCase("")) {
-            final ChatMessage chatMessage = new ChatMessage(user1, user2,
+            final ChatMessage chatMessage = new ChatMessage(userMe, userMatch,
                 message, "" + random.nextInt(1000), true);
             chatMessage.setMsgID();
             chatMessage.body = message;
@@ -72,21 +80,21 @@ public class ChatIm extends Fragment implements View.OnClickListener {
             msg_edittext.setText("");
 
             /** Test Messages*/
-            /*final ChatMessage chatMessage1 = new ChatMessage(user1, user2,
+            /*final ChatMessage chatMessage1 = new ChatMessage(userMe, userMatch,
                 "Hello Joe! I like ducks", "" + random.nextInt(1000), true);
             chatMessage.setMsgID();
             chatMessage.body = message;
             chatMessage.Date = DateTime.getCurrentDate();
             chatMessage.Time = DateTime.getCurrentTime();
 
-            final ChatMessage chatMessage3 = new ChatMessage(user1, user2,
+            final ChatMessage chatMessage3 = new ChatMessage(userMe, userMatch,
                 "What about you?", "" + random.nextInt(1000), true);
             chatMessage.setMsgID();
             chatMessage.body = message;
             chatMessage.Date = DateTime.getCurrentDate();
             chatMessage.Time = DateTime.getCurrentTime();
 
-            final ChatMessage chatMessage2 = new ChatMessage(user1, user2,
+            final ChatMessage chatMessage2 = new ChatMessage(userMe, userMatch,
                 "FAAAACK, of course I like ducks,,,,", "" + random.nextInt(1000), false);
             chatMessage.setMsgID();
             chatMessage.body = message;

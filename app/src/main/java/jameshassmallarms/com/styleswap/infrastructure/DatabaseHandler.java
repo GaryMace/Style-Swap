@@ -28,6 +28,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "StyleSwap";
     private static final int DATABASE_VERSION = 7;
 
+    private static final String TABLE_REMEMBER_ME = "userRemember";
+    private static final String R_ID = "id_remember";
+    private static final String KEY_REMEMBER_EMAIL = "remember_mail";
+    private static final String KEY_REMEMBER_PASSWORD = "remember_pass";
+
     private static final String TABLE_USER = "userTable";
     private static final String U_ID = "id_user";
     private static final String KEY_USER_NAME = "user_name";
@@ -50,18 +55,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String CREATE_USER_TABLE = createUserTable();
-        String CREATE_IMAGE_TABLE = createImageTable();
+        //String CREATE_USER_TABLE = createUserTable();
+        //String CREATE_IMAGE_TABLE = createImageTable();
+        String CREATE_REMEBER_TABLE = createRememberMe();
 
-        sqLiteDatabase.execSQL(CREATE_USER_TABLE);
-        sqLiteDatabase.execSQL(CREATE_IMAGE_TABLE);
+        sqLiteDatabase.execSQL(CREATE_REMEBER_TABLE);
+        //sqLiteDatabase.execSQL(CREATE_IMAGE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_IMAGE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_REMEMBER_ME);
+        //sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
+        //sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_IMAGE);
         onCreate(sqLiteDatabase);
+    }
+
+    private String createRememberMe() {
+        return "CREATE TABLE " + TABLE_REMEMBER_ME + " ( " +
+            R_ID + " INTEGER PRIMARY KEY, " +
+            KEY_REMEMBER_EMAIL + " TEXT, " +
+            KEY_REMEMBER_PASSWORD + " INTEGER )";
     }
 
     private String createUserTable() {
@@ -76,6 +90,71 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             KEY_USER_BIO + " TEXT, " +
             KEY_USER_PIC_ID + " INTEGER )";
     }
+
+    public void addDetails(String email, int password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_REMEMBER_EMAIL, email);
+        values.put(KEY_REMEMBER_PASSWORD, password);
+        db.insert(TABLE_REMEMBER_ME, null, values);
+        Log.d(TAG, "put in: " + values);
+
+        db.close();
+    }
+
+    public void updateEmail(String newEmail) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_REMEMBER_EMAIL, newEmail);
+        db.update(TABLE_REMEMBER_ME, values, R_ID + "=\'" + 1 + "\'", null);
+        Log.d(TAG, "updated table in: " + values);
+        db.close();
+    }
+
+    public void updatePassword(int password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_REMEMBER_PASSWORD, password);
+        db.update(TABLE_REMEMBER_ME, values, R_ID + "=\'" + 1 + "\'", null);
+        Log.d(TAG, "updated table in: " + values);
+        db.close();
+    }
+
+    public String getEmail() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String selectQuery = "SELECT * FROM " + TABLE_REMEMBER_ME;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        String email = null;
+        if (cursor.moveToFirst()) {
+            email = cursor.getString(cursor.getColumnIndex(KEY_REMEMBER_EMAIL));
+            //usr.setImg(cursor.getBlob(cursor.getColumnIndex()));
+            Log.d(TAG, "read user successfully with email");
+        }
+
+        return email;
+    }
+
+    public int getPassword() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String selectQuery = "SELECT * FROM " + TABLE_REMEMBER_ME;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        int email = 0;
+        if (cursor.moveToFirst()) {
+            email = cursor.getInt(cursor.getColumnIndex(KEY_REMEMBER_PASSWORD));
+            //usr.setImg(cursor.getBlob(cursor.getColumnIndex()));
+            Log.d(TAG, "read user successfully with email");
+        }
+
+        return email;
+    }
+
+///////////////////////////////////////////////////////////////////////////////
 
     private String createImageTable() {
         return "CREATE TABLE " + TABLE_IMAGE + " ( " +

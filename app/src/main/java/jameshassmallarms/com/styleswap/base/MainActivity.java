@@ -8,6 +8,7 @@ import android.content.IntentSender;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -244,7 +245,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             cachedUsers = new PriorityQueue<>();
             isUserLoggedIn = false;
-            userProfileImg = null;  //this may need to be a database query?
+            userProfileImg = BitmapFactory.decodeResource(getResources(), R.drawable.ja);  //this may need to be a database query?
             userChangedImg = false;
             cachedMatches = new ArrayList<>();
             startAppStartupActivityForResult(); //Launch the start-up screen
