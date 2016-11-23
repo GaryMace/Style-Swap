@@ -2,6 +2,7 @@ package jameshassmallarms.com.styleswap.gui;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -139,18 +140,19 @@ public class SwipeButtonsFragment extends Fragment {
             likeObject.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (active) {
+
                         if (nestedQueue.isEmpty()) {
                             loadBlankFragment();
+                            getMatchs();
+                            fillQueue();
+                            replaceFragment(nestedQueue.poll());
                         } else {
                             replaceFragment(nestedQueue.poll());
+                            if(nestedQueue.size() < 2){
+                                getMatchs();
+                                fillQueue();
+                            }
                         }
-                    } else {
-                        getMatchs();
-                        fillQueue();
-                        replaceFragment(nestedQueue.poll());
-
-                    }
                 }
             });
 
@@ -158,17 +160,20 @@ public class SwipeButtonsFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    if (active) {
                         if (nestedQueue.isEmpty()) {
                             loadBlankFragment();
+                            getMatchs();
+                            fillQueue();
+                            replaceFragment(nestedQueue.poll());
+                            //Fix lifecycle
                         } else {
                             replaceFragment(nestedQueue.poll());
+                            if(nestedQueue.size() < 2){
+                                getMatchs();
+                                fillQueue();
+                            }
                         }
-                    } else {
-                        getMatchs();
-                        fillQueue();
-                        replaceFragment(nestedQueue.poll());
-                    }
+
 
 
                 }
@@ -176,17 +181,15 @@ public class SwipeButtonsFragment extends Fragment {
 
         }
 
-    private NestedInfoCard loadFragment(Match user){
+    private NestedInfoCard loadFragment(Match match){
         //Need to add in a query to get name description and picture
-        String u = user.getMatchName();
-        Bitmap pic = user.getMatchImage();
-        String desc = user.getMatchNumber();
-       // byte[] picture  = DatabaseHandler.createByteArray(pic);
-
+        String u = match.getMatchName();
+        String desc = match.getMatchBio();
+        String email = match.getMatchMail();
         Bundle b = new Bundle();
         b.putString("UserName", u);
         b.putString("Description", desc);
-        //b.putByteArray("pic", picture);
+        b.putString("Email" ,email);
         NestedInfoCard nest = new NestedInfoCard();
         nest.setArguments(b);
         Log.d("tag","Fragment added to stack");
@@ -297,7 +300,6 @@ public class SwipeButtonsFragment extends Fragment {
     private void loadBlankFragment(){
         transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.fragment_match_frame, blank, "TAG").commit();
-        active = false;
     }
 
     private void fillQueue(){
@@ -306,4 +308,5 @@ public class SwipeButtonsFragment extends Fragment {
             nestedQueue.add(card);
         }
     }
+
 }

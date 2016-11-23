@@ -60,9 +60,11 @@ public class NestedInfoCard extends Fragment {
         Bundle b = getArguments();
         if (b != null) {
             String user = b.getString("UserName");
+            String email = b.getString("Email");
+            String desc = b.getString("Description");
             userName.setText(user);
-            description.setText("Testing the name only");
-            userPic.setImageResource(R.drawable.james);
+            description.setText(desc);
+            test.download(userPic,email);
             // getUserInfo(user);
             /*test.download(userPic, user, "Dress");
             test.download(userPic, user);
@@ -75,9 +77,7 @@ public class NestedInfoCard extends Fragment {
         return root;
     }
 
-   private void getUserInfo(String u){
-       userName.setText(u);
-   }
+
 
 
 

@@ -11,6 +11,7 @@ public class Match {
     private String matchMail;
     private Bitmap matchImage;
     private String matchNumber;
+    private String matchBio;
 
     public Match() {
     }
@@ -50,4 +51,8 @@ public class Match {
     public void setMatchName(String matchName) {
         this.matchName = matchName;
     }
+
+    public void setMatchBio(String matchBio){this.matchBio = matchBio;}
+
+    public String getMatchBio(){return matchBio;}
 }
