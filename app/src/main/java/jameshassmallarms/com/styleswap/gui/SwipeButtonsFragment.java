@@ -98,10 +98,9 @@ public class SwipeButtonsFragment extends Fragment {
         nestedQueue = new LinkedList<NestedInfoCard>();
 
 
-
+        //System.out.println(linker.getLoggedInUser());
         likeObject = (ImageButton) root.findViewById(R.id.fragment_yes_button);
         dislikeObject = (ImageButton) root.findViewById(R.id.fragment_no_button);
-        getMatchs();
 
         if(matchs.isEmpty()){
             loadBlankFragment();
@@ -123,7 +122,10 @@ public class SwipeButtonsFragment extends Fragment {
 
     public void onStart() {
         super.onStart();
+//        if (userName.equals(null))
+//            userName = linker.getLoggedInUser();
 
+        getMatchs();
         if (!matchs.isEmpty()) {
             NestedInfoCard card = loadFragment(matchs.get(0));
             nestedQueue.add(card);
@@ -132,7 +134,7 @@ public class SwipeButtonsFragment extends Fragment {
         }
             Log.d("TAG", "prafff: " + linker.getLoggedInUser());
             //System.out.println(linker.getLoggedInUser());
-
+        //System.out.println(linker.getLoggedInUser());
 
             fillQueue();
 
@@ -276,6 +278,8 @@ public class SwipeButtonsFragment extends Fragment {
 
     private void getMatchs(){
 
+//        if (userName.equals(null))
+//            return;
         final DatabaseReference matchedMe = fireBaseQueries.getMatchedme(userName);//users email
         fireBaseQueries.executeIfExists(matchedMe, new QueryMaster() {
             @Override
