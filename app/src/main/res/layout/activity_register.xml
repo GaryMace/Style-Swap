@@ -19,7 +19,7 @@
             android:text="Name" />
 
         <EditText
-            android:id="@+id/etName"
+            android:id="@+id/activity_register_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
@@ -34,7 +34,7 @@
             android:text="Email" />
 
         <EditText
-            android:id="@+id/etEmail"
+            android:id="@+id/activity_register_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
@@ -49,7 +49,7 @@
             android:text="Age" />
 
         <EditText
-            android:id="@+id/etAge"
+            android:id="@+id/activity_register_age"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
@@ -64,7 +64,7 @@
             android:text="Phone Number" />
 
         <EditText
-            android:id="@+id/etPhoneNumber"
+            android:id="@+id/activity_register_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
@@ -81,7 +81,7 @@
 
         <!-- just use email for username-->
         <EditText
-            android:id="@+id/etUsername"
+            android:id="@+id/activity_register_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
@@ -96,7 +96,7 @@
             android:text="Password" />
 
         <EditText
-            android:id="@+id/etPassword"
+            android:id="@+id/activity_register_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -112,7 +112,7 @@
             android:text="Dress Size" />
 
         <EditText
-            android:id="@+id/etDressSize"
+            android:id="@+id/activity_register_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"

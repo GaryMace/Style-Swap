@@ -55,7 +55,7 @@ public class SwipeButtonsFragment extends Fragment {
     private FragmentTransaction transaction;
     private ArrayList<NestedInfoCard> nestedCards;
     private int count;
-    private Linker linker = (Linker)getActivity();
+    private Linker linker;
     private String userName = "haymakerStirrat@gmail.com";
     private FireBaseQueries fireBaseQueries = new FireBaseQueries();
     private ArrayList<Match> matchs = new ArrayList<>();
@@ -68,6 +68,8 @@ public class SwipeButtonsFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_swipe_buttons, container, false);
         count = 0;
+        linker = (Linker)getActivity();
+
         nestedCards = new ArrayList<NestedInfoCard>();
         nestedCard = new NestedInfoCard();
         transaction = getChildFragmentManager().beginTransaction();
@@ -84,6 +86,7 @@ public class SwipeButtonsFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        Log.d("TAG", "prafff: " +linker.getLoggedInUser());
         //System.out.println(linker.getLoggedInUser());
         for(int i = 0; i < LOADING_SIZE; i++){
             NestedInfoCard card = loadFragment();

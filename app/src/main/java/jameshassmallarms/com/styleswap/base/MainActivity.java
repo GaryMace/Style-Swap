@@ -49,6 +49,7 @@ import java.util.Queue;
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.gui.EditProfileFragment;
 import jameshassmallarms.com.styleswap.gui.SwipeButtonsFragment;
+import jameshassmallarms.com.styleswap.gui.im.ChatIm;
 import jameshassmallarms.com.styleswap.gui.im.MatchListFragment;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
@@ -108,6 +109,7 @@ public class MainActivity extends AppCompatActivity
     private EditProfileFragment mEditProfile;
     private SwipeButtonsFragment mSwipeButtons;
     private MatchListFragment mMatchList;
+    private ChatIm mChat;
 
     //Queue of Users for SwipeButton
     private Queue<User> cachedUsers;
@@ -127,6 +129,7 @@ public class MainActivity extends AppCompatActivity
             mEditProfile = new EditProfileFragment();
             mSwipeButtons = new SwipeButtonsFragment();
             mMatchList = new MatchListFragment();
+            mChat = new ChatIm();
         }
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.activity_main_bottombar);
@@ -198,7 +201,7 @@ public class MainActivity extends AppCompatActivity
                     mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
                     mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
                     String password = data.getExtras().getString(Register.REGISTER_PASSWORD);   //send this to firebase instantly then remove our reference to it
-                    Log.d(TAG, "User registered");
+                    Log.d(TAG, "User registered to email: " + mUserLogin);
                 }
 
             }
