@@ -6,6 +6,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -39,15 +42,19 @@ import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
  */
 
 public class MatchListFragment extends Fragment {
+    private static final String REVERT_TO_TAG = "match_list_fragment";
     private RecyclerView mMatchRecycler;
     private FireBaseQueries db;
     private MatchAdapter mAdapter;
     private Linker linker;
+    private FragmentManager fragmentManager;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_im, container, false);
+        fragmentManager = getActivity().getSupportFragmentManager();
 
         mMatchRecycler = (RecyclerView) view
                 .findViewById(R.id.fragment_im_recycler);
@@ -161,6 +168,7 @@ public class MatchListFragment extends Fragment {
         }
 
         public class MatchHolder extends RecyclerView.ViewHolder {
+            private LinearLayout mListItemContainer;
             private TextView matchName;
             private Button deleteMatch;
             private ImageView matchImage;
@@ -168,6 +176,7 @@ public class MatchListFragment extends Fragment {
 
             public MatchHolder(View itemView) {
                 super(itemView);
+                mListItemContainer = (LinearLayout) itemView.findViewById(R.id.fragment_im_list_item);
                 matchImage = (ImageView) itemView.findViewById(R.id.fragment_im_match_image);
                 matchName = (TextView) itemView.findViewById(R.id.fragment_im_match_name);
                 matchNumber = (TextView) itemView.findViewById(R.id.fragment_im_match_contact);
@@ -184,6 +193,18 @@ public class MatchListFragment extends Fragment {
                         notifyItemChanged(newPosition);
                     }
                 });   //why did it take me so long to realise this was missing....FFUUUUU
+                mListItemContainer.setOnLongClickListener(new View.OnLongClickListener() {
+
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Log.d("TAG", "Clicked Match, launching im fragment");
+                        FragmentTransaction ft = fragmentManager.beginTransaction();
+                        ChatIm chatFragment = new ChatIm();
+                        ft.addToBackStack(MatchListFragment.REVERT_TO_TAG);
+                        ft.replace(R.id.activity_main_fragment_container, chatFragment, getString(R.string.fragment_im_id)).commit();
+                        return false;
+                    }
+                });
             }
 
             public void bindMatch(Match m) {
