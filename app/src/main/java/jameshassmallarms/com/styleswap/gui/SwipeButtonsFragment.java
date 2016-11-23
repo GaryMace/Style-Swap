@@ -122,8 +122,8 @@ public class SwipeButtonsFragment extends Fragment {
 
     public void onStart() {
         super.onStart();
-//        if (userName.equals(null))
-//            userName = linker.getLoggedInUser();
+        if (userName.equals(null))
+            userName = linker.getLoggedInUser();
 
         getMatchs();
         if (!matchs.isEmpty()) {
@@ -278,8 +278,8 @@ public class SwipeButtonsFragment extends Fragment {
 
     private void getMatchs(){
 
-//        if (userName.equals(null))
-//            return;
+        if (userName.equals(null))
+            return;
         final DatabaseReference matchedMe = fireBaseQueries.getMatchedme(userName);//users email
         fireBaseQueries.executeIfExists(matchedMe, new QueryMaster() {
             @Override
