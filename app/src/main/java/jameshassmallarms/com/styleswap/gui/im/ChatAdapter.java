@@ -23,7 +23,7 @@ import jameshassmallarms.com.styleswap.R;
 public class ChatAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater = null;
-    ArrayList<ChatIm.ChatMessage> chatMessageList;
+    private ArrayList<ChatIm.ChatMessage> chatMessageList;
 
     public ChatAdapter(Activity activity, ArrayList<ChatIm.ChatMessage> list) {
         chatMessageList = list;
@@ -79,13 +79,13 @@ public class ChatAdapter extends BaseAdapter {
         // if message is mine then align to right
         if (message.isMine) {
             layout.setBackgroundResource(R.drawable.im_my_chat_bubble);
-            parent_layout.setGravity(Gravity.RIGHT);
+            parent_layout.setGravity(Gravity.END);
             msg.setTextColor(Color.WHITE);
         }
         // If not mine then align to left
         else {
             layout.setBackgroundResource(R.drawable.im_match_chat_bubble);
-            parent_layout.setGravity(Gravity.LEFT);
+            parent_layout.setGravity(Gravity.START);
             msg.setTextColor(Color.BLACK);
         }
         return vi;

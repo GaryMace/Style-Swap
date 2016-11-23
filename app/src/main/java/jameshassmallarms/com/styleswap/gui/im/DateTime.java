@@ -9,7 +9,7 @@ import java.util.Date;
  * Created by gary on 23/11/16.
  */
 
-public class CommonMethods {
+public class DateTime {
     private  static DateFormat dateFormat = new SimpleDateFormat("d MMM yyyy");
     private  static DateFormat timeFormat = new SimpleDateFormat("K:mma");
 

@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,8 +65,8 @@ public class ChatIm extends Fragment implements View.OnClickListener {
                 message, "" + random.nextInt(1000), true);
             chatMessage.setMsgID();
             chatMessage.body = message;
-            chatMessage.Date = CommonMethods.getCurrentDate();
-            chatMessage.Time = CommonMethods.getCurrentTime();
+            chatMessage.Date = DateTime.getCurrentDate();
+            chatMessage.Time = DateTime.getCurrentTime();
             msg_edittext.setText("");
 
             /** Test Messages*/
@@ -75,22 +74,22 @@ public class ChatIm extends Fragment implements View.OnClickListener {
                 "Hello Joe! I like ducks", "" + random.nextInt(1000), true);
             chatMessage.setMsgID();
             chatMessage.body = message;
-            chatMessage.Date = CommonMethods.getCurrentDate();
-            chatMessage.Time = CommonMethods.getCurrentTime();
+            chatMessage.Date = DateTime.getCurrentDate();
+            chatMessage.Time = DateTime.getCurrentTime();
 
             final ChatMessage chatMessage3 = new ChatMessage(user1, user2,
                 "What about you?", "" + random.nextInt(1000), true);
             chatMessage.setMsgID();
             chatMessage.body = message;
-            chatMessage.Date = CommonMethods.getCurrentDate();
-            chatMessage.Time = CommonMethods.getCurrentTime();
+            chatMessage.Date = DateTime.getCurrentDate();
+            chatMessage.Time = DateTime.getCurrentTime();
 
             final ChatMessage chatMessage2 = new ChatMessage(user1, user2,
                 "FAAAACK, of course I like ducks,,,,", "" + random.nextInt(1000), false);
             chatMessage.setMsgID();
             chatMessage.body = message;
-            chatMessage.Date = CommonMethods.getCurrentDate();
-            chatMessage.Time = CommonMethods.getCurrentTime();
+            chatMessage.Date = DateTime.getCurrentDate();
+            chatMessage.Time = DateTime.getCurrentTime();
             chatAdapter.add(chatMessage1);
             chatAdapter.add(chatMessage3);
             chatAdapter.add(chatMessage2);*/

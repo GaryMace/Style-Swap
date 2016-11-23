@@ -46,9 +46,8 @@ public class MatchListFragment extends Fragment {
     private RecyclerView mMatchRecycler;
     private FireBaseQueries db;
     private MatchAdapter mAdapter;
-    private Linker linker;
+    private Linker linker;                      //Linker is an interface that lets us get cached data from MainActivity quickly
     private FragmentManager fragmentManager;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,7 +64,7 @@ public class MatchListFragment extends Fragment {
 
         //TODO: Store cached matches in database, reload them so this doesn't skip layout due to empty adapter
         //updateUI();
-        getMatches(linker.getLoggedInUser());
+        getMatches(linker.getLoggedInUser());   //Get matches from firebase for the current logged in user
 
         return view;
     }
@@ -150,7 +149,7 @@ public class MatchListFragment extends Fragment {
         @Override
         public void onBindViewHolder(MatchHolder holder, int position) {
             Match match = matches.get(position);
-            holder.bindMatch(match);
+            holder.bindMatch(match);                                //Bind this.match to a visible list item in the adapter
 
         }
 
@@ -188,15 +187,15 @@ public class MatchListFragment extends Fragment {
                         int newPosition = getAdapterPosition();
 
                         Log.d("TAG", "removed Image at position" + newPosition);
-                        removeAt(getAdapterPosition());
-                        notifyItemRangeChanged(newPosition, matches.size());
+                        removeAt(getAdapterPosition());                                 //Remove this user from my bothMatched list locally and on Firebase
+                        notifyItemRangeChanged(newPosition, matches.size());            //Remove user from visible list locally
                         notifyItemChanged(newPosition);
                     }
                 });   //why did it take me so long to realise this was missing....FFUUUUU
                 mListItemContainer.setOnLongClickListener(new View.OnLongClickListener() {
 
                     @Override
-                    public boolean onLongClick(View v) {
+                    public boolean onLongClick(View v) {                        //Launch IM fragment and add this fragment to back stack
                         Log.d("TAG", "Clicked Match, launching im fragment");
                         FragmentTransaction ft = fragmentManager.beginTransaction();
                         ChatIm chatFragment = new ChatIm();
@@ -211,10 +210,10 @@ public class MatchListFragment extends Fragment {
                 matchName.setText(m.getMatchName());
                 matchNumber.setText(m.getMatchNumber());
 
-                if (m.getMatchImage() != null)
+                if (m.getMatchImage() != null)                  //We already have this matches image locally so don't re-download it
                     matchImage.setImageBitmap(m.getMatchImage());
                 else
-                    download(matchImage, m.getMatchMail(), "Dress", getAdapterPosition());
+                    download(matchImage, m.getMatchMail(), "Dress", getAdapterPosition());  //We don't have it locally so download it
                 Log.d("TAG", "Mail is: \"" +m.getMatchMail() + "\"");
             }
         }
