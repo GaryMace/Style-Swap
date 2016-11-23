@@ -65,14 +65,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 m.setMatchNumber("083 376 9282");
                 fb.addMatch("Garymac@live.ie", MainActivity.FIREBASE_BOTH_MATCHED, m);*/
 
-                Intent res = new Intent();
-                res.putExtra(MainActivity.GET_LOGIN_STATE, LOGIN_EXISTING_USER);
-                res.putExtra(LOGIN_USER_EMAIL, "Garymac@live.ie");
-                setResult(Activity.RESULT_OK, res);
-                MyFirebaseInstanceIDService test = new MyFirebaseInstanceIDService();
-                test.onTokenRefresh();
 
-                finish();
                 if (submissionFilled()) {
                     final String userName = mUserName.getText().toString();
                     final String password = mUserPassword.getText().toString();
