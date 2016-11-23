@@ -15,10 +15,12 @@ import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
@@ -58,13 +60,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
             @Override
             public void onClick(View v) {
-                /*FireBaseQueries fb = new FireBaseQueries();
-                Match m = new Match();
-                m.setMatchName("Nerthan");
-                m.setMatchMail("nerthandrake@gmail.com");
-                m.setMatchNumber("083 376 9282");
-                fb.addMatch("Garymac@live.ie", MainActivity.FIREBASE_BOTH_MATCHED, m);*/
-
+//                FireBaseQueries fb = new FireBaseQueries();
+//                Match m = new Match();
+//                m.setMatchName("Nerthan");
+//                m.setMatchMail("nerthandrake@gmail.com");
+//                m.setMatchNumber("083 376 9282");
+//                fb.addMatch("Garymac@live.ie", MainActivity.FIREBASE_BOTH_MATCHED, m);
+                System.out.println("aaa");
+                FirebaseDatabase.getInstance().getReference().child("fake").setValue("aaaa");
 
                 if (submissionFilled()) {
                     final String userName = mUserName.getText().toString();

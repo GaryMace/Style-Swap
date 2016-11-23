@@ -7,11 +7,15 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.geofire.GeoFire;
@@ -19,15 +23,19 @@ import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.firebase.geofire.LocationCallback;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import jameshassmallarms.com.styleswap.R;
@@ -56,9 +64,7 @@ public class SwipeButtonsFragment extends Fragment {
     private FragmentTransaction transaction;
     private ArrayList<NestedInfoCard> nestedCards;
     private Queue<NestedInfoCard> nestedQueue;
-    private String userName;
-    private int dressSize = 8;
-    private  int searchRadius = 10;
+    private String userName = "haymakerStirrat@gmail.com";
     private boolean active;
     private Linker linker;
     private FireBaseQueries fireBaseQueries = new FireBaseQueries();
@@ -88,12 +94,8 @@ public class SwipeButtonsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_swipe_buttons, container, false);
         blank = new BlankFragment();
         linker = (Linker)getActivity();
-        nestedCards = new ArrayList<NestedInfoCard>();
         nestedCard = new NestedInfoCard();
         nestedQueue = new LinkedList<NestedInfoCard>();
-
-        userName = linker.getLoggedInUser();
-        Log.d("TAG", "prafff: " + linker.getLoggedInUser());
 
 
         //System.out.println(linker.getLoggedInUser());
@@ -113,6 +115,30 @@ public class SwipeButtonsFragment extends Fragment {
         }
 
 
+
+
+        return root;
+    }
+
+    public void onStart() {
+        super.onStart();
+//        if (userName.equals(null))
+//            userName = linker.getLoggedInUser();
+
+        getMatchs();
+        if (!matchs.isEmpty()) {
+            NestedInfoCard card = loadFragment(matchs.get(0));
+            nestedQueue.add(card);
+            matchs.remove(0);
+            replaceFragment(nestedQueue.poll());
+        }
+        Log.d("TAG", "prafff: " + linker.getLoggedInUser());
+        //System.out.println(linker.getLoggedInUser());
+        //System.out.println(linker.getLoggedInUser());
+
+        fillQueue();
+
+
         likeObject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,9 +146,14 @@ public class SwipeButtonsFragment extends Fragment {
                 if (nestedQueue.isEmpty()) {
                     loadBlankFragment();
                     getMatchs();
+                    fillQueue();
+                    replaceFragment(nestedQueue.poll());
                 } else {
                     replaceFragment(nestedQueue.poll());
-
+                    if(nestedQueue.size() < 2){
+                        getMatchs();
+                        fillQueue();
+                    }
                 }
             }
         });
@@ -132,25 +163,25 @@ public class SwipeButtonsFragment extends Fragment {
             public void onClick(View v) {
 
                 if (nestedQueue.isEmpty()) {
+                    loadBlankFragment();
                     getMatchs();
+                    fillQueue();
+                    replaceFragment(nestedQueue.poll());
+                    //Fix lifecycle
                 } else {
-
+                    replaceFragment(nestedQueue.poll());
+                    if(nestedQueue.size() < 2){
+                        getMatchs();
+                        fillQueue();
+                    }
                 }
+
+
+
             }
         });
 
-        return root;
     }
-
-    public void onStart() {
-        super.onStart();
-        userName = linker.getLoggedInUser();
-        if (userName != null && nestedQueue.size() == 0){
-            getMatchs();
-            System.out.println("here");
-        }
-
-        }
 
     private NestedInfoCard loadFragment(Match match){
         //Need to add in a query to get name description and picture
@@ -174,7 +205,7 @@ public class SwipeButtonsFragment extends Fragment {
         active = true;
     }
 
-//    private void fillFragments(){
+    //    private void fillFragments(){
 //        count = 0;
 //
 //        nestedCards.clear();
@@ -194,7 +225,7 @@ public class SwipeButtonsFragment extends Fragment {
             @Override
             public void onLocationResult(String key, GeoLocation location) {
                 if (location != null) {
-                    GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), searchRadius);//my search radius
+                    GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), 10);//my search radius
                     geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
                         @Override
                         public void onKeyEntered(String key, GeoLocation location) {
@@ -204,7 +235,7 @@ public class SwipeButtonsFragment extends Fragment {
                                 public void run(DataSnapshot s) {
 
                                     User user = s.getValue(User.class);
-                                    if (user.getDressSize() == dressSize)//my dress size
+                                    if (user.getDressSize() == 8)//my dress size
                                         matchs.add(user.toMatch());
 
                                     System.out.println(matchs);
@@ -246,30 +277,26 @@ public class SwipeButtonsFragment extends Fragment {
     }
 
     private void getMatchs(){
-        System.out.println("here2+ " +userName);
-        final DatabaseReference matchedMe = fireBaseQueries.getUserReferenceByEmail("Garymac@live.ie");//users email
-        System.out.println(matchedMe);
 
+//        if (userName.equals(null))
+//            return;
+        final DatabaseReference matchedMe = fireBaseQueries.getMatchedme(userName);//users email
         fireBaseQueries.executeIfExists(matchedMe, new QueryMaster() {
             @Override
             public void run(DataSnapshot s) {
-                System.out.println("here3");
-                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {};
+                matchs.clear();
+                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
+                };
                 ArrayList<Match> update = s.getValue(t);
                 if (update.size() > 1){
                     for (int i = 1; i < update.size() ; i++) {
-
-                        NestedInfoCard card = loadFragment(update.get(i));
-                        nestedQueue.add(card);
-                        System.out.println(nestedQueue);
+                        matchs.add(update.get(i));
                         update.remove(i);
-                        i--;
                     }
-                    replaceFragment(nestedQueue.poll());
                     //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
                 }
 
-                //getNewMatchs();
+                getNewMatchs();
             }
         });
     }
