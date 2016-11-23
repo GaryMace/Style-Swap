@@ -27,6 +27,7 @@ import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import jameshassmallarms.com.styleswap.R;
@@ -55,7 +56,9 @@ public class SwipeButtonsFragment extends Fragment {
     private FragmentTransaction transaction;
     private ArrayList<NestedInfoCard> nestedCards;
     private Queue<NestedInfoCard> nestedQueue;
-    private String userName = "haymakerStirrat@gmail.com";
+    private String userName;
+    private int dressSize = 8;
+    private  int searchRadius = 10;
     private boolean active;
     private Linker linker;
     private FireBaseQueries fireBaseQueries = new FireBaseQueries();
@@ -89,6 +92,9 @@ public class SwipeButtonsFragment extends Fragment {
         nestedCard = new NestedInfoCard();
         nestedQueue = new LinkedList<NestedInfoCard>();
 
+        userName = linker.getLoggedInUser();
+        Log.d("TAG", "prafff: " + linker.getLoggedInUser());
+
 
         //System.out.println(linker.getLoggedInUser());
         likeObject = (ImageButton) root.findViewById(R.id.fragment_yes_button);
@@ -107,71 +113,42 @@ public class SwipeButtonsFragment extends Fragment {
         }
 
 
+        likeObject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                if (nestedQueue.isEmpty()) {
+                    loadBlankFragment();
+                    getMatchs();
+                } else {
+                    replaceFragment(nestedQueue.poll());
+
+                }
+            }
+        });
+
+        dislikeObject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (nestedQueue.isEmpty()) {
+                    getMatchs();
+                } else {
+
+                }
+            }
+        });
 
         return root;
     }
 
     public void onStart() {
         super.onStart();
-        if (userName.equals(null))
-            userName = linker.getLoggedInUser();
-
-        getMatchs();
-        if (!matchs.isEmpty()) {
-            NestedInfoCard card = loadFragment(matchs.get(0));
-            nestedQueue.add(card);
-            matchs.remove(0);
-            replaceFragment(nestedQueue.poll());
+        userName = linker.getLoggedInUser();
+        if (userName != null && nestedQueue.size() == 0){
+            getMatchs();
+            System.out.println("here");
         }
-            Log.d("TAG", "prafff: " + linker.getLoggedInUser());
-            //System.out.println(linker.getLoggedInUser());
-        //System.out.println(linker.getLoggedInUser());
-
-            fillQueue();
-
-
-            likeObject.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                        if (nestedQueue.isEmpty()) {
-                            loadBlankFragment();
-                            getMatchs();
-                            fillQueue();
-                            replaceFragment(nestedQueue.poll());
-                        } else {
-                            replaceFragment(nestedQueue.poll());
-                            if(nestedQueue.size() < 2){
-                                getMatchs();
-                                fillQueue();
-                            }
-                        }
-                }
-            });
-
-            dislikeObject.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                        if (nestedQueue.isEmpty()) {
-                            loadBlankFragment();
-                            getMatchs();
-                            fillQueue();
-                            replaceFragment(nestedQueue.poll());
-                            //Fix lifecycle
-                        } else {
-                            replaceFragment(nestedQueue.poll());
-                            if(nestedQueue.size() < 2){
-                                getMatchs();
-                                fillQueue();
-                            }
-                        }
-
-
-
-                }
-            });
 
         }
 
@@ -217,7 +194,7 @@ public class SwipeButtonsFragment extends Fragment {
             @Override
             public void onLocationResult(String key, GeoLocation location) {
                 if (location != null) {
-                    GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), 10);//my search radius
+                    GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), searchRadius);//my search radius
                     geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
                         @Override
                         public void onKeyEntered(String key, GeoLocation location) {
@@ -227,7 +204,7 @@ public class SwipeButtonsFragment extends Fragment {
                                 public void run(DataSnapshot s) {
 
                                     User user = s.getValue(User.class);
-                                    if (user.getDressSize() == 8)//my dress size
+                                    if (user.getDressSize() == dressSize)//my dress size
                                         matchs.add(user.toMatch());
 
                                     System.out.println(matchs);
@@ -269,26 +246,30 @@ public class SwipeButtonsFragment extends Fragment {
     }
 
     private void getMatchs(){
+        System.out.println("here2+ " +userName);
+        final DatabaseReference matchedMe = fireBaseQueries.getUserReferenceByEmail("Garymac@live.ie");//users email
+        System.out.println(matchedMe);
 
-        if (userName.equals(null))
-            return;
-        final DatabaseReference matchedMe = fireBaseQueries.getMatchedme(userName);//users email
         fireBaseQueries.executeIfExists(matchedMe, new QueryMaster() {
             @Override
             public void run(DataSnapshot s) {
-                matchs.clear();
-                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
-                };
+                System.out.println("here3");
+                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {};
                 ArrayList<Match> update = s.getValue(t);
                 if (update.size() > 1){
                     for (int i = 1; i < update.size() ; i++) {
-                        matchs.add(update.get(i));
+
+                        NestedInfoCard card = loadFragment(update.get(i));
+                        nestedQueue.add(card);
+                        System.out.println(nestedQueue);
                         update.remove(i);
+                        i--;
                     }
+                    replaceFragment(nestedQueue.poll());
                     //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
                 }
 
-                getNewMatchs();
+                //getNewMatchs();
             }
         });
     }
