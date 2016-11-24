@@ -1,9 +1,5 @@
-package jameshassmallarms.com.styleswap.gui;
+package jameshassmallarms.com.styleswap.gui.discover;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.nfc.Tag;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -27,18 +23,16 @@ import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.gui.BlankFragment;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
 import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
-
-import static android.R.attr.description;
 
 /**
  * Created by Alan on 25/10/2016.

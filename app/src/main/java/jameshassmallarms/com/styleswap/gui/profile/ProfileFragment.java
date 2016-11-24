@@ -1,4 +1,4 @@
-package jameshassmallarms.com.styleswap.gui.im;
+package jameshassmallarms.com.styleswap.gui.profile;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,12 +7,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import jameshassmallarms.com.styleswap.R;
-import jameshassmallarms.com.styleswap.gui.EditProfileFragment;
 
 public class ProfileFragment extends Fragment {
     private static final String REVERT_TO_TAG = "profile_fragment";

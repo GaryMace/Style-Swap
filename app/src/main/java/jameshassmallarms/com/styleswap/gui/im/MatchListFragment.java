@@ -32,7 +32,6 @@ import java.util.List;
 
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.base.MainActivity;
-import jameshassmallarms.com.styleswap.gui.EditProfileFragment;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
@@ -96,7 +95,7 @@ public class MatchListFragment extends Fragment {
     }
     public void download(final ImageView imageView, String username, String imagename, final int position) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-4075c.appspot.com").child(username + "/" + imagename);
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(username + "/" + imagename);
 
         final long ONE_MEGABYTE = 1024 * 1024;
         picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {

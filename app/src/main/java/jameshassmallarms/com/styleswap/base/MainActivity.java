@@ -47,11 +47,13 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 import jameshassmallarms.com.styleswap.R;
-import jameshassmallarms.com.styleswap.gui.EditProfileFragment;
-import jameshassmallarms.com.styleswap.gui.SwipeButtonsFragment;
+import jameshassmallarms.com.styleswap.gui.BlankFragment;
+import jameshassmallarms.com.styleswap.gui.im.TestIm;
+import jameshassmallarms.com.styleswap.gui.profile.EditProfileFragment;
+import jameshassmallarms.com.styleswap.gui.discover.SwipeButtonsFragment;
 import jameshassmallarms.com.styleswap.gui.im.ChatIm;
 import jameshassmallarms.com.styleswap.gui.im.MatchListFragment;
-import jameshassmallarms.com.styleswap.gui.im.ProfileFragment;
+import jameshassmallarms.com.styleswap.gui.profile.ProfileFragment;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
@@ -154,10 +156,10 @@ public class MainActivity extends AppCompatActivity
                     // change your content accordingly.
                     ft.replace(R.id.activity_main_fragment_container, mProfileFragment, getString(R.string.fragment_bottom_bar_id)).commit();
                 } else if (tabId == R.id.tab_search) {
-                    ft.replace(R.id.activity_main_fragment_container, mSwipeButtons, getString(R.string.fragment_bottom_bar_id)).commit();
+                    ft.replace(R.id.activity_main_fragment_container, new BlankFragment(), getString(R.string.fragment_bottom_bar_id)).commit();
 
                 } else if (tabId == R.id.tab_contact) {
-                    ft.replace(R.id.activity_main_fragment_container, mMatchList, getString(R.string.fragment_bottom_bar_id)).commit();
+                    ft.replace(R.id.activity_main_fragment_container, new TestIm(), getString(R.string.fragment_bottom_bar_id)).commit();
                 }
             }
         });
