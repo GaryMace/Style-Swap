@@ -1,6 +1,7 @@
 package jameshassmallarms.com.styleswap.infrastructure;
 
 import android.graphics.Bitmap;
+import android.widget.ImageView;
 
 import java.util.List;
 import java.util.Queue;
@@ -22,6 +23,8 @@ import jameshassmallarms.com.styleswap.impl.User;
  */
 public interface Linker {
 
+    String getAge();
+
     boolean isUserLoggedIn();
 
     void toggleUserLoggedIn();
@@ -30,9 +33,9 @@ public interface Linker {
 
     void setLoggedInUser(String user);
 
-    Bitmap getUserProfilePic();
+    ImageView getUserProfileImage();
 
-    void setUserProfilePic(Bitmap img);
+    Bitmap getUserProfilePic();
 
     void toggleUserChangedImg();
 
@@ -53,4 +56,11 @@ public interface Linker {
     Queue<User> getCachedUsers();
 
     void setCachedUsers(Queue<User> users);
+
+    String  getItemDescription();
+
+    String  getUserName();
+
+    String  getPhoneNumber();
+
 }

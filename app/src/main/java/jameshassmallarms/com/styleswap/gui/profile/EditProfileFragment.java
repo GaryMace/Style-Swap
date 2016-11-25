@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
+import jameshassmallarms.com.styleswap.infrastructure.Linker;
 import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 
 import static android.app.Activity.RESULT_OK;
@@ -32,11 +33,13 @@ import static android.app.Activity.RESULT_OK;
 
 public class EditProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
         private EditText itemDescription;
+        private EditText userNumber;
+        private EditText userName;
         private Button editProfileButton;
         private Button editProfileButton2;
-        private String userEmail = "haymakerStirrat@gmail.com";
+        private Linker linker;
+        private String userEmail = null;
         FireBaseQueries fireBaseQueries = new FireBaseQueries();
-        DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail(userEmail);//users email programatically
         ImageView imageView;
         private static final String REVERT_TO_TAG = "edit_profile_fragment";
         public Spinner spinner;
@@ -46,17 +49,56 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
                 super.onCreate(savedInstanceState);
 
                 View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+
                 editProfileButton = (Button) view.findViewById(R.id.editPhotoButton);
                 editProfileButton2 = (Button) view.findViewById(R.id.editPhotoButton2);
 
+                linker = (Linker) getActivity();
+
                 itemDescription = (EditText) view.findViewById(R.id.itemDescription);
+                itemDescription.setText(linker.getItemDescription());
+
+                userName = (EditText) view.findViewById(R.id.userName);
+                userName.setText(linker.getUserName());
+
+                userNumber = (EditText) view.findViewById(R.id.userNumber);
+                userNumber.setText(linker.getPhoneNumber());
+
+                userEmail = linker.getLoggedInUser();
 
                 imageView = (ImageView) view.findViewById(R.id.profileImage);
-                fireBaseQueries.download(imageView, userEmail);
+                imageView = linker.getUserProfileImage();
+
                 spinner = (Spinner) view.findViewById(R.id.spinner1);
                 ArrayAdapter adapter = ArrayAdapter.createFromResource(this.getActivity(),R.array.dress_sizes,android.R.layout.simple_spinner_item);
                 spinner.setAdapter(adapter);
                 spinner.setOnItemSelectedListener(this);
+
+                editProfileButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                                loadImagefromGallery(getView());
+                        }
+                });
+
+                editProfileButton2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                                //fireBaseQueries.getUserItemDescription(email).setV;
+                        final DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail(userEmail);
+                        fireBaseQueries.executeIfExists(mUserRef, new QueryMaster() {
+                                @Override
+                                public void run(DataSnapshot s) {
+                                        mUserRef.child("itemDescription").setValue(itemDescription.getText().toString());
+                                        mUserRef.child("name").setValue(userName.getText().toString());
+                                        mUserRef.child("phoneNum").setValue(userNumber.getText().toString());
+                                        mUserRef.child("dressSize").setValue(userNumber.getText().toString());
+                                }
+                        });
+                        getFragmentManager().popBackStack();
+
+                        }
+                });
                 return view;
 
         }
@@ -64,37 +106,6 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
 
         public void onStart() {
                 super.onStart();
-                editProfileButton2.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                                //fireBaseQueries.getUserItemDescription(email).setV;
-                                fireBaseQueries.executeIfExists(mUserRef, new QueryMaster() {
-                                        @Override
-                                        public void run(DataSnapshot s) {
-                                                mUserRef.child("itemDescription").setValue(itemDescription.getText().toString());
-                                                mUserRef.child("itemDescription").setValue(itemDescription.getText().toString());//replace with other edit texts
-                                                mUserRef.child("itemDescription").setValue(itemDescription.getText().toString());
-                                        }
-                                });
-                                FragmentManager manager = getActivity().getSupportFragmentManager();
-                                FragmentTransaction ft = manager.beginTransaction();
-                                ProfileFragment editProf = new ProfileFragment();
-
-
-                                ft.addToBackStack(EditProfileFragment.REVERT_TO_TAG);
-                                ft.replace(R.id.activity_main_fragment_container, editProf, getString(R.string.fragment_profile_id)).commit();
-
-                        }
-                });
-
-
-                editProfileButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                                loadImagefromGallery(getView());
-
-                        }
-                });
 
         }
 

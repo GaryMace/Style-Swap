@@ -18,7 +18,7 @@ public class User {
     private String email;
     private int dressSize;
     private String phoneNum;
-    private String bio;
+    private String itemDescription;
     private int age;
 
     private List<Match> bothMatched = new ArrayList<>();
@@ -32,7 +32,7 @@ public class User {
         this.password = password;
         this.dressSize = dressSize;
         this.phoneNum = phoneNum;
-
+        this.itemDescription = "My Dress!!";
         Match dummy = new Match();
         dummy.setMatchMail("Dummy so list exists");
         this.bothMatched.add(dummy);
@@ -47,12 +47,12 @@ public class User {
         this.email = email;
     }
 
-    public String getBio() {
-        return bio;
+    public String getItemDescription() {
+        return itemDescription;
     }
 
-    public void setBio(String bio) {
-        this.bio = bio;
+    public void setItemDescription(String itemDescription) {
+        this.itemDescription = itemDescription;
     }
 
     public String getPhoneNum() {
@@ -98,7 +98,7 @@ public class User {
         m.setMatchName(this.getName());
         //m.setbio = this.bio;
         m.setMatchMail(this.getEmail());
-        m.setMatchBio(this.getBio());
+        m.setMatchBio(this.getItemDescription());
         return m;
     }
 

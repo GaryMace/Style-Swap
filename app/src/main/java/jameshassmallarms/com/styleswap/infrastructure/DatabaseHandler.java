@@ -210,7 +210,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_USER_EMAIL, usr.getEmail());
         values.put(KEY_USER_PHONE, usr.getPhoneNum());
         values.put(KEY_USER_SIZE, usr.getDressSize());
-        values.put(KEY_USER_BIO, usr.getBio());
+        values.put(KEY_USER_BIO, usr.getItemDescription());
         values.put(KEY_USER_PIC_ID, "");
         db.insert(TABLE_USER, null, values);
         Log.d(TAG, "put in: " + values);
@@ -248,7 +248,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             usr = new User(email);
             usr.setName(cursor.getString(cursor.getColumnIndex(KEY_USER_NAME)));
             usr.setDressSize(cursor.getInt(cursor.getColumnIndex(KEY_USER_SIZE)));
-            usr.setBio(cursor.getString(cursor.getColumnIndex(KEY_USER_BIO)));
+            //usr.setBio(cursor.getString(cursor.getColumnIndex(KEY_USER_BIO)));
 
             //TODO: change the below to update based on GPS.
             //usr.setImg(cursor.getBlob(cursor.getColumnIndex()));
