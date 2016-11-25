@@ -98,6 +98,7 @@ public class User {
         m.setMatchName(this.getName());
         m.setMatchMail(this.getEmail());
         m.setMatchBio(this.getBio());
+        m.setMatchNumber(this.getPhoneNum());
 
         return m;
     }

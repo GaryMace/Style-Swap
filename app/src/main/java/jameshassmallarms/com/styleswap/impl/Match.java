@@ -31,6 +31,7 @@ public class Match {
     private String matchNumber;
     private String matchBio;
     private byte[] byteArray;
+    private String chatKey;
 
     public Match() {
     }
@@ -86,4 +87,9 @@ public class Match {
     public void setMatchBio(String matchBio){this.matchBio = matchBio;}
 
     public String getMatchBio(){return matchBio;}
+
+    public void setChatKey(String key){this.chatKey = key;}
+
+    public String getChatKey(){return chatKey;}
+
 }

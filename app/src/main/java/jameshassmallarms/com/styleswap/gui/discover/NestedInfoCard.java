@@ -35,6 +35,9 @@ public class NestedInfoCard extends Fragment {
     private TextView userName;
     private TextView description;
     private ImageView userPic;
+    private String email;
+    private String number;
+    private String user;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
@@ -50,10 +53,11 @@ public class NestedInfoCard extends Fragment {
         userPic = (ImageView) root.findViewById(R.id.fragment_swipe_picture);
         Bundle b = getArguments();
         if (b != null) {
-            String user = b.getString("UserName");
-            String email = b.getString("Email");
+            user = b.getString("UserName");
+            email = b.getString("Email");
             String desc = b.getString("Description");
             byte[] img = b.getByteArray("IMG");
+            number = b.getString("Num");
             Log.d("Debug_nestedCard", user);
             userName.setText(user);
             description.setText(desc);
@@ -69,7 +73,20 @@ public class NestedInfoCard extends Fragment {
             userName.setText("Kill me");
 */
         }
+
         return root;
+    }
+
+    public String getNestedEmail(){
+        return email;
+    }
+
+    public String getNumber(){
+        return number;
+    }
+
+    public String getName(){
+        return user;
     }
 
 

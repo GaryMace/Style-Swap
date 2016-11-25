@@ -38,6 +38,9 @@ public class FireBaseQueries {
     public DatabaseReference getUserReferenceByEmail(String email) {
         return mRootRef.child("Users").child(encodeKey(email));
     }
+    public DatabaseReference getChatRoot() {
+        return mRootRef.child("Chats");
+    }
 
     public DatabaseReference getUserLocationReferenceByEmail(String email) {
         return mRootRef.child("UserLocation").child(encodeKey(email));
@@ -145,6 +148,9 @@ public class FireBaseQueries {
 
     public DatabaseReference getMatchedme(String email) {
         return getUserReferenceByEmail(email).child("matchedMe");
+    }
+    public DatabaseReference createChatRoom(String chatRoomKey) {
+        return getChatRoot().child(chatRoomKey).child("messages");
     }
 
     public DatabaseReference getUserName(String email) {

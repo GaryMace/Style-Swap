@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -34,6 +35,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.base.MainActivity;
 import jameshassmallarms.com.styleswap.gui.BlankFragment;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
@@ -56,7 +58,6 @@ public class SwipeButtonsFragment extends Fragment {
     private TextView userNameView;
     private Fragment nestedCard;
     private FragmentTransaction transaction;
-    private ArrayList<NestedInfoCard> nestedCards;
     private Queue<NestedInfoCard> nestedQueue;
     private String userName;
     private int dressSize = 8;
@@ -90,7 +91,6 @@ public class SwipeButtonsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_swipe_buttons, container, false);
         blank = new BlankFragment();
         linker = (Linker) getActivity();
-        nestedCards = new ArrayList<NestedInfoCard>();
         nestedCard = new NestedInfoCard();
         nestedQueue = new LinkedList<NestedInfoCard>();
 
@@ -103,7 +103,7 @@ public class SwipeButtonsFragment extends Fragment {
         dislikeObject = (ImageButton) root.findViewById(R.id.fragment_no_button);
 
 
-            loadBlankFragment();
+        loadBlankFragment();
 //        } else {
 //            NestedInfoCard card = loadFragment(matchs.get(0));
 //            nestedQueue.add(card);
@@ -123,8 +123,53 @@ public class SwipeButtonsFragment extends Fragment {
                     if (userName != null)
                         getMatchs();
                 } else {
-                    replaceFragment(nestedQueue.poll());
+                    if (!isBlank) {
+                        executeIfExists(fireBaseQueries.getMatchedme(userName), new QueryMaster() {
+                            @Override
+                            public void run(DataSnapshot s) {
+                                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
+                                };
+                                ArrayList<Match> update = s.getValue(t);
+                                for (int i = 1; i < update.size(); i++) {
+                                    Match m = update.get(i);
+                                    if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
+                                       final String chatKey = FireBaseQueries.encodeKey(userName)
+                                                + FireBaseQueries.encodeKey(matchs.get(0).getMatchMail());
+                                        fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(userName), new QueryMaster() {
+                                            @Override
+                                            public void run(DataSnapshot s) {
+                                                Match nMatch = new Match();
+                                                nMatch.setMatchMail(matchs.get(0).getMatchMail());
+                                                nMatch.setMatchNumber(matchs.get(0).getMatchNumber());
+                                                nMatch.setMatchName(matchs.get(0).getMatchName());
+                                                nMatch.setChatKey(chatKey);
+                                                fireBaseQueries.addMatch(userName, MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
+                                            }
+                                        });
 
+                                        fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(matchs.get(0).getMatchMail()), new QueryMaster() {
+                                            @Override
+                                            public void run(DataSnapshot s) {
+                                                Match nMatch = new Match();
+                                                nMatch.setMatchMail(userName);
+                                                nMatch.setMatchNumber(linker.getNumber());
+                                                nMatch.setMatchName(linker.getName());
+                                                nMatch.setChatKey(chatKey);
+                                                fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
+                                            }
+                                        });
+
+                                        fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
+
+                                    }
+                                }
+                            }
+                        });
+                        //Run Queries
+                    }
+
+                    replaceFragment(nestedQueue.poll());
+                    matchs.remove(0);
                 }
             }
         });
@@ -161,11 +206,12 @@ public class SwipeButtonsFragment extends Fragment {
         String u = match.getMatchName();
         String desc = match.getMatchBio();
         String email = match.getMatchMail();
-        if ((match.getByteArray()) == null){
+        String number = match.getMatchNumber();
+        if ((match.getByteArray()) == null) {
             Log.d("Debug_swipe", "Empty match byte array");
         }
         byte[] image = match.getByteArray();
-        if(image == null){
+        if (image == null) {
             Log.d("IMAGE DOESn't Exist", "LAMEEEE");
         }
         Bundle b = new Bundle();
@@ -173,6 +219,7 @@ public class SwipeButtonsFragment extends Fragment {
         b.putString("Description", desc);
         b.putString("Email", email);
         b.putByteArray("IMG", image);
+        b.putString("Num", number);
         NestedInfoCard nest = new NestedInfoCard();
         nest.setArguments(b);
         Log.d("tag", "Fragment added to stack");
@@ -204,7 +251,7 @@ public class SwipeButtonsFragment extends Fragment {
         geoFire.setLocation(mUserRef.getKey(), new GeoLocation(linker.getDeviceLat(), linker.getDeviceLon()), new GeoFire.CompletionListener() {
             @Override
             public void onComplete(String key, DatabaseError error) {
-                if (error == null){
+                if (error == null) {
                     geoFire.getLocation(mUserRef.getKey(), new LocationCallback() {
                         @Override
                         public void onLocationResult(String key, GeoLocation location) {
@@ -261,7 +308,6 @@ public class SwipeButtonsFragment extends Fragment {
         });
 
 
-
     }
 
     private void getMatchs() {
@@ -273,12 +319,11 @@ public class SwipeButtonsFragment extends Fragment {
                 };
                 ArrayList<Match> update = s.getValue(t);
                 boolean replaceFlag = true;
-                    for (int i = 1; i < update.size(); ) {
-                       addToQueue(update.get(i));
-                        replaceFlag = false;
-                        update.remove(i);
-                    }
-                    //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
+                for (int i = 1; i < update.size(); ) {
+                    addToQueue(update.get(i));
+                    update.remove(i);
+                }
+                //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
 
                 getNewMatchs();
 
@@ -294,12 +339,11 @@ public class SwipeButtonsFragment extends Fragment {
     }
 
 
-
-
     public void addToQueue(final Match match) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(match.getMatchMail() + "/" + "Dress");
         Log.d("Username Check", match.getMatchName());
+
         final long ONE_MEGABYTE = 1024 * 1024;
         picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
@@ -307,10 +351,11 @@ public class SwipeButtonsFragment extends Fragment {
                 Log.d("User", match.getMatchMail());
                 match.setByteArray(bytes);
                 nestedQueue.add(loadFragment(match));
-                if (isBlank){
+                if (isBlank) {
                     replaceFragment(nestedQueue.poll());
                     isBlank = false;
                 }
+                matchs.add(match);
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -318,6 +363,29 @@ public class SwipeButtonsFragment extends Fragment {
             public void onFailure(@NonNull Exception exception) {
                 Log.d("Pic load Failed", "WHy");
                 // Handle any errors
+            }
+        });
+    }
+
+    public void executeIfExists(DatabaseReference databaseReference, final QueryMaster q) {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                    q.run(dataSnapshot);
+
+                else{
+                    Match match = new Match();
+                    match.setMatchName(userName);
+                    match.setMatchNumber(linker.getNumber());
+                    match.setMatchMail(linker.getMail());
+                    fireBaseQueries.addMatch(matchs.get(0).getMatchMail(),MainActivity.FIREBASE_MATCHED_ME,match);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
             }
         });
     }
