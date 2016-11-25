@@ -43,6 +43,24 @@ import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
  * Created by gary on 13/10/16.
  */
 
+/**
+ * MatchListFragment:
+ *
+ *              This Fragment is attached to the BarFragment. It will display all the current matches
+ *              that the logged in user has. Each Match is inflated to a recycle-view item that is
+ *              independently populated with information pulled from FireBase. This information is
+ *              stored in a list called cachedMatches in MainActivity so that if we tab change and go
+ *              back to this fragment we don't have to re-query firebase.
+ *
+ *              Instead the fragment checks for updates, if no updates from firebase are received then
+ *              it inflates the cached list from MainActivity which provides a fluid and instant user
+ *              experience.
+ *
+ *              When the user long clicks on a list item it opens up a chat fragment which allows real-time
+ *              instant messaging between the two users. You can also delete matches which removes
+ *              that match from your list, their list and also deletes the chat room between you.
+ *
+ */
 public class MatchListFragment extends Fragment {
     public static final String ARGUMENT_MATCH_IMAGE = "match_img";
     public static final String ARGUMENT_MATCH_NAME = "match_name";

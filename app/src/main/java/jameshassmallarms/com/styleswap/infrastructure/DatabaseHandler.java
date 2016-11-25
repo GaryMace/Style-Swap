@@ -210,8 +210,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_USER_EMAIL, usr.getEmail());
         values.put(KEY_USER_PHONE, usr.getPhoneNum());
         values.put(KEY_USER_SIZE, usr.getDressSize());
-        values.put(KEY_USER_LOCATION_LAT, usr.getLocationLat());
-        values.put(KEY_USER_LOCATION_LON, usr.getLocationLon());
         values.put(KEY_USER_BIO, usr.getBio());
         values.put(KEY_USER_PIC_ID, "");
         db.insert(TABLE_USER, null, values);
@@ -219,7 +217,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         values = new ContentValues();
         values.put(KEY_IMAGE_KEY, usr.getEmail());
-        values.put(KEY_IMAGE, createByteArray(usr.getImg()));           //Adds stock image on User being created.
+
         Log.d(TAG, "put in: " + values);
 
         db.insert(TABLE_IMAGE, null, values);
@@ -249,13 +247,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             Log.d(TAG, "attempting to read user with email: " + email);
             usr = new User(email);
             usr.setName(cursor.getString(cursor.getColumnIndex(KEY_USER_NAME)));
-            usr.setPhoneNum(cursor.getString(cursor.getColumnIndex(KEY_USER_PHONE)));
             usr.setDressSize(cursor.getInt(cursor.getColumnIndex(KEY_USER_SIZE)));
             usr.setBio(cursor.getString(cursor.getColumnIndex(KEY_USER_BIO)));
 
             //TODO: change the below to update based on GPS.
-            usr.setLocationLat(cursor.getDouble(cursor.getColumnIndex(KEY_USER_LOCATION_LAT)));
-            usr.setLocationLon(cursor.getDouble(cursor.getColumnIndex(KEY_USER_LOCATION_LAT)));
             //usr.setImg(cursor.getBlob(cursor.getColumnIndex()));
             Log.d(TAG, "read user successfully with email: " + email);
             return usr;

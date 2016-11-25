@@ -3,15 +3,35 @@ package jameshassmallarms.com.styleswap.base;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
 
 import jameshassmallarms.com.styleswap.R;
-import jameshassmallarms.com.styleswap.gui.UserExistsFragment;
+import jameshassmallarms.com.styleswap.impl.User;
+import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 import static java.lang.Integer.parseInt;
 
@@ -28,99 +48,119 @@ public class Register extends AppCompatActivity{
 
     private Button buttonRegister;
     private EditText mName, mAge, mUsername, mPassword, mDressSize, mEmail, mPhoneNumber;
-   // FireBaseQueries fireBaseQueries = new FireBaseQueries();
-    boolean userExists, detailsOkay;
-    UserExistsFragment user = new UserExistsFragment();
-    boolean overallFlag = false;
+    FireBaseQueries fireBaseQueries = new FireBaseQueries();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_register);
 
-            mName = (EditText) findViewById(R.id.activity_register_username);
-            mAge = (EditText) findViewById(R.id.activity_register_age);
-            mEmail = (EditText) findViewById(R.id.activity_register_email);
-            mUsername = (EditText) findViewById(R.id.activity_register_email);
-            mPassword = (EditText) findViewById(R.id.activity_register_password);
-            mDressSize = (EditText) findViewById(R.id.activity_register_size);
-            mPhoneNumber = (EditText) findViewById(R.id.activity_register_number);
+            mName = (EditText) findViewById(R.id.registerName);
+            mAge = (EditText) findViewById(R.id.registerAge);
+            mEmail = (EditText) findViewById(R.id.registerEmail);
+            mPassword = (EditText) findViewById(R.id.registerPassword);
+            mDressSize = (EditText) findViewById(R.id.registerDressSize);
+            mPhoneNumber = (EditText) findViewById(R.id.registerPhoneNumber);
             buttonRegister = (Button) findViewById(R.id.ButtonRegister);
+
             buttonRegister.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                        //detailsOkay = avoidEmptyDetails();
-                        //userExists = checkIfUserExists();
-
-                        //if (userExists && detailsOkay) {
-                            overallFlag = true;
-                            int age = parseInt(mAge.getText().toString());
-                            //int dressSize = parseInt(mDressSize.getText().toString());
-                            //User newUser = new User(mName.getText().toString(), age, mEmail.getText().toString(), mUserPassword.getText().toString(), dressSize);
-                            //fireBaseQueries.pushNewUserDetails(newUser);
-
-                            Intent intent = new Intent();
-                            intent.putExtra(MainActivity.GET_LOGIN_STATE, REGISTER_NEW_USER);
-                            intent.putExtra(REGISTER_EMAIL, mEmail.getText().toString());
-                            intent.putExtra(REGISTER_NAME, mName.getText().toString());
-                            intent.putExtra(REGISTER_AGE, age);
-                            intent.putExtra(REGISTER_PASSWORD, mPassword.getText().toString());
-                            intent.putExtra(REGISTER_PHONE, mPhoneNumber.getText().toString());
-                            intent.putExtra(REGISTER_SIZE, mDressSize.getText().toString());
-                            setResult(Activity.RESULT_OK, intent);
-                        //} else {
-                           // popUp("User Already exists or you have left out some details");
-                            //launchRegister();
-                        //}
-                        ;
+                        if (validateRegister());
+                            registerIfNew();
 
                 }
             });
     }
 
-    private void popUp(String message){
-        AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
-        dlgAlert.setMessage(message);
-        dlgAlert.setTitle("PROBLEM");
-        dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+    public void launchLogin(){
+        Intent intent = new Intent();
+        intent.putExtra(MainActivity.GET_LOGIN_STATE, REGISTER_NEW_USER);
+        intent.putExtra(REGISTER_EMAIL, mEmail.getText().toString());
+        intent.putExtra(REGISTER_NAME, mName.getText().toString());
+        intent.putExtra(REGISTER_AGE, Integer.valueOf(mAge.getText().toString()));
+        intent.putExtra(REGISTER_PASSWORD, mPassword.getText().toString());
+        intent.putExtra(REGISTER_PHONE, mPhoneNumber.getText().toString());
+        intent.putExtra(REGISTER_SIZE, Integer.valueOf(mDressSize.getText().toString()));
+        setResult(Activity.RESULT_OK, intent);
+        finish();
+    }
+
+    
+    private void registerIfNew(){
+        DatabaseReference userRef = fireBaseQueries.getUserReferenceByEmail(mEmail.getText().toString());
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    //sorry user already exsists
+                    Toast.makeText(getBaseContext(), "User with that email already exists.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    //register
+                    User newUser = new User(mEmail.getText().toString(), mPassword.getText().toString(),
+                            mName.getText().toString(), Integer.valueOf(mAge.getText().toString()),
+                            Integer.valueOf(mDressSize.getText().toString()), mPhoneNumber.getText().toString());
+
+                    fireBaseQueries.pushNewUserDetails(newUser);
+                    //Drawable myDrawable = getResources().getDrawable(R.drawable.stock_img);
+
+                    StorageReference picRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child((mEmail.getText().toString()) + "/" + "Dress");
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    Bitmap mybit = BitmapFactory.decodeResource(getResources(), R.drawable.stock_img);
+                    mybit.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] data = baos.toByteArray();
+
+                    UploadTask uploadTask = picRef.putBytes(data);
+                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle unsuccessful uploads
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                            Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        }
+                    });
+                    //tock.setImageDrawable(myDrawable);
+
+                    Toast.makeText(getBaseContext(), "Register complete, logging in!", Toast.LENGTH_SHORT).show();
+                    launchLogin();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
-        dlgAlert.setCancelable(true);
-        dlgAlert.create().show();
     }
 
-    public void launchLogin(){startActivity(new Intent(this, Login.class));}
+    private boolean validateRegister(){
+        if(mName.getText().toString().isEmpty() || mPassword.getText().toString().isEmpty() ||
+               mAge.getText().toString().isEmpty() || mEmail.getText().toString().isEmpty() ||
+               mPhoneNumber.getText().toString().isEmpty() || mDressSize.getText().toString().isEmpty()){
 
-    
-//    private boolean checkIfUserExists(){
-//        DatabaseReference checkUser = fireBaseQueries.getUserReferenceByEmail(mEmail.getText().toString());
-//        boolean check;
-//        if(checkUser == null){
-//            check = true; //if user exists doesnt exist we know we have a new user so want to push the details
-//
-//        }
-//        else{
-//            check = false; //otherwise we want to create a pop up saying account already exists and then giving another login attempt
-//            popUp("That email already exists. Try logging in");
-//            launchLogin();
-//        }
-//        return check;
-//    }
-//
-//    public boolean avoidEmptyDetails(){
-//        boolean flag;
-//        if(mName.getText().toString().isEmpty() || mUserPassword.getText().toString().isEmpty() || mEmail.getText().toString().isEmpty() || mDressSize.getText().toString().isEmpty()){
-//            popUp("Problem with registration. Make sure all fields are filled");
-//            popUp("Please start again");
-//           flag = false;
-//        }
-//        else{
-//            flag = true;
-//        }
-//        return flag;
-//    }
+            Toast.makeText(getBaseContext(), "Please fill all fields to complete register", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        int dressSize = Integer.valueOf(mDressSize.getText().toString());
+
+        if (dressSize % 2 != 0 || dressSize < 0 || dressSize > 40){
+            Toast.makeText(getBaseContext(), "Invalid dress size", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (mPhoneNumber.getText().toString().length() != 10){
+            Toast.makeText(getBaseContext(), "Invaild phone number", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
 }
-

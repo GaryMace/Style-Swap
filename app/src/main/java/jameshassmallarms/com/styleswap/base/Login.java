@@ -28,6 +28,25 @@ import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 import jameshassmallarms.com.styleswap.messaging.MyFirebaseInstanceIDService;
 
 
+/**
+ * Login:
+ *
+ *              The Login activity is started by the AppStartupActivity. AppStartup expects to get a
+ *              result from this activity. There are two kinds of results that are returned.
+ *
+ *              1) The user logins to an existing account and that users email is sent back to
+ *              AppStartup. From there it is sent back to MainActivity
+ *
+ *              2) The user chooses the "Sign up" button and Login Activity launches Register Activity.
+ *              There is logic in place that tells AppStartup that it now expects the result directly
+ *              from Register and NOT LOGIN.
+ *
+ *              LOCAL DATABASE:
+ *                  We used our local database to store the users login info if they click the
+ *                  RememberMe Checkbox. It simply stores the most up-to-date login info and reloads
+ *                  it from the database when the app relaunches.
+ *
+ */
 public class Login extends AppCompatActivity implements View.OnClickListener {
     public static final String LOGIN_USER_EMAIL = "login_email";
     public static final String LOGIN_EXISTING_USER = "login_existing";
@@ -78,6 +97,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 fb.addMatch("haymakerStirrat@gmail.com", MainActivity.FIREBASE_BOTH_MATCHED, m);*/
 
 
+                //TODO: breaks on first install, fix
                 if (submissionFilled()) {
                     final String userName = mUserName.getText().toString();
                     final String password = mUserPassword.getText().toString();
@@ -105,6 +125,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                 res.putExtra(MainActivity.GET_LOGIN_STATE, LOGIN_EXISTING_USER);
                                 res.putExtra(LOGIN_USER_EMAIL, userName);
                                 setResult(Activity.RESULT_OK, res);
+                                MyFirebaseInstanceIDService messagingToken = new MyFirebaseInstanceIDService();
+                                messagingToken.onTokenRefresh();
+
                                 finish();
                             } else {
                                 Toast.makeText(getBaseContext(), "Whoops, password was wrong!", Toast.LENGTH_SHORT).show();
@@ -117,13 +140,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             }
         });
         mLaunchRegister.setOnClickListener(this);
-
-        /**
-         * If the login button is clicked, check if user exists.
-         *
-         * If they do "resultIntent.putString(MainActivity.GET_LOGIN_STATE, LOGIN_EXISTING_USER);
-         * and pass the email back!
-         */
 
     }
 

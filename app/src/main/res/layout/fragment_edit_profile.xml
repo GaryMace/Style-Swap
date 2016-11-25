@@ -30,7 +30,7 @@
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:layout_gravity="center"
-                android:src="@drawable/ja"
+                android:src="@drawable/stock_img"
                 android:adjustViewBounds="true"
                 android:scaleType="fitXY"
                 android:id="@+id/profileImage"

@@ -128,7 +128,7 @@ public class SwipeButtonsFragment extends Fragment {
         dislikeObject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (nestedQueue.isEmpty()) {
+                if (nestedQueue.isEmpty() && userName != null) {
                     loadBlankFragment();
                     getMatchs();
                 } else {
@@ -192,60 +192,70 @@ public class SwipeButtonsFragment extends Fragment {
 //    //TODO dont match if matched recently
     private void getNewMatchs() {
         //users email
-        DatabaseReference mUserRef = fireBaseQueries.getUserLocationReferenceByEmail(userName);
+
+        final DatabaseReference mUserRef = fireBaseQueries.getUserLocationReferenceByEmail(userName);
         final GeoFire geoFire = new GeoFire(mUserRef.getParent());
 
-
-        geoFire.getLocation(mUserRef.getKey(), new LocationCallback() {
+        geoFire.setLocation(mUserRef.getKey(), new GeoLocation(linker.getDeviceLat(), linker.getDeviceLon()), new GeoFire.CompletionListener() {
             @Override
-            public void onLocationResult(String key, GeoLocation location) {
-                if (location != null) {
-                    GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), searchRadius);//my search radius
-                    geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            public void onComplete(String key, DatabaseError error) {
+                if (error == null){
+                    geoFire.getLocation(mUserRef.getKey(), new LocationCallback() {
                         @Override
-                        public void onKeyEntered(String key, GeoLocation location) {
-                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(key);
-                            fireBaseQueries.executeIfExists(ref, new QueryMaster() {
-                                @Override
-                                public void run(DataSnapshot s) {
-                                    User user = s.getValue(User.class);
-                                    if (user.getDressSize() == dressSize) {//my dress size
-                                        addToQueue(user.getName(),user);
+                        public void onLocationResult(String key, GeoLocation location) {
+                            if (location != null) {
+                                GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(location.latitude, location.longitude), searchRadius);//my search radius
+                                geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                                    @Override
+                                    public void onKeyEntered(String key, GeoLocation location) {
+                                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Users").child(key);
+                                        fireBaseQueries.executeIfExists(ref, new QueryMaster() {
+                                            @Override
+                                            public void run(DataSnapshot s) {
+                                                User user = s.getValue(User.class);
+                                                if (user.getDressSize() == dressSize)//my dress size
+                                                    addToQueue(user.getName(),user);
+                                            }
+                                        });
                                     }
-                                }
-                            });
+
+                                    @Override
+                                    public void onKeyExited(String key) {
+
+                                    }
+
+                                    @Override
+                                    public void onKeyMoved(String key, GeoLocation location) {
+
+                                    }
+
+                                    @Override
+                                    public void onGeoQueryReady() {
+
+                                    }
+
+                                    @Override
+                                    public void onGeoQueryError(DatabaseError error) {
+
+                                    }
+                                });
+                            } else {
+                                System.out.println(String.format("There is no location for key %s in GeoFire", key));
+                            }
                         }
 
                         @Override
-                        public void onKeyExited(String key) {
-
-                        }
-
-                        @Override
-                        public void onKeyMoved(String key, GeoLocation location) {
-
-                        }
-
-                        @Override
-                        public void onGeoQueryReady() {
-
-                        }
-
-                        @Override
-                        public void onGeoQueryError(DatabaseError error) {
-
+                        public void onCancelled(DatabaseError databaseError) {
+                            System.err.println("There was an error getting the GeoFire location: " + databaseError);
                         }
                     });
-                } else {
-                    System.out.println(String.format("There is no location for key %s in GeoFire", key));
                 }
+
             }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.err.println("There was an error getting the GeoFire location: " + databaseError);
-            }
         });
+
+
 
     }
 
@@ -262,13 +272,14 @@ public class SwipeButtonsFragment extends Fragment {
 
                     for (int i = 1; i < update.size(); ) {
 
-                       addToQueue(update.get(i).getMatchName(), update.get(i));
+                       addToQueue(update.get(i).getMatchName(),update.get(i));
                         update.remove(i);
                     }
                     //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
                 }
                 getNewMatchs();
-                replaceFragment(nestedQueue.poll());
+                if (nestedQueue.size() !=0)
+                    replaceFragment(nestedQueue.poll());
             }
         });
     }
