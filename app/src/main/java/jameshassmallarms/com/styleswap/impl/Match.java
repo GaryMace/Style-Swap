@@ -3,9 +3,26 @@ package jameshassmallarms.com.styleswap.impl;
 import android.graphics.Bitmap;
 
 /**
- * Created by gary on 13/10/16.
+ * Match:
+ *
+ *              Match objects are used when the logged in user finds a match with the app. This match
+ *              object is populated and then pushed to firebase.
+ *
+ *              The emails for both users are then added to their respective matchedMe lists on firebase,
+ *              a chat room is also set-up on firebase between the two users using an unique key
+ *              according to the following:
+ *              rule:
+ *                  Email1Email2
+ *                  e.g. Gary@live.ieAlan@live.ie
+ *              Note that if User A likes User B and then User B likes User A, then user B's email is
+ *              ALWAYS the first email in the unique key.
+ *
+ *              Both Users then gain access to the chat room key, it's inserted as an extra field in
+ *              their bothMatched field.
+ *
+ *              This is then used by both users to get into their uniques chat room
+ *
  */
-
 public class Match {
     private String matchChatToken;    //ID's a unique firebase chat room for the users.
     private String matchName;

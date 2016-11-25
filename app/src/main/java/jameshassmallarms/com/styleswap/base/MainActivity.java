@@ -54,6 +54,26 @@ import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
+/**
+ * Main Activity:
+ *
+ *              This is where the magic happens guys. Main activity is where all the hardcore backend
+ *              craic happens. Main activity handles the GoogleAPI connection for GPS. There's a lot of
+ *              code in here that checks the phone owners permissions to allow GPS requests.
+ *
+ *              The BarFragment is the main navigation tool for the app. The click listener attached
+ *              to it swaps out the one currently displayed fragment with the new one depending on
+ *              which tab you select.
+ *
+ *              When the App first launches MainActivity will start the AppStartupActivity which
+ *              either will prompt the user to Login or Register. The resulting data from these Activities
+ *              it then returned to MainActivity.
+ *
+ *              You'll notice that MainActivity implements an Interface called Linker. This allows the
+ *              Fragments on the bar fragment to pull information from MainActivity from within their
+ *              own class source files.
+ *
+ */
 public class MainActivity extends AppCompatActivity
     implements Linker, GoogleApiClient.ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
     // Saved instance state flags

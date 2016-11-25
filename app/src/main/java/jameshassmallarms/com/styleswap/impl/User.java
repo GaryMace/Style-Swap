@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by gary on 24/10/16.
+ * User:
+ *
+ *              When a new user registers a User object is pushed to firebase with all the information
+ *              they entered.
+ *
  */
-
 public class User {
     private String password;
     private String name;
