@@ -128,15 +128,14 @@ public class SwipeButtonsFragment extends Fragment {
                         executeIfExists(fireBaseQueries.getMatchedme(userName), new QueryMaster() {
                             @Override
                             public void run(DataSnapshot s) {
-                                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
-                                };
+                                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {};
                                 ArrayList<Match> update = s.getValue(t);
                                 for (int i = 1; i < update.size(); i++) {
-                                    Match m = update.get(i);
+                                    final Match m = update.get(i);
                                     if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
                                         Log.d("Email for encoding", userName);
                                         Log.d("Other Email", matchs.get(0).getMatchMail());
-                                       final String chatKey = FireBaseQueries.encodeKey(userName)
+                                        final String chatKey = FireBaseQueries.encodeKey(userName)
                                                 + FireBaseQueries.encodeKey(matchs.get(0).getMatchMail());
                                         fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(userName), new QueryMaster() {
                                             @Override
@@ -164,7 +163,15 @@ public class SwipeButtonsFragment extends Fragment {
                                         ChatMessage message = new ChatMessage("Hello,I matched you", userName);
                                         fireBaseQueries.createChatRoom(chatKey).push().setValue(message);
                                         fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
-                                        fireBaseQueries.addMatch(userName,MainActivity.FIREBASE_RECENT_MATCH, m);
+                                        DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
+                                        fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
+                                            @Override
+                                            public void run(DataSnapshot s) {
+                                                GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
+                                                ArrayList<String> update = s.getValue(t);
+                                                update.add(m.getMatchMail());
+                                            }
+                                        });
                                         break;
 
 
@@ -198,11 +205,19 @@ public class SwipeButtonsFragment extends Fragment {
                                 };
                                 ArrayList<Match> update = s.getValue(t);
                                 for (int i = 1; i < update.size(); i++) {
-                                    Match m = update.get(i);
+                                    final Match m = update.get(i);
                                     if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
 
                                         fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
-                                        fireBaseQueries.addMatch(userName,MainActivity.FIREBASE_RECENT_MATCH, m); // Define and add to like
+                                        DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
+                                        fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
+                                            @Override
+                                            public void run(DataSnapshot s) {
+                                                GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
+                                                ArrayList<String> update = s.getValue(t);
+                                                update.add(m.getMatchMail());
+                                            }
+                                        });
 
 
                                     }
