@@ -103,7 +103,7 @@ public class TestIm extends Fragment {
             protected void populateViewHolder(RecyclerView.ViewHolder viewHolder, ChatMessage message, int position) {
                 mProgressBar.setVisibility(ProgressBar.INVISIBLE);
 
-                if (message.getIsMine()) {
+                if (message.getIsMine().equals(linker.getLoggedInUser())) {
                     populateMyBubble((MyMessageViewHolder) viewHolder, message, position);
 
                 } else {
@@ -132,7 +132,7 @@ public class TestIm extends Fragment {
             public int getItemViewType(int position) {
                 ChatMessage message = getItem(position);
                 Log.d("TAGGE", "is mine: " + message.getIsMine());
-                if (message.getIsMine()) {
+                if (message.getIsMine().equals(linker.getLoggedInUser())) {
                     return MESSAGE_MINE;
                 } else {
                     return MESSAGE_MATCHES;
@@ -164,7 +164,7 @@ public class TestIm extends Fragment {
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ChatMessage message = new ChatMessage(mMessageEditText.getText().toString(), true);
+                ChatMessage message = new ChatMessage(mMessageEditText.getText().toString(), linker.getLoggedInUser());
                 mFirebaseDatabaseReference.child("Chats")
                     .child(FireBaseQueries.encodeKey(mChatKey))
                     .child("messages")

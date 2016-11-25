@@ -9,13 +9,13 @@ import java.util.Random;
 public class ChatMessage {
     private String id;
     private String text;
-    private boolean isMine;
+    private String isMine;
 
     public ChatMessage() {
 
     }
 
-    public ChatMessage(String text, boolean isMINE) {
+    public ChatMessage(String text, String isMINE) {
         this.text = text;
         this.isMine = isMINE;
     }
@@ -28,11 +28,11 @@ public class ChatMessage {
         return text;
     }
 
-    public boolean getIsMine() {
+    public String getIsMine() {
         return isMine;
     }
 
-    public void setIsMine(boolean isMine) {
+    public void setIsMine(String isMine) {
         this.isMine = isMine;
     }
 
