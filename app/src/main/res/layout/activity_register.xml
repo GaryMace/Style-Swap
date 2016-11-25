@@ -7,7 +7,7 @@
     <android.support.percent.PercentRelativeLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="134dp"
         android:background="@color/login_grey">
 
         <ImageView
@@ -30,113 +30,73 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Name"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-
             <EditText
-                android:id="@+id/activity_register_name"
+                android:id="@+id/registerEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:textColor="@color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Email"
+                android:hint="Email: "
+                android:textColorHint="@color/colorPrimaryDark"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
                 android:textStyle="bold"/>
 
+
             <EditText
-                android:id="@+id/activity_register_email"
+                android:id="@+id/registerPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:textColor="@color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Age"
+                android:hint="Password: "
+                android:textColorHint="@color/colorPrimaryDark"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
                 android:textStyle="bold"/>
 
+
             <EditText
-                android:id="@+id/activity_register_age"
+                android:id="@+id/registerName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:textColor="@color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Phone Number"
+                android:hint="Name: "
+                android:textColorHint="@color/colorPrimaryDark"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
                 android:textStyle="bold"/>
 
+
             <EditText
-                android:id="@+id/activity_register_number"
+                android:id="@+id/registerAge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:textColor="@color/white"/>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Username"
+                android:hint="Age: "
+                android:textColorHint="@color/colorPrimaryDark"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
                 android:textStyle="bold"/>
+
+
 
             <!-- just use email for username-->
             <EditText
-                android:id="@+id/activity_register_username"
+                android:id="@+id/registerDressSize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:textColor="@color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Password"
+                android:hint="Dress Size: "
+                android:textColorHint="@color/colorPrimaryDark"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
                 android:textStyle="bold"/>
 
+
+
             <EditText
-                android:id="@+id/activity_register_password"
+                android:id="@+id/registerPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:inputType="textPassword"
-                android:textColor="@color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Dress Size"
+                android:hint="Phone Number: "
+                android:textColorHint="@color/colorPrimaryDark"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"
                 android:textStyle="bold"/>
-
-            <EditText
-                android:id="@+id/activity_register_size"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:textColor="@color/white"/>
 
             <Button
                 android:id="@+id/ButtonRegister"

@@ -11,34 +11,25 @@ import java.util.List;
 
 public class User {
     private String password;
-    private double locationLat;
-    private double locationLon;
     private String name;
     private String email;
-    private Bitmap img;
     private int dressSize;
-    private String phoneNum;
+    private int phoneNum;
     private String bio;
     private int age;
 
     private List<Match> bothMatched = new ArrayList<>();
     private List<Match> matchedMe = new ArrayList<>();
 
-    public User(String name, int age, String email, String password, int dressSize) {
+
+    public User(String email, String password, String name, int age, int dressSize, int phoneNum){
         this.name = name;
         this.age = age;
         this.email = email;
         this.password = password;
         this.dressSize = dressSize;
-        Match dummy = new Match();
-        dummy.setMatchMail("dummy so list exists");
-        this.bothMatched.add(dummy);
-        this.matchedMe.add(dummy);
-    }
+        this.phoneNum = phoneNum;
 
-    public User(String name, String password){
-        this.name = name;
-        this.password = password;
         Match dummy = new Match();
         dummy.setMatchMail("Dummy so list exists");
         this.bothMatched.add(dummy);
@@ -61,28 +52,12 @@ public class User {
         this.bio = bio;
     }
 
-    public String getPhoneNum() {
+    public int getPhoneNum() {
         return phoneNum;
     }
 
-    public void setPhoneNum(String phoneNum) {
+    public void setPhoneNum(int phoneNum) {
         this.phoneNum = phoneNum;
-    }
-
-    public double getLocationLat() {
-        return locationLat;
-    }
-
-    public double getLocationLon() {
-        return locationLon;
-    }
-
-    public void setLocationLat(double locationLat) {
-        this.locationLat = locationLat;
-    }
-
-    public void setLocationLon(double locationLon) {
-        this.locationLon = locationLon;
     }
 
     public String getName() {
@@ -113,14 +88,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Bitmap getImg() {
-        return img;
-    }
-
-    public void setImg(Bitmap img) {
-        this.img = img;
     }
 
     public Match toMatch(){

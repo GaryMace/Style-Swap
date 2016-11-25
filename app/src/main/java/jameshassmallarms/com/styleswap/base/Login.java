@@ -105,6 +105,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                 res.putExtra(MainActivity.GET_LOGIN_STATE, LOGIN_EXISTING_USER);
                                 res.putExtra(LOGIN_USER_EMAIL, userName);
                                 setResult(Activity.RESULT_OK, res);
+                                MyFirebaseInstanceIDService messagingToken = new MyFirebaseInstanceIDService();
+                                messagingToken.onTokenRefresh();
+
                                 finish();
                             } else {
                                 Toast.makeText(getBaseContext(), "Whoops, password was wrong!", Toast.LENGTH_SHORT).show();

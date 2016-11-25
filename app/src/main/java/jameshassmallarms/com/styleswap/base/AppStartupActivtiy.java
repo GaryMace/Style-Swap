@@ -161,12 +161,19 @@ public class AppStartupActivtiy extends Activity {
                     setResult(Activity.RESULT_OK, mainActivityRes);
                     finish();
                 } else if (loginState.equals(Register.REGISTER_NEW_USER)) {      //User created a new account
-                    /*mUserLogin = data.getExtras().getString(Register.REGISTER_EMAIL);
-                    mUserAge = data.getExtras().getInt(Register.REGISTER_AGE);      //Why do we care about an age?
-                    mUserName = data.getExtras().getString(Register.REGISTER_NAME);
-                    mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
-                    mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
-                    String password = data.getExtras().getString(Register.REGISTER_PASSWORD);*/   //send this to firebase instantly then remove our reference to it
+                    String mUserEmail = data.getExtras().getString(Register.REGISTER_EMAIL);
+                    int mUserAge = data.getExtras().getInt(Register.REGISTER_AGE);      //Why do we care about an age?
+                    String mUserName = data.getExtras().getString(Register.REGISTER_NAME);
+                    int mUserNumber = data.getExtras().getInt(Register.REGISTER_PHONE);
+                    int mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
+                    mainActivityRes.putExtra(Register.REGISTER_EMAIL, mUserEmail);
+                    mainActivityRes.putExtra(Register.REGISTER_NAME, mUserName);
+                    mainActivityRes.putExtra(Register.REGISTER_AGE, mUserAge);
+                    mainActivityRes.putExtra(Register.REGISTER_PHONE, mUserNumber);
+                    mainActivityRes.putExtra(Register.REGISTER_SIZE, mUserSize);
+                    setResult(Activity.RESULT_OK, mainActivityRes);
+                    finish();
+
                 }
 
             }
