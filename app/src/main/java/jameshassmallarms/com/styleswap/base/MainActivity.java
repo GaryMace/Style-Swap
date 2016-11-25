@@ -531,6 +531,9 @@ public class MainActivity extends AppCompatActivity
 
     protected void onStart() {
         super.onStart();
+       // if (mGoogleAPIClient.isConnected()) {
+            mGoogleAPIClient.disconnect();  // Test, remove later
+       // }
         mGoogleAPIClient.connect();
     }
 

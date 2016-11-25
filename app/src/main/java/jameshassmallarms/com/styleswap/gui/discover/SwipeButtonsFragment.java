@@ -105,11 +105,6 @@ public class SwipeButtonsFragment extends Fragment {
         if (matchs.isEmpty()) {
             loadBlankFragment();
         } else {
-           /* NestedInfoCard card = loadFragment(matchs.get(0));
-            nestedQueue.add(card);
-            matchs.remove(0);
-
-           */
             getMatchs();
             replaceFragment(nestedQueue.poll());
 
@@ -155,13 +150,18 @@ public class SwipeButtonsFragment extends Fragment {
 
     }
 
-    private NestedInfoCard loadFragment(Match match, byte[] img) {
+    private NestedInfoCard loadFragment(Match match) {
         //Need to add in a query to get name description and picture
-        match.setByteArray(img);
         String u = match.getMatchName();
         String desc = match.getMatchBio();
         String email = match.getMatchMail();
+        if ((match.getByteArray()) == null){
+            Log.d("Debug_swipe", "Empty match byte array");
+        }
         byte[] image = match.getByteArray();
+        if(image == null){
+            Log.d("IMAGE DOESn't Exist", "LAMEEEE");
+        }
         Bundle b = new Bundle();
         b.putString("UserName", u);
         b.putString("Description", desc);
@@ -262,8 +262,7 @@ public class SwipeButtonsFragment extends Fragment {
 
                     for (int i = 1; i < update.size(); ) {
 
-                        addToQueue(update.get(i).getMatchName(),update.get(i));
-
+                       addToQueue(update.get(i).getMatchName(), update.get(i));
                         update.remove(i);
                     }
                     //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
@@ -273,6 +272,7 @@ public class SwipeButtonsFragment extends Fragment {
             }
         });
     }
+
 
     private void loadBlankFragment() {
         transaction = getChildFragmentManager().beginTransaction();
@@ -289,7 +289,9 @@ public class SwipeButtonsFragment extends Fragment {
             @Override
             public void onSuccess(byte[] bytes) {
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                nestedQueue.add(loadFragment(user.toMatch(),bytes));
+                Match temp = user.toMatch();
+                temp.setByteArray(bytes);
+                nestedQueue.add(loadFragment(temp));
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -309,7 +311,8 @@ public class SwipeButtonsFragment extends Fragment {
             @Override
             public void onSuccess(byte[] bytes) {
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                nestedQueue.add(loadFragment(match,bytes));
+                match.setByteArray(bytes);
+                nestedQueue.add(loadFragment(match));
 
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -319,4 +322,5 @@ public class SwipeButtonsFragment extends Fragment {
             }
         });
     }
+
 }

@@ -54,7 +54,7 @@ public class NestedInfoCard extends Fragment {
             String email = b.getString("Email");
             String desc = b.getString("Description");
             byte[] img = b.getByteArray("IMG");
-            Log.d("YOLO", email);
+            Log.d("Debug_nestedCard", user);
             userName.setText(user);
             description.setText(desc);
             Bitmap bmp = BitmapFactory.decodeByteArray(img, 0, img.length);
