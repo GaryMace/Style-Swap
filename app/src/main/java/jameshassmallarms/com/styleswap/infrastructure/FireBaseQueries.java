@@ -79,6 +79,7 @@ public class FireBaseQueries {
             public void onSuccess(byte[] bytes) {
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 imageView.setImageBitmap(bmp);
+                System.out.println("downloaded");
 
             }
         }).addOnFailureListener(new OnFailureListener() {
