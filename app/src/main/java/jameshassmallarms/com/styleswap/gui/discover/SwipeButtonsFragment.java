@@ -117,7 +117,8 @@ public class SwipeButtonsFragment extends Fragment {
 
                 if (nestedQueue.isEmpty()) {
                     loadBlankFragment();
-                    getMatchs();
+                    if (userName != null)
+                        getMatchs();
                 } else {
                     replaceFragment(nestedQueue.poll());
 
@@ -128,9 +129,10 @@ public class SwipeButtonsFragment extends Fragment {
         dislikeObject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (nestedQueue.isEmpty() && userName != null) {
+                if (nestedQueue.isEmpty()) {
                     loadBlankFragment();
-                    getMatchs();
+                    if (userName != null)
+                        getMatchs();
                 } else {
                     replaceFragment(nestedQueue.poll());
                 }
