@@ -40,10 +40,6 @@ import jameshassmallarms.com.styleswap.infrastructure.Linker;
 import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 
 /**
- * Created by gary on 13/10/16.
- */
-
-/**
  * MatchListFragment:
  *
  *              This Fragment is attached to the BarFragment. It will display all the current matches
@@ -59,6 +55,9 @@ import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
  *              When the user long clicks on a list item it opens up a chat fragment which allows real-time
  *              instant messaging between the two users. You can also delete matches which removes
  *              that match from your list, their list and also deletes the chat room between you.
+ *
+ *               Created by gary on 13/10/16.
+
  *
  */
 public class MatchListFragment extends Fragment {
