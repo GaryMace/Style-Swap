@@ -37,6 +37,7 @@ import java.util.Queue;
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.base.MainActivity;
 import jameshassmallarms.com.styleswap.gui.BlankFragment;
+import jameshassmallarms.com.styleswap.gui.im.ChatMessage;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
@@ -152,12 +153,14 @@ public class SwipeButtonsFragment extends Fragment {
                                             public void run(DataSnapshot s) {
                                                 Match nMatch = new Match();
                                                 nMatch.setMatchMail(userName);
-                                                nMatch.setMatchNumber(linker.getNumber());
-                                                nMatch.setMatchName(linker.getName());
+                                                nMatch.setMatchNumber(linker.getPhoneNumber());
+                                                nMatch.setMatchName(linker.getUserName());
                                                 nMatch.setChatKey(chatKey);
                                                 fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
                                             }
                                         });
+                                        ChatMessage message = new ChatMessage("Hello,I matched you", userName);
+                                        fireBaseQueries.createChatRoom(chatKey).push().setValue(message);
 
                                         fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
 
@@ -377,9 +380,9 @@ public class SwipeButtonsFragment extends Fragment {
 
                 else{
                     Match match = new Match();
-                    match.setMatchName(userName);
-                    match.setMatchNumber(linker.getNumber());
-                    match.setMatchMail(linker.getMail());
+                    match.setMatchMail(userName);
+                    match.setMatchNumber(linker.getPhoneNumber());
+                    match.setMatchName(linker.getUserName());
                     fireBaseQueries.addMatch(matchs.get(0).getMatchMail(),MainActivity.FIREBASE_MATCHED_ME,match);
                 }
             }

@@ -1,7 +1,5 @@
 package jameshassmallarms.com.styleswap.impl;
 
-import android.graphics.Bitmap;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +16,12 @@ public class User {
     private String email;
     private int dressSize;
     private String phoneNum;
-    private String bio;
+    private String itemDescription;
     private int age;
 
     private List<Match> bothMatched = new ArrayList<>();
     private List<Match> matchedMe = new ArrayList<>();
+    private List<String> recentlyMatched = new ArrayList<>();
 
 
     public User(String email, String password, String name, int age, int dressSize, String phoneNum){
@@ -32,11 +31,12 @@ public class User {
         this.password = password;
         this.dressSize = dressSize;
         this.phoneNum = phoneNum;
-
+        this.itemDescription = "My Dress!!";
         Match dummy = new Match();
         dummy.setMatchMail("Dummy so list exists");
         this.bothMatched.add(dummy);
         this.matchedMe.add(dummy);
+        this.recentlyMatched.add(email);
     }
 
     public User(){
@@ -47,12 +47,12 @@ public class User {
         this.email = email;
     }
 
-    public String getBio() {
-        return bio;
+    public String getItemDescription() {
+        return itemDescription;
     }
 
-    public void setBio(String bio) {
-        this.bio = bio;
+    public void setItemDescription(String itemDescription) {
+        this.itemDescription = itemDescription;
     }
 
     public String getPhoneNum() {
@@ -97,9 +97,8 @@ public class User {
         Match m = new Match();
         m.setMatchName(this.getName());
         m.setMatchMail(this.getEmail());
-        m.setMatchBio(this.getBio());
         m.setMatchNumber(this.getPhoneNum());
-
+        m.setMatchBio(this.getItemDescription());
         return m;
     }
 
@@ -119,4 +118,11 @@ public class User {
         this.matchedMe = matchedMe;
     }
 
+    public List<String> getRecentlyMatched() {
+        return recentlyMatched;
+    }
+
+    public void setRecentlyMatched(List<String> recentlyMatched) {
+        this.recentlyMatched = recentlyMatched;
+    }
 }

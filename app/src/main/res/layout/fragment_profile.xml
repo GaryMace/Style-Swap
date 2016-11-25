@@ -65,14 +65,6 @@
             android:textSize="8pt"
             android:layout_gravity="center" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Comment N/A"
-            android:id="@+id/profileinfo3"
-            android:textColor="@android:color/white"
-            android:textSize="6pt"
-            android:layout_gravity="center" />
 
         <RelativeLayout
             android:layout_width="match_parent"

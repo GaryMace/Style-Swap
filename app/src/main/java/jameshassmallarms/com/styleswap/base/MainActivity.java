@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -36,6 +37,12 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
@@ -52,7 +59,9 @@ import jameshassmallarms.com.styleswap.gui.im.MatchListFragment;
 import jameshassmallarms.com.styleswap.gui.profile.ProfileFragment;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
+import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
+import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 
 /**
  * Main Activity:
@@ -82,7 +91,7 @@ public class MainActivity extends AppCompatActivity
     protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
     private static final String KEY_IS_LOGGED_IN = "logged_in";
     private static final String KEY_USER_LOGIN = "user_login";
-
+    private FireBaseQueries fireBaseQueries = new FireBaseQueries();
     private static final int REQUEST_CHECK_SETTINGS = 1;
     private static final int REQUEST_CHECK_LOCATION_PREFERENCES = 1;
     private static final String TAG = "debug_main";
@@ -117,6 +126,8 @@ public class MainActivity extends AppCompatActivity
     private int mUserAge;   //do we care about their age?
     private String mUserName;
     private String mUserNumber;
+    private ImageView profileImage;
+    private String mItemDescription;
 
     //Linker Interface appMessages
     private boolean isUserLoggedIn;
@@ -136,7 +147,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        profileImage = new ImageView(getBaseContext());
         setContentView(R.layout.activity_main); //Load the main XML layout file.. empty on purpose
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         // Make us non-modal, so that others can receive touch events.
@@ -208,7 +219,24 @@ public class MainActivity extends AppCompatActivity
                 if (loginState.equals(Login.LOGIN_EXISTING_USER)) {            //If they logged into an existing account
                     mUserLogin = data.getExtras().getString(Login.LOGIN_USER_EMAIL);
                     toggleUserLoggedIn();
-                    Log.d(TAG, "User login email is: " + "\""+mUserLogin+"\"");
+
+                    DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail(mUserLogin);
+                    fireBaseQueries.executeIfExists(mUserRef, new QueryMaster() {
+                        @Override
+                        public void run(DataSnapshot s) {
+                            User loggedInUser = s.getValue(User.class);
+                            mUserAge = loggedInUser.getAge();      //Why do we care about an age?
+                            mUserName = loggedInUser.getName();
+                            mUserNumber = loggedInUser.getPhoneNum();
+                            mUserSize = loggedInUser.getDressSize();
+                            mItemDescription = loggedInUser.getItemDescription();
+                        }
+
+
+                    });
+
+                    fireBaseQueries.download(profileImage, mUserLogin);
+
                     createLocationRequest();
 
                 } else if (loginState.equals(Register.REGISTER_NEW_USER)) {      //User created a new account
@@ -217,8 +245,8 @@ public class MainActivity extends AppCompatActivity
                     mUserName = data.getExtras().getString(Register.REGISTER_NAME);
                     mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
                     mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
-                    String password = data.getExtras().getString(Register.REGISTER_PASSWORD);   //send this to firebase instantly then remove our reference to it
                     Log.d(TAG, "User registered to email: " + mUserLogin);
+                    fireBaseQueries.download(profileImage, mUserLogin);
                 }
 
             }
@@ -427,6 +455,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public String getAge() {
+        return String.valueOf(mUserAge);
+    }
+
+    @Override
     public boolean isUserLoggedIn() {
         return isUserLoggedIn;
     }
@@ -456,14 +489,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public ImageView getUserProfileImage() {
+        return profileImage;
+    }
+
+    @Override
     public Bitmap getUserProfilePic() {
         return userProfileImg;
     }
 
-    @Override
-    public void setUserProfilePic(Bitmap img) {
-        this.userProfileImg = img;
-    }
 
     @Override
     public void toggleUserChangedImg() {
@@ -529,6 +563,21 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void setCachedUsers(Queue<User> users) {
         cachedUsers = users;
+    }
+
+    @Override
+    public String getItemDescription() {
+        return mItemDescription;
+    }
+
+    @Override
+    public String getUserName() {
+        return mUserName;
+    }
+
+    @Override
+    public String getPhoneNumber() {
+        return mUserNumber;
     }
 
     @Override
