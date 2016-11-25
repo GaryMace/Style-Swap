@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
@@ -22,6 +24,7 @@ public class ProfileFragment extends Fragment {
     private ImageButton gotoEditProfile;
     private TextView profileinfo;
     private TextView profileinfo2;
+    private ImageView profilePic;
     private Linker linker;
 
     @Override
@@ -29,11 +32,15 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         linker = (Linker) getActivity();
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+
         profileinfo = (TextView) view.findViewById(R.id.profileinfo);
         profileinfo.setText(linker.getUserName());
 
         profileinfo2 = (TextView) view.findViewById(R.id.profileinfo2);
         profileinfo2.setText(linker.getAge());
+
+        profilePic = (ImageView) view.findViewById(R.id.profile_trans);
 
         gotoEditProfile = (ImageButton) view.findViewById(R.id.profilepic);
         gotoEditProfile.setOnClickListener(new View.OnClickListener() {
@@ -49,5 +56,12 @@ public class ProfileFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        System.out.println("try use");
+        profilePic.setImageDrawable(linker.getUserProfileImage().getDrawable());
     }
 }

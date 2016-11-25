@@ -456,7 +456,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public String getAge() {
-        return String.valueOf(mUserAge);
+        return Integer.toString(mUserAge);
     }
 
     @Override
