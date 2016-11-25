@@ -134,6 +134,8 @@ public class SwipeButtonsFragment extends Fragment {
                                 for (int i = 1; i < update.size(); i++) {
                                     Match m = update.get(i);
                                     if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
+                                        Log.d("Email for encoding", userName);
+                                        Log.d("Other Email", matchs.get(0).getMatchMail());
                                        final String chatKey = FireBaseQueries.encodeKey(userName)
                                                 + FireBaseQueries.encodeKey(matchs.get(0).getMatchMail());
                                         fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(userName), new QueryMaster() {
@@ -161,8 +163,8 @@ public class SwipeButtonsFragment extends Fragment {
                                         });
                                         ChatMessage message = new ChatMessage("Hello,I matched you", userName);
                                         fireBaseQueries.createChatRoom(chatKey).push().setValue(message);
-
                                         fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
+
 
                                     }
                                 }
