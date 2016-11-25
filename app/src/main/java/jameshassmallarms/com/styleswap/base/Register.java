@@ -81,7 +81,7 @@ public class Register extends AppCompatActivity{
         intent.putExtra(REGISTER_NAME, mName.getText().toString());
         intent.putExtra(REGISTER_AGE, Integer.valueOf(mAge.getText().toString()));
         intent.putExtra(REGISTER_PASSWORD, mPassword.getText().toString());
-        intent.putExtra(REGISTER_PHONE, Integer.valueOf(mPhoneNumber.getText().toString()));
+        intent.putExtra(REGISTER_PHONE, mPhoneNumber.getText().toString());
         intent.putExtra(REGISTER_SIZE, Integer.valueOf(mDressSize.getText().toString()));
         setResult(Activity.RESULT_OK, intent);
         finish();
@@ -102,14 +102,14 @@ public class Register extends AppCompatActivity{
                     //register
                     User newUser = new User(mEmail.getText().toString(), mPassword.getText().toString(),
                             mName.getText().toString(), Integer.valueOf(mAge.getText().toString()),
-                            Integer.valueOf(mDressSize.getText().toString()), Integer.valueOf(mPhoneNumber.getText().toString()));
+                            Integer.valueOf(mDressSize.getText().toString()), mPhoneNumber.getText().toString());
 
                     fireBaseQueries.pushNewUserDetails(newUser);
                     //Drawable myDrawable = getResources().getDrawable(R.drawable.stock_img);
 
-                    StorageReference picRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(mEmail + "/" + "Dress");
+                    StorageReference picRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child((mEmail.getText().toString()) + "/" + "Dress");
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    Bitmap mybit = BitmapFactory.decodeResource(getResources(), R.drawable.profilepicexample);
+                    Bitmap mybit = BitmapFactory.decodeResource(getResources(), R.drawable.stock_img);
                     mybit.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] data = baos.toByteArray();
 

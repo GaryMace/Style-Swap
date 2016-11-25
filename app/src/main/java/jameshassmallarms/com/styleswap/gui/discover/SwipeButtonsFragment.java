@@ -123,7 +123,7 @@ public class SwipeButtonsFragment extends Fragment {
         dislikeObject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (nestedQueue.isEmpty()) {
+                if (nestedQueue.isEmpty() && userName != null) {
                     loadBlankFragment();
                     getMatchs();
                 } else {
@@ -267,7 +267,8 @@ public class SwipeButtonsFragment extends Fragment {
                     //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
                 }
                 getNewMatchs();
-                replaceFragment(nestedQueue.poll());
+                if (nestedQueue.size() !=0)
+                    replaceFragment(nestedQueue.poll());
             }
         });
     }

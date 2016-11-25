@@ -531,6 +531,7 @@ public class MainActivity extends AppCompatActivity
 
     protected void onStart() {
         super.onStart();
+        mGoogleAPIClient.disconnect();
         mGoogleAPIClient.connect();
     }
 
@@ -553,6 +554,7 @@ public class MainActivity extends AppCompatActivity
         super.onPause();
         if (mLastLocation != null)
             stopLocationUpdates();
+
     }
 
     /**

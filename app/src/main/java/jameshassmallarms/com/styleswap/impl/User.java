@@ -14,7 +14,7 @@ public class User {
     private String name;
     private String email;
     private int dressSize;
-    private int phoneNum;
+    private String phoneNum;
     private String bio;
     private int age;
 
@@ -22,7 +22,7 @@ public class User {
     private List<Match> matchedMe = new ArrayList<>();
 
 
-    public User(String email, String password, String name, int age, int dressSize, int phoneNum){
+    public User(String email, String password, String name, int age, int dressSize, String phoneNum){
         this.name = name;
         this.age = age;
         this.email = email;
@@ -52,11 +52,11 @@ public class User {
         this.bio = bio;
     }
 
-    public int getPhoneNum() {
+    public String getPhoneNum() {
         return phoneNum;
     }
 
-    public void setPhoneNum(int phoneNum) {
+    public void setPhoneNum(String phoneNum) {
         this.phoneNum = phoneNum;
     }
 
