@@ -118,6 +118,8 @@ public class MainActivity extends AppCompatActivity
     //FireBase constants
     public static final String FIREBASE_BOTH_MATCHED = "bothMatched";
     public static final String FIREBASE_MATCHED_ME = "matchedMe";
+    public static final String FIREBASE_RECENT_MATCH = "recentlyMatched";
+
 
     //Logged in user fields
     private int mSearchRange;

@@ -164,6 +164,9 @@ public class SwipeButtonsFragment extends Fragment {
                                         ChatMessage message = new ChatMessage("Hello,I matched you", userName);
                                         fireBaseQueries.createChatRoom(chatKey).push().setValue(message);
                                         fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
+                                        fireBaseQueries.addMatch(userName,MainActivity.FIREBASE_RECENT_MATCH, m);
+                                        break;
+
 
 
                                     }
@@ -187,7 +190,30 @@ public class SwipeButtonsFragment extends Fragment {
                     if (userName != null)
                         getMatchs();
                 } else {
+                    if (!isBlank) {
+                        executeIfExists(fireBaseQueries.getMatchedme(userName), new QueryMaster() {
+                            @Override
+                            public void run(DataSnapshot s) {
+                                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
+                                };
+                                ArrayList<Match> update = s.getValue(t);
+                                for (int i = 1; i < update.size(); i++) {
+                                    Match m = update.get(i);
+                                    if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
+
+                                        fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
+                                        fireBaseQueries.addMatch(userName,MainActivity.FIREBASE_RECENT_MATCH, m); // Define and add to like
+
+
+                                    }
+                                }
+                            }
+                        });
+                        //Run Queries
+                    }
+
                     replaceFragment(nestedQueue.poll());
+                    matchs.remove(0);
                 }
             }
         });
