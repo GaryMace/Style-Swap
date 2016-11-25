@@ -1,9 +1,5 @@
-package jameshassmallarms.com.styleswap.gui;
+package jameshassmallarms.com.styleswap.gui.discover;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.nfc.Tag;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -27,10 +23,10 @@ import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.gui.BlankFragment;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
@@ -38,18 +34,16 @@ import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
 import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 
-import static android.R.attr.description;
-
 /**
  * Created by Alan on 25/10/2016.
  */
 
 public class SwipeButtonsFragment extends Fragment {
 
-    public static final int LOADING_SIZE  = 10;
+    public static final int LOADING_SIZE = 10;
     private BlankFragment blank;
     private ImageButton likeObject;
-    private  ImageButton dislikeObject;
+    private ImageButton dislikeObject;
     private String description;
     private TextView userNameView;
     private Fragment nestedCard;
@@ -58,7 +52,7 @@ public class SwipeButtonsFragment extends Fragment {
     private Queue<NestedInfoCard> nestedQueue;
     private String userName;
     private int dressSize = 8;
-    private  int searchRadius = 10;
+    private int searchRadius = 10;
     private boolean active;
     private Linker linker;
     private FireBaseQueries fireBaseQueries = new FireBaseQueries();
@@ -87,7 +81,7 @@ public class SwipeButtonsFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_swipe_buttons, container, false);
         blank = new BlankFragment();
-        linker = (Linker)getActivity();
+        linker = (Linker) getActivity();
         nestedCards = new ArrayList<NestedInfoCard>();
         nestedCard = new NestedInfoCard();
         nestedQueue = new LinkedList<NestedInfoCard>();
@@ -100,10 +94,9 @@ public class SwipeButtonsFragment extends Fragment {
         likeObject = (ImageButton) root.findViewById(R.id.fragment_yes_button);
         dislikeObject = (ImageButton) root.findViewById(R.id.fragment_no_button);
 
-        if(matchs.isEmpty()){
+        if (matchs.isEmpty()) {
             loadBlankFragment();
-        }
-        else{
+        } else {
             NestedInfoCard card = loadFragment(matchs.get(0));
             nestedQueue.add(card);
             matchs.remove(0);
@@ -145,14 +138,14 @@ public class SwipeButtonsFragment extends Fragment {
     public void onStart() {
         super.onStart();
         userName = linker.getLoggedInUser();
-        if (userName != null && nestedQueue.size() == 0){
+        if (userName != null && nestedQueue.size() == 0) {
             getMatchs();
             System.out.println("here");
         }
 
     }
 
-    private NestedInfoCard loadFragment(Match match){
+    private NestedInfoCard loadFragment(Match match) {
         //Need to add in a query to get name description and picture
         String u = match.getMatchName();
         String desc = match.getMatchBio();
@@ -160,17 +153,17 @@ public class SwipeButtonsFragment extends Fragment {
         Bundle b = new Bundle();
         b.putString("UserName", u);
         b.putString("Description", desc);
-        b.putString("Email" ,email);
+        b.putString("Email", email);
         NestedInfoCard nest = new NestedInfoCard();
         nest.setArguments(b);
-        Log.d("tag","Fragment added to stack");
+        Log.d("tag", "Fragment added to stack");
         return nest;
     }
 
-    private void replaceFragment(NestedInfoCard nest){
+    private void replaceFragment(NestedInfoCard nest) {
         transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_match_frame,nest,"TAG").commit();
-        Log.d("Fragment","Replaced");
+        transaction.replace(R.id.fragment_match_frame, nest, "TAG").commit();
+        Log.d("Fragment", "Replaced");
         active = true;
     }
 
@@ -184,7 +177,7 @@ public class SwipeButtonsFragment extends Fragment {
 //        }
 //    }
 //    //TODO dont match if matched recently
-    private void getNewMatchs(){
+    private void getNewMatchs() {
         //users email
         DatabaseReference mUserRef = fireBaseQueries.getUserLocationReferenceByEmail(userName);
         final GeoFire geoFire = new GeoFire(mUserRef.getParent());
@@ -204,7 +197,7 @@ public class SwipeButtonsFragment extends Fragment {
                                 public void run(DataSnapshot s) {
                                     User user = s.getValue(User.class);
                                     if (user.getDressSize() == dressSize)//my dress size
-                                         nestedQueue.add(loadFragment(user.toMatch()));
+                                        nestedQueue.add(loadFragment(user.toMatch()));
                                 }
                             });
                         }
@@ -242,16 +235,18 @@ public class SwipeButtonsFragment extends Fragment {
 
     }
 
-    private void getMatchs(){
+    private void getMatchs() {
         final DatabaseReference matchedMe = fireBaseQueries.getMatchedme(userName);//users email
 
         fireBaseQueries.executeIfExists(matchedMe, new QueryMaster() {
             @Override
             public void run(DataSnapshot s) {
-                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {};
+                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
+                };
                 ArrayList<Match> update = s.getValue(t);
-                if (update.size() > 1){
-                    for (int i = 1; i < update.size() ; ) {
+                if (update.size() > 1) {
+
+                    for (int i = 1; i < update.size(); ) {
 
                         NestedInfoCard card = loadFragment(update.get(i));
                         nestedQueue.add(card);
@@ -266,13 +261,13 @@ public class SwipeButtonsFragment extends Fragment {
         });
     }
 
-    private void loadBlankFragment(){
+    private void loadBlankFragment() {
         transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.fragment_match_frame, blank, "TAG").commit();
     }
 
-    private void fillQueue(){
-        for(int i = 0; i < matchs.size(); i++){
+    private void fillQueue() {
+        for (int i = 0; i < matchs.size(); i++) {
             NestedInfoCard card = loadFragment(matchs.get(i));
             nestedQueue.add(card);
         }

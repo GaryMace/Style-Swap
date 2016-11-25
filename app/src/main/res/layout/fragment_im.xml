@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/fragment_im"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
     android:background="@color/login_grey">
     <LinearLayout
+        android:id="@+id/fragment_im_match_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -27,9 +28,18 @@
             android:background="@color/match_sep"/>
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fragment_im_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fragment_im_match_header"/>
 
-</LinearLayout>
+</RelativeLayout>

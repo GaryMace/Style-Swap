@@ -1,4 +1,4 @@
-package jameshassmallarms.com.styleswap.gui;
+package jameshassmallarms.com.styleswap.gui.discover;
 
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;

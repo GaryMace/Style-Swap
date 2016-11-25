@@ -21,6 +21,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.impl.Match;
+import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
@@ -60,14 +61,22 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
             @Override
             public void onClick(View v) {
-//                FireBaseQueries fb = new FireBaseQueries();
-//                Match m = new Match();
-//                m.setMatchName("Nerthan");
-//                m.setMatchMail("nerthandrake@gmail.com");
-//                m.setMatchNumber("083 376 9282");
-//                fb.addMatch("Garymac@live.ie", MainActivity.FIREBASE_BOTH_MATCHED, m);
-                System.out.println("aaa");
-                FirebaseDatabase.getInstance().getReference().child("fake").setValue("aaaa");
+                FireBaseQueries fb = new FireBaseQueries();
+                Match m = new Match();
+                /*User usr = new User("Alan", 21, "haymakerStirrat@gmail.com", "1234", 10);
+                fb.pushNewUserDetails(usr);*/
+
+                /*m.setMatchName("Gary");
+                m.setMatchMail("Garymac@live.ie");
+                m.setMatchNumber("083 376 9282");
+                fb.addMatch("haymakerStirrat@gmail.com", MainActivity.FIREBASE_MATCHED_ME, m);*/
+
+                /*m.setMatchName("Gary");
+                m.setMatchMail("Garymac@live.ie");
+                m.setMatchNumber("083 376 9282");
+                m.setMatchChatToken("Garymac@live.iehaymakerStirrat@gmail.com");
+                fb.addMatch("haymakerStirrat@gmail.com", MainActivity.FIREBASE_BOTH_MATCHED, m);*/
+
 
                 if (submissionFilled()) {
                     final String userName = mUserName.getText().toString();
@@ -85,7 +94,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                         localDb.updateEmail(userName);
                                         localDb.updatePassword(fbPassword);
                                         localDb.updateRememberMe(REMEMBER_ME);
-                                    } else if (storedEmail == null){
+                                    } else if (storedEmail == null) {
                                         localDb.addDetails(userName, password, REMEMBER_ME);
                                     }
                                 } else {

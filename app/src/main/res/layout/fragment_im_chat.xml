@@ -5,14 +5,23 @@
                 android:background="#e1e1e1"
                 android:orientation="vertical" >
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/msgListView"
-        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/form"
         android:divider="@null"
         android:dividerHeight="0dp"
         android:paddingBottom="10dp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
 
     <LinearLayout
         android:id="@+id/form"

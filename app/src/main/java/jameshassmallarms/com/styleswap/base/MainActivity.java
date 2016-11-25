@@ -47,11 +47,13 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 import jameshassmallarms.com.styleswap.R;
-import jameshassmallarms.com.styleswap.gui.EditProfileFragment;
-import jameshassmallarms.com.styleswap.gui.SwipeButtonsFragment;
+import jameshassmallarms.com.styleswap.gui.BlankFragment;
+import jameshassmallarms.com.styleswap.gui.im.TestIm;
+import jameshassmallarms.com.styleswap.gui.profile.EditProfileFragment;
+import jameshassmallarms.com.styleswap.gui.discover.SwipeButtonsFragment;
 import jameshassmallarms.com.styleswap.gui.im.ChatIm;
 import jameshassmallarms.com.styleswap.gui.im.MatchListFragment;
-import jameshassmallarms.com.styleswap.gui.im.ProfileFragment;
+import jameshassmallarms.com.styleswap.gui.profile.ProfileFragment;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;

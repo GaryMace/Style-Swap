@@ -20,8 +20,9 @@ public class User {
     private String phoneNum;
     private String bio;
     private int age;
-    public List<Match> iMatched = new ArrayList<>();
-    public List<Match> matchedMe = new ArrayList<>();
+
+    private List<Match> bothMatched = new ArrayList<>();
+    private List<Match> matchedMe = new ArrayList<>();
 
     public User(String name, int age, String email, String password, int dressSize) {
         this.name = name;
@@ -31,7 +32,7 @@ public class User {
         this.dressSize = dressSize;
         Match dummy = new Match();
         dummy.setMatchMail("dummy so list exists");
-        this.iMatched.add(dummy);
+        this.bothMatched.add(dummy);
         this.matchedMe.add(dummy);
     }
 
@@ -40,7 +41,7 @@ public class User {
         this.password = password;
         Match dummy = new Match();
         dummy.setMatchMail("Dummy so list exists");
-        this.iMatched.add(dummy);
+        this.bothMatched.add(dummy);
         this.matchedMe.add(dummy);
     }
 
@@ -129,4 +130,21 @@ public class User {
         m.setMatchBio(this.getBio());
         return m;
     }
+
+    public List<Match> getBothMatched() {
+        return bothMatched;
+    }
+
+    public void setBothMatched(List<Match> bothMatched) {
+        this.bothMatched = bothMatched;
+    }
+
+    public List<Match> getMatchedMe() {
+        return matchedMe;
+    }
+
+    public void setMatchedMe(List<Match> matchedMe) {
+        this.matchedMe = matchedMe;
+    }
+
 }
