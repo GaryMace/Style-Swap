@@ -1,5 +1,8 @@
 package jameshassmallarms.com.styleswap.gui.discover;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -8,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.geofire.GeoFire;
@@ -15,11 +19,15 @@ import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.firebase.geofire.LocationCallback;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -97,10 +105,12 @@ public class SwipeButtonsFragment extends Fragment {
         if (matchs.isEmpty()) {
             loadBlankFragment();
         } else {
-            NestedInfoCard card = loadFragment(matchs.get(0));
+           /* NestedInfoCard card = loadFragment(matchs.get(0));
             nestedQueue.add(card);
             matchs.remove(0);
 
+           */
+            getMatchs();
             replaceFragment(nestedQueue.poll());
 
         }
@@ -145,15 +155,18 @@ public class SwipeButtonsFragment extends Fragment {
 
     }
 
-    private NestedInfoCard loadFragment(Match match) {
+    private NestedInfoCard loadFragment(Match match, byte[] img) {
         //Need to add in a query to get name description and picture
+        match.setByteArray(img);
         String u = match.getMatchName();
         String desc = match.getMatchBio();
         String email = match.getMatchMail();
+        byte[] image = match.getByteArray();
         Bundle b = new Bundle();
         b.putString("UserName", u);
         b.putString("Description", desc);
         b.putString("Email", email);
+        b.putByteArray("IMG", image);
         NestedInfoCard nest = new NestedInfoCard();
         nest.setArguments(b);
         Log.d("tag", "Fragment added to stack");
@@ -196,8 +209,9 @@ public class SwipeButtonsFragment extends Fragment {
                                 @Override
                                 public void run(DataSnapshot s) {
                                     User user = s.getValue(User.class);
-                                    if (user.getDressSize() == dressSize)//my dress size
-                                        nestedQueue.add(loadFragment(user.toMatch()));
+                                    if (user.getDressSize() == dressSize) {//my dress size
+                                        addToQueue(user.getName(),user);
+                                    }
                                 }
                             });
                         }
@@ -248,9 +262,8 @@ public class SwipeButtonsFragment extends Fragment {
 
                     for (int i = 1; i < update.size(); ) {
 
-                        NestedInfoCard card = loadFragment(update.get(i));
-                        nestedQueue.add(card);
-                        System.out.println(nestedQueue);
+                        addToQueue(update.get(i).getMatchName(),update.get(i));
+
                         update.remove(i);
                     }
                     //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
@@ -266,11 +279,44 @@ public class SwipeButtonsFragment extends Fragment {
         transaction.add(R.id.fragment_match_frame, blank, "TAG").commit();
     }
 
-    private void fillQueue() {
-        for (int i = 0; i < matchs.size(); i++) {
-            NestedInfoCard card = loadFragment(matchs.get(i));
-            nestedQueue.add(card);
-        }
+
+    public void addToQueue(String username, final User user) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(username + "/" + "Dress");
+
+        final long ONE_MEGABYTE = 1024 * 1024;
+        picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                nestedQueue.add(loadFragment(user.toMatch(),bytes));
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
     }
 
+    public void addToQueue(String username, final Match match) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(username + "/" + "Dress");
+
+        final long ONE_MEGABYTE = 1024 * 1024;
+        picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                nestedQueue.add(loadFragment(match,bytes));
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+    }
 }

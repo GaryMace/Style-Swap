@@ -1,5 +1,7 @@
 package jameshassmallarms.com.styleswap.gui.discover;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -51,10 +53,13 @@ public class NestedInfoCard extends Fragment {
             String user = b.getString("UserName");
             String email = b.getString("Email");
             String desc = b.getString("Description");
+            byte[] img = b.getByteArray("IMG");
             Log.d("YOLO", email);
             userName.setText(user);
             description.setText(desc);
-            test.download(userPic,email);
+            Bitmap bmp = BitmapFactory.decodeByteArray(img, 0, img.length);
+            userPic.setImageBitmap(bmp);
+            //test.download(userPic,email);
             // getUserInfo(user);
             /*test.download(userPic, user, "Dress");
             test.download(userPic, user);

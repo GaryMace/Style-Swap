@@ -126,9 +126,9 @@ public class User {
     public Match toMatch(){
         Match m = new Match();
         m.setMatchName(this.getName());
-        //m.setbio = this.bio;
         m.setMatchMail(this.getEmail());
         m.setMatchBio(this.getBio());
+
         return m;
     }
 
