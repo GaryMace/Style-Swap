@@ -61,7 +61,7 @@ public class SwipeButtonsFragment extends Fragment {
     private String userName;
     private int dressSize = 8;
     private int searchRadius = 10;
-    private boolean active;
+    private boolean isBlank;
     private Linker linker;
     private FireBaseQueries fireBaseQueries = new FireBaseQueries();
     private ArrayList<Match> matchs = new ArrayList<>();
@@ -102,13 +102,16 @@ public class SwipeButtonsFragment extends Fragment {
         likeObject = (ImageButton) root.findViewById(R.id.fragment_yes_button);
         dislikeObject = (ImageButton) root.findViewById(R.id.fragment_no_button);
 
-        if (matchs.isEmpty()) {
-            loadBlankFragment();
-        } else {
-            getMatchs();
-            replaceFragment(nestedQueue.poll());
 
-        }
+            loadBlankFragment();
+//        } else {
+//            NestedInfoCard card = loadFragment(matchs.get(0));
+//            nestedQueue.add(card);
+//            matchs.remove(0);
+//
+//            replaceFragment(nestedQueue.poll());
+//
+//        }
 
 
         likeObject.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +150,7 @@ public class SwipeButtonsFragment extends Fragment {
         userName = linker.getLoggedInUser();
         if (userName != null && nestedQueue.size() == 0) {
             getMatchs();
+
             System.out.println("here");
         }
 
@@ -179,7 +183,6 @@ public class SwipeButtonsFragment extends Fragment {
         transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_match_frame, nest, "TAG").commit();
         Log.d("Fragment", "Replaced");
-        active = true;
     }
 
     //    private void fillFragments(){
@@ -216,7 +219,7 @@ public class SwipeButtonsFragment extends Fragment {
                                             public void run(DataSnapshot s) {
                                                 User user = s.getValue(User.class);
                                                 if (user.getDressSize() == dressSize)//my dress size
-                                                    addToQueue(user.getName(),user);
+                                                    addToQueue(user.toMatch());
                                             }
                                         });
                                     }
@@ -263,25 +266,22 @@ public class SwipeButtonsFragment extends Fragment {
 
     private void getMatchs() {
         final DatabaseReference matchedMe = fireBaseQueries.getMatchedme(userName);//users email
-
         fireBaseQueries.executeIfExists(matchedMe, new QueryMaster() {
             @Override
             public void run(DataSnapshot s) {
                 GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
                 };
                 ArrayList<Match> update = s.getValue(t);
-                if (update.size() > 1) {
-
+                boolean replaceFlag = true;
                     for (int i = 1; i < update.size(); ) {
-
-                       addToQueue(update.get(i).getMatchName(),update.get(i));
+                       addToQueue(update.get(i));
+                        replaceFlag = false;
                         update.remove(i);
                     }
                     //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
-                }
+
                 getNewMatchs();
-                if (nestedQueue.size() !=0)
-                    replaceFragment(nestedQueue.poll());
+
             }
         });
     }
@@ -290,47 +290,33 @@ public class SwipeButtonsFragment extends Fragment {
     private void loadBlankFragment() {
         transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.fragment_match_frame, blank, "TAG").commit();
+        isBlank = true;
     }
 
 
-    public void addToQueue(String username, final User user) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(username + "/" + "Dress");
 
+
+    public void addToQueue(final Match match) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(match.getMatchMail() + "/" + "Dress");
+        Log.d("Username Check", match.getMatchName());
         final long ONE_MEGABYTE = 1024 * 1024;
         picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                Match temp = user.toMatch();
-                temp.setByteArray(bytes);
-                nestedQueue.add(loadFragment(temp));
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
-        });
-    }
-
-    public void addToQueue(String username, final Match match) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(username + "/" + "Dress");
-
-        final long ONE_MEGABYTE = 1024 * 1024;
-        picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-            @Override
-            public void onSuccess(byte[] bytes) {
-                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                Log.d("User", match.getMatchMail());
                 match.setByteArray(bytes);
                 nestedQueue.add(loadFragment(match));
+                if (isBlank){
+                    replaceFragment(nestedQueue.poll());
+                    isBlank = false;
+                }
 
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
+                Log.d("Pic load Failed", "WHy");
                 // Handle any errors
             }
         });
