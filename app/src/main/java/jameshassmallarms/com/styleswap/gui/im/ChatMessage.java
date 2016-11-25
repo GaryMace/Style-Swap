@@ -1,7 +1,5 @@
 package jameshassmallarms.com.styleswap.gui.im;
 
-import java.util.Random;
-
 /**
  * Created by gary on 24/11/16.
  */

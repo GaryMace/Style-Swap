@@ -61,8 +61,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
             @Override
             public void onClick(View v) {
-                FireBaseQueries fb = new FireBaseQueries();
-                Match m = new Match();
+                /*FireBaseQueries fb = new FireBaseQueries();
+                Match m = new Match();*/
                 /*User usr = new User("Alan", 21, "haymakerStirrat@gmail.com", "1234", 10);
                 fb.pushNewUserDetails(usr);*/
 

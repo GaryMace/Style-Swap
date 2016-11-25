@@ -209,7 +209,7 @@ public class MatchListFragment extends Fragment {
                     public boolean onLongClick(View v) {                        //Launch IM fragment and add this fragment to back stack
                         Log.d("TAG", "Clicked Match, launching im fragment");
                         FragmentTransaction ft = fragmentManager.beginTransaction();
-                        TestIm chatFragment = new TestIm();
+                        ChatIm chatFragment = new ChatIm();
 
                         //Pass match data to fragment we're about to launch
                         Bundle argData = new Bundle();

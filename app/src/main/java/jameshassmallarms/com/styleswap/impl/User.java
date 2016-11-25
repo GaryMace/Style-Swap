@@ -45,8 +45,9 @@ public class User {
         this.matchedMe.add(dummy);
     }
 
-    public User(){}
+    public User(){
 
+    }
 
     public User(String email) {
         this.email = email;
