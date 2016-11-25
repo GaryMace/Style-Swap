@@ -156,10 +156,10 @@ public class MainActivity extends AppCompatActivity
                     // change your content accordingly.
                     ft.replace(R.id.activity_main_fragment_container, mProfileFragment, getString(R.string.fragment_bottom_bar_id)).commit();
                 } else if (tabId == R.id.tab_search) {
-                    ft.replace(R.id.activity_main_fragment_container, new BlankFragment(), getString(R.string.fragment_bottom_bar_id)).commit();
+                    ft.replace(R.id.activity_main_fragment_container, mSwipeButtons, getString(R.string.fragment_bottom_bar_id)).commit();
 
                 } else if (tabId == R.id.tab_contact) {
-                    ft.replace(R.id.activity_main_fragment_container, new TestIm(), getString(R.string.fragment_bottom_bar_id)).commit();
+                    ft.replace(R.id.activity_main_fragment_container, mMatchList, getString(R.string.fragment_bottom_bar_id)).commit();
                 }
             }
         });

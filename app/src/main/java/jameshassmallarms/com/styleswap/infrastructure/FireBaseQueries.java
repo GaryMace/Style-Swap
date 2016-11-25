@@ -71,7 +71,7 @@ public class FireBaseQueries {
 
     public void download(final ImageView imageView, String username) {
 
-        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(username + "/" + "Dress.png");
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(username + "/" + "Dress");
 
         final long ONE_MEGABYTE = 1024 * 1024;
         picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -105,7 +105,7 @@ public class FireBaseQueries {
         });
     }
 
-    private String encodeKey(String key) {
+    public static String encodeKey(String key) {
         try {
             return URLEncoder.encode(key, "UTF-8").replace(".", "%2E");
         } catch (UnsupportedEncodingException e) {

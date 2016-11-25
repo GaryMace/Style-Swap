@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
  */
 
 public class Match {
+    private String matchChatToken;    //ID's a unique firebase chat room for the users.
     private String matchName;
     private String matchMail;
     private Bitmap matchImage;
@@ -14,6 +15,14 @@ public class Match {
     private String matchBio;
 
     public Match() {
+    }
+
+    public String getMatchChatToken() {
+        return matchChatToken;
+    }
+
+    public void setMatchChatToken(String matchChatToken) {
+        this.matchChatToken = matchChatToken;
     }
 
     public String getMatchMail() {

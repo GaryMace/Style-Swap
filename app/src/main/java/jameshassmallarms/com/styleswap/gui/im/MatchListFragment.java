@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,7 +46,10 @@ import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
 public class MatchListFragment extends Fragment {
     public static final String ARGUMENT_MATCH_IMAGE = "match_img";
     public static final String ARGUMENT_MATCH_NAME = "match_name";
+    public static final String ARGUMENT_CHAT_KEY = "match_chat_key";
     private static final String REVERT_TO_TAG = "match_list_fragment";
+    private static final String TAG = "debug_match";
+    private ProgressBar mProgressBar;
     private RecyclerView mMatchRecycler;
     private FireBaseQueries db;
     private MatchAdapter mAdapter;
@@ -57,6 +61,7 @@ public class MatchListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_im, container, false);
         fragmentManager = getActivity().getSupportFragmentManager();
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
         mMatchRecycler = (RecyclerView) view
                 .findViewById(R.id.fragment_im_recycler);
@@ -83,6 +88,7 @@ public class MatchListFragment extends Fragment {
                 GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
                 };
                 ArrayList<Match> update = s.getValue(t);
+                update.remove(0);
                 if (linker.getCachedMatches().isEmpty() ||
                     update.size() > linker.getCachedMatches().size() ||
                     update.size() < linker.getCachedMatches().size() ) {
@@ -123,6 +129,7 @@ public class MatchListFragment extends Fragment {
             } else {
                 mAdapter.notifyDataSetChanged();
             }
+            mProgressBar.setVisibility(ProgressBar.INVISIBLE);
             mMatchRecycler.setAdapter(mAdapter);
         }
     }
@@ -175,6 +182,7 @@ public class MatchListFragment extends Fragment {
             private Button deleteMatch;
             private ImageView matchImage;
             private TextView matchNumber;
+            private String matchChatKey;
 
             public MatchHolder(View itemView) {
                 super(itemView);
@@ -201,13 +209,17 @@ public class MatchListFragment extends Fragment {
                     public boolean onLongClick(View v) {                        //Launch IM fragment and add this fragment to back stack
                         Log.d("TAG", "Clicked Match, launching im fragment");
                         FragmentTransaction ft = fragmentManager.beginTransaction();
-                        ChatIm chatFragment = new ChatIm();
+                        TestIm chatFragment = new TestIm();
 
-                        Bundle argData = new Bundle();
                         //Pass match data to fragment we're about to launch
-                        byte[] img = DatabaseHandler.createByteArray(((BitmapDrawable)matchImage.getDrawable()).getBitmap());
+                        Bundle argData = new Bundle();
+                        Bitmap compressedImg = ((BitmapDrawable)matchImage.getDrawable()).getBitmap();
+                        compressedImg = Bitmap.createScaledBitmap(compressedImg, 100, 100, false);
+
+                        byte[] img = DatabaseHandler.createByteArray(compressedImg);
                         argData.putByteArray(ARGUMENT_MATCH_IMAGE, img);
                         argData.putString(ARGUMENT_MATCH_NAME, matchName.getText().toString());
+                        argData.putString(ARGUMENT_CHAT_KEY, matchChatKey);
                         chatFragment.setArguments(argData);
 
                         ft.addToBackStack(MatchListFragment.REVERT_TO_TAG);
@@ -218,6 +230,7 @@ public class MatchListFragment extends Fragment {
             }
 
             public void bindMatch(Match m) {
+                matchChatKey = m.getMatchChatToken();
                 matchName.setText(m.getMatchName());
                 matchNumber.setText(m.getMatchNumber());
 
@@ -225,7 +238,6 @@ public class MatchListFragment extends Fragment {
                     matchImage.setImageBitmap(m.getMatchImage());
                 else
                     download(matchImage, m.getMatchMail(), "Dress", getAdapterPosition());  //We don't have it locally so download it
-                Log.d("TAG", "Mail is: \"" +m.getMatchMail() + "\"");
             }
         }
     }

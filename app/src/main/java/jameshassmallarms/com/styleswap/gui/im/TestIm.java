@@ -20,20 +20,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import jameshassmallarms.com.styleswap.R;
+import jameshassmallarms.com.styleswap.infrastructure.DatabaseHandler;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
-import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
+import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
 /**
  * Created by gary on 24/11/16.
@@ -48,19 +44,22 @@ public class TestIm extends Fragment {
     private static final String MESSAGE_URL = "http://friendlychat.firebase.google.com/message/";
     private static final int MESSAGE_MINE = 0;
     private static final int MESSAGE_MATCHES = 1;
+    private Linker linker;
 
-
+    //Screen items
     private ImageButton mSendButton;
     private Random random;
     private EditText mMessageEditText;
-    private String userMe;       //This is the logged in user
-    private String userMatch;                               //This is the matched user's name
     private ProgressBar mProgressBar;
-
-    private Bitmap mTestImg;
-
     private RecyclerView mMessageRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
+
+    //Variables
+    private String mUserMe;                                  //This is the logged in user
+    private String mUserMatch;                               //This is the matched user's name
+    private Bitmap mMyImg;
+    private Bitmap mMatchImg;
+    private String mChatKey;
 
     // Firebase instance variables
     private DatabaseReference mFirebaseDatabaseReference;
@@ -71,16 +70,23 @@ public class TestIm extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_im_chat, container, false);
-        mSendButton = (ImageButton) view.findViewById(R.id.sendMessageButton);
+
+        linker = (Linker) getActivity();
         random = new Random();
+
+        Log.d("TAG", "Arg size: "+getArguments().size());
+        mMyImg = linker.getUserProfilePic();
+        mMatchImg = DatabaseHandler.getBitmapFromBlob(getArguments().getByteArray(MatchListFragment.ARGUMENT_MATCH_IMAGE));
+        mUserMe = linker.getLoggedInUser();
+        mUserMatch = getArguments().getString(MatchListFragment.ARGUMENT_MATCH_NAME);
+        mChatKey = getArguments().getString(MatchListFragment.ARGUMENT_CHAT_KEY);
+
+        mSendButton = (ImageButton) view.findViewById(R.id.sendMessageButton);
         mMessageEditText = (EditText) view.findViewById(R.id.messageEditText);
         mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         mMessageRecyclerView = (RecyclerView) view.findViewById(R.id.msgListView);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mLinearLayoutManager.setStackFromEnd(true);
-
-        mTestImg = BitmapFactory.decodeResource(getResources(), R.drawable.ja);
-        mTestImg = Bitmap.createScaledBitmap(mTestImg, 50, 50, false);
 
         // New child entries
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -89,10 +95,8 @@ public class TestIm extends Fragment {
             ChatMessage.class,
             R.layout.chat_bubble_me,
             RecyclerView.ViewHolder.class,
-            mFirebaseDatabaseReference.child("Users").
-                child("Garymac%40live%2Eie").
-                child("-chats").
-                child("haymakerstirrat%40gmail%2Ecom").
+            mFirebaseDatabaseReference.child("Chats").
+                child(FireBaseQueries.encodeKey(mChatKey)).
                 child("messages")) {
 
             @Override
@@ -161,10 +165,8 @@ public class TestIm extends Fragment {
             @Override
             public void onClick(View view) {
                 ChatMessage message = new ChatMessage(mMessageEditText.getText().toString(), true);
-                mFirebaseDatabaseReference.child("Users")
-                    .child("Garymac%40live%2Eie")
-                    .child("-chats")
-                    .child("haymakerstirrat%40gmail%2Ecom")
+                mFirebaseDatabaseReference.child("Chats")
+                    .child(FireBaseQueries.encodeKey(mChatKey))
                     .child("messages")
                     .push().setValue(message);
                 mMessageEditText.setText("");
@@ -187,7 +189,7 @@ public class TestIm extends Fragment {
 
         msg.setText(message.getText());
 
-        imgView.setImageBitmap(mTestImg);
+        imgView.setImageBitmap(mMyImg);
         layout.setBackgroundResource(R.drawable.im_my_chat_bubble);
         parent_layout.setGravity(Gravity.RIGHT);
         msg.setTextColor(Color.WHITE);
@@ -206,7 +208,7 @@ public class TestIm extends Fragment {
 
         msg.setText(message.getText());
 
-        imgView.setImageBitmap(mTestImg);
+        imgView.setImageBitmap(mMatchImg);
         layout.setBackgroundResource(R.drawable.im_match_chat_bubble);
         parent_layout.setGravity(Gravity.START);
         msg.setTextColor(Color.BLACK);
