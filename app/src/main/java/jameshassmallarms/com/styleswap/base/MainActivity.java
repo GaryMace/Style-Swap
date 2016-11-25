@@ -47,8 +47,6 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 import jameshassmallarms.com.styleswap.R;
-import jameshassmallarms.com.styleswap.gui.im.ChatIm;
-import jameshassmallarms.com.styleswap.gui.profile.EditProfileFragment;
 import jameshassmallarms.com.styleswap.gui.discover.SwipeButtonsFragment;
 import jameshassmallarms.com.styleswap.gui.im.MatchListFragment;
 import jameshassmallarms.com.styleswap.gui.profile.ProfileFragment;
@@ -71,11 +69,10 @@ public class MainActivity extends AppCompatActivity
 
     //  GPS API things  //////////////////////////////////////////////////
     //The desired interval for location updates. Inexact. Updates may be more or less frequent.
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 60000;
     //The fastest rate for active location updates. Exact. Updates will never be more frequent
     //than this value.
-    public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
-        UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+    public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
     private GoogleApiClient mGoogleAPIClient;
     protected LocationRequest mLocationRequest;
     protected Location mLastLocation;
@@ -85,6 +82,7 @@ public class MainActivity extends AppCompatActivity
     //Time when the location was updated represented as a String.
     protected String mLastUpdateTime;
     ///////////////////////////////////////////////////////////////////////
+
     public static final int GET_USER_INFORMATION = 0;
     public static final String GET_LOGIN_STATE = "login_state";
 
@@ -107,11 +105,9 @@ public class MainActivity extends AppCompatActivity
     private List<Match> cachedMatches;
 
     //Bar fragments
-    private EditProfileFragment mEditProfile;
     private SwipeButtonsFragment mSwipeButtons;
     private MatchListFragment mMatchList;
     private ProfileFragment mProfileFragment;
-    private ChatIm mChat;
 
     //Queue of Users for SwipeButton
     private Queue<User> cachedUsers;
@@ -132,13 +128,14 @@ public class MainActivity extends AppCompatActivity
 
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
+        // Kick off the process of building a GoogleApiClient and requesting the LocationServices
+        // API.
+        buildGoogleAPIClient();
 
-        if (mEditProfile == null) {
-            mEditProfile = new EditProfileFragment();
+        if (mProfileFragment == null) {
             mSwipeButtons = new SwipeButtonsFragment();
             mMatchList = new MatchListFragment();
             mProfileFragment = new ProfileFragment();
-            mChat = new ChatIm();
         }
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.activity_main_bottombar);
@@ -161,9 +158,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-        // Kick off the process of building a GoogleApiClient and requesting the LocationServices
-        // API.
-        buildGoogleAPIClient();
+
     }
 
     private void startAppStartupActivityForResult() {
@@ -194,6 +189,7 @@ public class MainActivity extends AppCompatActivity
                     mUserLogin = data.getExtras().getString(Login.LOGIN_USER_EMAIL);
                     toggleUserLoggedIn();
                     Log.d(TAG, "User login email is: " + "\""+mUserLogin+"\"");
+                    createLocationRequest();
 
                 } else if (loginState.equals(Register.REGISTER_NEW_USER)) {      //User created a new account
                     mUserLogin = data.getExtras().getString(Register.REGISTER_EMAIL);
@@ -334,7 +330,7 @@ public class MainActivity extends AppCompatActivity
                     REQUEST_CHECK_LOCATION_PREFERENCES
                 );
             } else {
-
+                Log.d(TAG, "Not asking, just getting Loc");
                 // No explanation needed, we can request the permission.
 
                 ActivityCompat.requestPermissions(this,
@@ -376,6 +372,7 @@ public class MainActivity extends AppCompatActivity
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "Starting GPS Update");
                     startLocationUpdates();
                 } else {
                     //Nothing
@@ -534,7 +531,7 @@ public class MainActivity extends AppCompatActivity
 
     protected void onStart() {
         super.onStart();
-
+        mGoogleAPIClient.connect();
     }
 
     @Override
@@ -565,6 +562,8 @@ public class MainActivity extends AppCompatActivity
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+        Log.d(TAG, "Lat: " +mLastLocation.getLatitude());
+        Log.d(TAG, "Lon: " +mLastLocation.getLongitude());
     }
 
     @Override
