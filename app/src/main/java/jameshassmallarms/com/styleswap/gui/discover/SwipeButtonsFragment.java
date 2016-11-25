@@ -1,5 +1,8 @@
 package jameshassmallarms.com.styleswap.gui.discover;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -8,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.geofire.GeoFire;
@@ -15,11 +19,15 @@ import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.firebase.geofire.LocationCallback;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -53,7 +61,7 @@ public class SwipeButtonsFragment extends Fragment {
     private String userName;
     private int dressSize = 8;
     private int searchRadius = 10;
-    private boolean active;
+    private boolean isBlank;
     private Linker linker;
     private FireBaseQueries fireBaseQueries = new FireBaseQueries();
     private ArrayList<Match> matchs = new ArrayList<>();
@@ -94,16 +102,16 @@ public class SwipeButtonsFragment extends Fragment {
         likeObject = (ImageButton) root.findViewById(R.id.fragment_yes_button);
         dislikeObject = (ImageButton) root.findViewById(R.id.fragment_no_button);
 
-        if (matchs.isEmpty()) {
+
             loadBlankFragment();
-        } else {
-            NestedInfoCard card = loadFragment(matchs.get(0));
-            nestedQueue.add(card);
-            matchs.remove(0);
-
-            replaceFragment(nestedQueue.poll());
-
-        }
+//        } else {
+//            NestedInfoCard card = loadFragment(matchs.get(0));
+//            nestedQueue.add(card);
+//            matchs.remove(0);
+//
+//            replaceFragment(nestedQueue.poll());
+//
+//        }
 
 
         likeObject.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +150,7 @@ public class SwipeButtonsFragment extends Fragment {
         userName = linker.getLoggedInUser();
         if (userName != null && nestedQueue.size() == 0) {
             getMatchs();
+
             System.out.println("here");
         }
 
@@ -152,10 +161,18 @@ public class SwipeButtonsFragment extends Fragment {
         String u = match.getMatchName();
         String desc = match.getMatchBio();
         String email = match.getMatchMail();
+        if ((match.getByteArray()) == null){
+            Log.d("Debug_swipe", "Empty match byte array");
+        }
+        byte[] image = match.getByteArray();
+        if(image == null){
+            Log.d("IMAGE DOESn't Exist", "LAMEEEE");
+        }
         Bundle b = new Bundle();
         b.putString("UserName", u);
         b.putString("Description", desc);
         b.putString("Email", email);
+        b.putByteArray("IMG", image);
         NestedInfoCard nest = new NestedInfoCard();
         nest.setArguments(b);
         Log.d("tag", "Fragment added to stack");
@@ -166,7 +183,6 @@ public class SwipeButtonsFragment extends Fragment {
         transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_match_frame, nest, "TAG").commit();
         Log.d("Fragment", "Replaced");
-        active = true;
     }
 
     //    private void fillFragments(){
@@ -203,7 +219,7 @@ public class SwipeButtonsFragment extends Fragment {
                                             public void run(DataSnapshot s) {
                                                 User user = s.getValue(User.class);
                                                 if (user.getDressSize() == dressSize)//my dress size
-                                                    nestedQueue.add(loadFragment(user.toMatch()));
+                                                    addToQueue(user.toMatch());
                                             }
                                         });
                                     }
@@ -250,41 +266,60 @@ public class SwipeButtonsFragment extends Fragment {
 
     private void getMatchs() {
         final DatabaseReference matchedMe = fireBaseQueries.getMatchedme(userName);//users email
-
         fireBaseQueries.executeIfExists(matchedMe, new QueryMaster() {
             @Override
             public void run(DataSnapshot s) {
                 GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
                 };
                 ArrayList<Match> update = s.getValue(t);
-                if (update.size() > 1) {
-
+                boolean replaceFlag = true;
                     for (int i = 1; i < update.size(); ) {
-
-                        NestedInfoCard card = loadFragment(update.get(i));
-                        nestedQueue.add(card);
-                        System.out.println(nestedQueue);
+                       addToQueue(update.get(i));
+                        replaceFlag = false;
                         update.remove(i);
                     }
                     //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
-                }
+
                 getNewMatchs();
-                if (nestedQueue.size() !=0)
-                    replaceFragment(nestedQueue.poll());
+
             }
         });
     }
 
+
     private void loadBlankFragment() {
         transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.fragment_match_frame, blank, "TAG").commit();
+        isBlank = true;
     }
 
-    private void fillQueue() {
-        for (int i = 0; i < matchs.size(); i++) {
-            NestedInfoCard card = loadFragment(matchs.get(i));
-            nestedQueue.add(card);
-        }
+
+
+
+    public void addToQueue(final Match match) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(match.getMatchMail() + "/" + "Dress");
+        Log.d("Username Check", match.getMatchName());
+        final long ONE_MEGABYTE = 1024 * 1024;
+        picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Log.d("User", match.getMatchMail());
+                match.setByteArray(bytes);
+                nestedQueue.add(loadFragment(match));
+                if (isBlank){
+                    replaceFragment(nestedQueue.poll());
+                    isBlank = false;
+                }
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.d("Pic load Failed", "WHy");
+                // Handle any errors
+            }
+        });
     }
 
 }

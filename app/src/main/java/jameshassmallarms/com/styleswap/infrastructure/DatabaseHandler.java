@@ -62,6 +62,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(CREATE_REMEBER_TABLE);
         //sqLiteDatabase.execSQL(CREATE_IMAGE_TABLE);
+        writeDummyInfo();
     }
 
     @Override
@@ -91,6 +92,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             KEY_USER_LOCATION_LON + " REAL, " +
             KEY_USER_BIO + " TEXT, " +
             KEY_USER_PIC_ID + " INTEGER )";
+    }
+
+    private void writeDummyInfo() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_REMEMBER_EMAIL, "");
+        values.put(KEY_REMEMBER_PASSWORD, "");
+        values.put(KEY_REMEMBER_ME, 0);
+        db.insert(TABLE_REMEMBER_ME, null, values);
+        Log.d(TAG, "put in: " + values);
+
+        db.close();
     }
 
     public void addDetails(String email, String password, int rememberMe) {

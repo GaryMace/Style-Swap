@@ -30,6 +30,7 @@ public class Match {
     private Bitmap matchImage;
     private String matchNumber;
     private String matchBio;
+    private byte[] byteArray;
 
     public Match() {
     }
@@ -61,6 +62,10 @@ public class Match {
     public String getMatchNumber() {
         return matchNumber;
     }
+
+    public void setByteArray(byte[] img){this.byteArray = img;}
+
+    public byte[] getByteArray(){return byteArray;}
 
     public void setMatchNumber(String matchNumber) {
         this.matchNumber = matchNumber;

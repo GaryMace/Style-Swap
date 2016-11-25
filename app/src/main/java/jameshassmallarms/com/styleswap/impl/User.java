@@ -1,7 +1,5 @@
 package jameshassmallarms.com.styleswap.impl;
 
-import android.graphics.Bitmap;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +21,7 @@ public class User {
 
     private List<Match> bothMatched = new ArrayList<>();
     private List<Match> matchedMe = new ArrayList<>();
+    private List<String> recentlyMatched = new ArrayList<>();
 
 
     public User(String email, String password, String name, int age, int dressSize, String phoneNum){
@@ -37,6 +36,7 @@ public class User {
         dummy.setMatchMail("Dummy so list exists");
         this.bothMatched.add(dummy);
         this.matchedMe.add(dummy);
+        this.recentlyMatched.add(email);
     }
 
     public User(){
@@ -96,9 +96,10 @@ public class User {
     public Match toMatch(){
         Match m = new Match();
         m.setMatchName(this.getName());
-        //m.setbio = this.bio;
         m.setMatchMail(this.getEmail());
         m.setMatchBio(this.getItemDescription());
+
+
         return m;
     }
 
@@ -118,4 +119,11 @@ public class User {
         this.matchedMe = matchedMe;
     }
 
+    public List<String> getRecentlyMatched() {
+        return recentlyMatched;
+    }
+
+    public void setRecentlyMatched(List<String> recentlyMatched) {
+        this.recentlyMatched = recentlyMatched;
+    }
 }
