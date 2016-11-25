@@ -119,72 +119,94 @@ public class SwipeButtonsFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (nestedQueue.isEmpty()) {
-                    loadBlankFragment();
+                if (isBlank) {
                     if (userName != null)
                         getMatchs();
-                } else {
-                    if (!isBlank) {
-                        executeIfExists(fireBaseQueries.getMatchedme(userName), new QueryMaster() {
-                            @Override
-                            public void run(DataSnapshot s) {
-                                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {};
-                                ArrayList<Match> update = s.getValue(t);
-                                for (int i = 1; i < update.size(); i++) {
-                                    final Match m = update.get(i);
-                                    if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
-                                        Log.d("Email for encoding", userName);
-                                        Log.d("Other Email", matchs.get(0).getMatchMail());
-                                        final String chatKey = FireBaseQueries.encodeKey(userName)
-                                                + FireBaseQueries.encodeKey(matchs.get(0).getMatchMail());
-                                        fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(userName), new QueryMaster() {
-                                            @Override
-                                            public void run(DataSnapshot s) {
-                                                Match nMatch = new Match();
-                                                nMatch.setMatchMail(matchs.get(0).getMatchMail());
-                                                nMatch.setMatchNumber(matchs.get(0).getMatchNumber());
-                                                nMatch.setMatchName(matchs.get(0).getMatchName());
-                                                nMatch.setChatKey(chatKey);
-                                                fireBaseQueries.addMatch(userName, MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
-                                            }
-                                        });
+                }
+                else {
 
-                                        fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(matchs.get(0).getMatchMail()), new QueryMaster() {
-                                            @Override
-                                            public void run(DataSnapshot s) {
-                                                Match nMatch = new Match();
-                                                nMatch.setMatchMail(userName);
-                                                nMatch.setMatchNumber(linker.getPhoneNumber());
-                                                nMatch.setMatchName(linker.getUserName());
-                                                nMatch.setChatKey(chatKey);
-                                                fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
-                                            }
-                                        });
-                                        ChatMessage message = new ChatMessage("Hello,I matched you", userName);
-                                        fireBaseQueries.createChatRoom(chatKey).push().setValue(message);
-                                        fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
-                                        DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
-                                        fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
-                                            @Override
-                                            public void run(DataSnapshot s) {
-                                                GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
-                                                ArrayList<String> update = s.getValue(t);
-                                                update.add(m.getMatchMail());
-                                            }
-                                        });
-                                        break;
+                    executeIfExists(fireBaseQueries.getMatchedme(userName), new QueryMaster() {
+                        @Override
+                        public void run(DataSnapshot s) {
+                            System.out.println(matchs.size()+ "=================");
+                            GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {};
+                            ArrayList<Match> update = s.getValue(t);
+                            boolean matchFlag = false;
+                            for (int i = 1; i < update.size(); i++) {
+                                final Match m = update.get(i);
+                                System.out.println(m.getMatchMail() + "=========== " + matchs.get(0).getMatchMail());
+                                if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
+                                    Log.d("Email for encoding", userName);
+                                    Log.d("Other Email", matchs.get(0).getMatchMail());
+                                    final String chatKey = FireBaseQueries.encodeKey(userName)
+                                            + FireBaseQueries.encodeKey(matchs.get(0).getMatchMail());
+                                    fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(userName), new QueryMaster() {
+                                        @Override
+                                        public void run(DataSnapshot s) {
+                                            Match nMatch = new Match();
+                                            nMatch.setMatchMail(matchs.get(0).getMatchMail());
+                                            nMatch.setMatchNumber(matchs.get(0).getMatchNumber());
+                                            nMatch.setMatchName(matchs.get(0).getMatchName());
+                                            nMatch.setChatKey(chatKey);
+                                            fireBaseQueries.addMatch(userName, MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
+                                        }
+                                    });
 
-
-
+                                    fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(matchs.get(0).getMatchMail()), new QueryMaster() {
+                                        @Override
+                                        public void run(DataSnapshot s) {
+                                            Match nMatch = new Match();
+                                            nMatch.setMatchMail(userName);
+                                            nMatch.setMatchNumber(linker.getPhoneNumber());
+                                            nMatch.setMatchName(linker.getUserName());
+                                            nMatch.setChatKey(chatKey);
+                                            fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
+                                        }
+                                    });
+                                    ChatMessage message = new ChatMessage("Hello,I matched you", userName);
+                                    fireBaseQueries.createChatRoom(chatKey).push().setValue(message);
+                                    fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
+                                    DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
+                                    fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
+                                        @Override
+                                        public void run(DataSnapshot s) {
+                                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
+                                            ArrayList<String> update = s.getValue(t);
+                                            update.add(m.getMatchMail());
+                                        }
+                                    });
+                                    matchFlag = true;
+                                    matchs.remove(0);
+                                    if (matchs.size() == 0) {
+                                        loadBlankFragment();
+                                        getMatchs();
                                     }
-                                }
-                            }
-                        });
-                        //Run Queries
-                    }
+                                    else
+                                        replaceFragment(nestedQueue.poll());
+                                    break;
 
-                    replaceFragment(nestedQueue.poll());
-                    matchs.remove(0);
+                                }
+
+                            }
+
+                            if (!matchFlag) {
+                                System.out.println(matchs.size()+ "=================");
+                                Match nMatch = new Match();
+                                nMatch.setMatchMail(userName);
+                                nMatch.setMatchNumber(linker.getPhoneNumber());
+                                nMatch.setMatchName(linker.getUserName());
+                                fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_MATCHED_ME,nMatch);
+                                matchs.remove(0);
+                                if (matchs.size() == 0) {
+                                    loadBlankFragment();
+                                    getMatchs();
+                                }
+                                else
+                                    replaceFragment(nestedQueue.poll());
+                            }
+                        }
+                    });
+                    //Run Queries
                 }
             }
         });
@@ -192,43 +214,46 @@ public class SwipeButtonsFragment extends Fragment {
         dislikeObject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (nestedQueue.isEmpty()) {
-                    loadBlankFragment();
+                if (isBlank) {
                     if (userName != null)
                         getMatchs();
+
                 } else {
-                    if (!isBlank) {
-                        executeIfExists(fireBaseQueries.getMatchedme(userName), new QueryMaster() {
-                            @Override
-                            public void run(DataSnapshot s) {
-                                GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
-                                };
-                                ArrayList<Match> update = s.getValue(t);
-                                for (int i = 1; i < update.size(); i++) {
-                                    final Match m = update.get(i);
-                                    if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
 
-                                        fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
-                                        DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
-                                        fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
-                                            @Override
-                                            public void run(DataSnapshot s) {
-                                                GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
-                                                ArrayList<String> update = s.getValue(t);
-                                                update.add(m.getMatchMail());
-                                            }
-                                        });
+                    executeIfExists(fireBaseQueries.getMatchedme(userName), new QueryMaster() {
+                        @Override
+                        public void run(DataSnapshot s) {
+                            GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {};
+                            ArrayList<Match> update = s.getValue(t);
+                            for (int i = 1; i < update.size(); i++) {
+                                final Match m = update.get(i);
+                                if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
 
+                                    fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
+                                    DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
+                                    fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
+                                        @Override
+                                        public void run(DataSnapshot s) {
+                                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
+                                            ArrayList<String> update = s.getValue(t);
+                                            update.add(m.getMatchMail());
 
-                                    }
+                                        }
+                                    });
+
                                 }
                             }
-                        });
-                        //Run Queries
-                    }
 
-                    replaceFragment(nestedQueue.poll());
-                    matchs.remove(0);
+                            matchs.remove(0);
+                            if (matchs.size() == 0) {
+                                loadBlankFragment();
+                                getMatchs();
+                            }
+                            else
+                                replaceFragment(nestedQueue.poll());
+                        }
+                    });
+                        //Run Queries
                 }
             }
         });
@@ -241,8 +266,6 @@ public class SwipeButtonsFragment extends Fragment {
         userName = linker.getLoggedInUser();
         if (userName != null && nestedQueue.size() == 0) {
             getMatchs();
-
-            System.out.println("here");
         }
 
     }
@@ -364,7 +387,6 @@ public class SwipeButtonsFragment extends Fragment {
                 GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
                 };
                 ArrayList<Match> update = s.getValue(t);
-                boolean replaceFlag = true;
                 for (int i = 1; i < update.size(); ) {
                     addToQueue(update.get(i));
                     update.remove(i);
@@ -401,6 +423,7 @@ public class SwipeButtonsFragment extends Fragment {
                     replaceFragment(nestedQueue.poll());
                     isBlank = false;
                 }
+
                 matchs.add(match);
 
             }

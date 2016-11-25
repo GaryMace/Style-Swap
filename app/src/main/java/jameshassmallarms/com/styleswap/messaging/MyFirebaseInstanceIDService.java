@@ -45,6 +45,6 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
      */
     private void sendRegistrationToServer(String token) {
         FireBaseQueries firebase = new FireBaseQueries();
-        firebase.getUserToken("Garymac@live.ie").setValue(token);
+        //firebase.getUserToken().setValue(token);
     }
 }
