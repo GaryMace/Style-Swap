@@ -48,7 +48,7 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
         private Linker linker;
         private String userEmail = null;
         FireBaseQueries fireBaseQueries = new FireBaseQueries();
-        ImageView imageView;
+        static ImageView imageView;
         private static final String REVERT_TO_TAG = "edit_profile_fragment";
         public Spinner spinner;
 
@@ -149,6 +149,7 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
                         imageView.setImageURI(selectedImageUri);
 
                         Log.d("TAGGE", "result ok: ");
+
                         fireBaseQueries.uploadImageView(imageView, userEmail);
                         //imageView.setImageDrawable(linker.getUserProfileImage().getDrawable());
                 } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -166,5 +167,9 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
         @Override
         public void onNothingSelected(AdapterView<?> adapterView) {
 
+        }
+
+        public static void callback(ImageView v) {
+                imageView = v;
         }
 }
