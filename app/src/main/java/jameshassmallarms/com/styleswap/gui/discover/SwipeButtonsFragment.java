@@ -160,32 +160,34 @@ public class SwipeButtonsFragment extends Fragment {
                                             nMatch.setMatchName(matchs.get(0).getMatchName());
                                             nMatch.setChatKey(chatKey);
                                             fireBaseQueries.addMatch(userName, MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
+                                            fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(matchs.get(0).getMatchMail()), new QueryMaster() {
+                                                @Override
+                                                public void run(DataSnapshot s) {
+                                                    Match nMatch = new Match();
+                                                    nMatch.setMatchMail(userName);
+                                                    nMatch.setMatchNumber(linker.getPhoneNumber());
+                                                    nMatch.setMatchName(linker.getUserName());
+                                                    nMatch.setChatKey(chatKey);
+                                                    fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
+                                                    fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_MATCHED_ME,nMatch);
+                                                    matchs.remove(0);
+                                                    if (matchs.size() == 0) {
+                                                        loadBlankFragment();
+                                                        getMatchs();
+                                                    } else
+                                                        replaceFragment(nestedQueue.poll());
+                                                }
+                                            });
                                         }
                                     });
 
-                                    fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(matchs.get(0).getMatchMail()), new QueryMaster() {
-                                        @Override
-                                        public void run(DataSnapshot s) {
-                                            Match nMatch = new Match();
-                                            nMatch.setMatchMail(userName);
-                                            nMatch.setMatchNumber(linker.getPhoneNumber());
-                                            nMatch.setMatchName(linker.getUserName());
-                                            nMatch.setChatKey(chatKey);
-                                            fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
-                                        }
-                                    });
+
                                     ChatMessage message = new ChatMessage("Hello,I matched you", userName);
                                     fireBaseQueries.createChatRoom(chatKey).push().setValue(message);
                                     fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
-
-
                                     matchFlag = true;
-                                    matchs.remove(0);
-                                    if (matchs.size() == 0) {
-                                        loadBlankFragment();
-                                        getMatchs();
-                                    } else
-                                        replaceFragment(nestedQueue.poll());
+
+
 
                                 }
 
@@ -343,9 +345,20 @@ public class SwipeButtonsFragment extends Fragment {
                                         fireBaseQueries.executeIfExists(ref, new QueryMaster() {
                                             @Override
                                             public void run(DataSnapshot s) {
-                                                User user = s.getValue(User.class);
+                                                final User user = s.getValue(User.class);
+
                                                 if (user.getDressSize() == dressSize)//my dress size
-                                                    addToQueue(user.toMatch());
+                                                    fireBaseQueries.executeIfExists(mUserRef.child("recentlyMatched"), new QueryMaster() {
+                                                        @Override
+                                                        public void run(DataSnapshot s) {
+                                                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
+                                                            ArrayList<String> update = s.getValue(t);
+                                                            if (!update.contains(user.getEmail()))
+                                                                addToQueue(user.toMatch());
+
+                                                        }
+                                                    });
+
                                             }
                                         });
                                     }
