@@ -130,6 +130,8 @@ public class SwipeButtonsFragment extends Fragment {
                         public void run(DataSnapshot s) {
                             GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
                             ArrayList<String> update = s.getValue(t);
+                            if (update.size() > 10)
+                                update.remove(1);
                             update.add(matchs.get(0).getMatchMail());
                             recentlyMatch.setValue(update);
 
@@ -230,6 +232,19 @@ public class SwipeButtonsFragment extends Fragment {
                         getMatchs();
 
                 } else {
+                    final DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
+                    fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
+                        @Override
+                        public void run(DataSnapshot s) {
+                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
+                            ArrayList<String> update = s.getValue(t);
+                            update.add(matchs.get(0).getMatchMail());
+                            if (update.size() > 10)
+                                update.remove(1);
+                            recentlyMatch.setValue(update);
+
+                        }
+                    });
 
                     executeIfExists(fireBaseQueries.getMatchedme(userName), new QueryMaster() {
                         @Override
@@ -241,17 +256,6 @@ public class SwipeButtonsFragment extends Fragment {
                                 if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
 
                                     fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
-                                    final DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
-                                    fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
-                                        @Override
-                                        public void run(DataSnapshot s) {
-                                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
-                                            ArrayList<String> update = s.getValue(t);
-                                            update.add(m.getMatchMail());
-                                            recentlyMatch.setValue(update);
-
-                                        }
-                                    });
 
                                 }
                             }
@@ -346,19 +350,26 @@ public class SwipeButtonsFragment extends Fragment {
                                             @Override
                                             public void run(DataSnapshot s) {
                                                 final User user = s.getValue(User.class);
-
                                                 if (user.getDressSize() == dressSize) {
-//                                                    fireBaseQueries.executeIfExists(mUserRef.child("recentlyMatched"), new QueryMaster() {
-//                                                        @Override
-//                                                        public void run(DataSnapshot s) {
-//                                                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {
-//                                                            };
-//                                                            ArrayList<String> update = s.getValue(t);
-//                                                            if (!update.contains(user.getEmail()))
+                                                    fireBaseQueries.executeIfExists(fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched"), new QueryMaster() {
+                                                        @Override
+                                                        public void run(DataSnapshot s) {
+                                                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {
+                                                            };
+                                                            ArrayList<String> update = s.getValue(t);
+                                                            boolean add = true;
+                                                            for (String str: update){
+                                                                if (str.equals(user.getEmail())){
+                                                                    add = false;
+                                                                    System.out.println(user.getEmail());
+                                                                    break;
+                                                                }
+                                                            }
+                                                            if (add)
                                                                addToQueue(user.toMatch());
-//
-//                                                        }
-//                                                    });
+
+                                                        }
+                                                    });
                                                 }
                                             }
                                         });
