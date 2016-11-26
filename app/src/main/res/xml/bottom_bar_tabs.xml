@@ -7,13 +7,13 @@
         activeColor="#FFFFFF"/>
     <tab
         id="@+id/tab_search"
-        icon="@drawable/style"
+        icon="@drawable/swap_tab"
         title=""
         barColorWhenSelected="#303F9F"
         activeColor="#FFFFFF"/>
     <tab
         id="@+id/tab_contact"
-        icon="@drawable/call"
+        icon="@drawable/message_tab"
         title=""
         barColorWhenSelected="#303F9F"
         activeColor="#FFFFFF"/>

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +41,7 @@ public class NestedInfoCard extends Fragment {
     private String user;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+    private ProgressBar mProgressBar;
 
 
 
@@ -51,6 +53,7 @@ public class NestedInfoCard extends Fragment {
         userName = (TextView) root.findViewById(R.id.fragment_person_username);
         description = (TextView) root.findViewById(R.id.fragment_item_desc);
         userPic = (ImageView) root.findViewById(R.id.fragment_swipe_picture);
+        mProgressBar = (ProgressBar) root.findViewById(R.id.blank_frag_progress_bar);
         Bundle b = getArguments();
         if (b != null) {
             user = b.getString("UserName");
