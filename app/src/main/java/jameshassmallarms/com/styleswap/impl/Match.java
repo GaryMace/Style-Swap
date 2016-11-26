@@ -33,6 +33,16 @@ public class Match {
     private byte[] byteArray;
     private String chatKey;
 
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    private int position;
+
     public Match() {
     }
 

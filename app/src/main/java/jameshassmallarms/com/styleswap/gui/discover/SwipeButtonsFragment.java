@@ -145,6 +145,7 @@ public class SwipeButtonsFragment extends Fragment {
 
                             for (int i = 1; i < update.size(); i++) {
                                 final Match m = update.get(i);
+                                m.setPosition(i);
                                 System.out.println(m.getMatchMail() + "=========== " + matchs.get(0).getMatchMail());
                                 if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
                                     Log.d("Email for encoding", userName);
@@ -160,6 +161,7 @@ public class SwipeButtonsFragment extends Fragment {
                                             nMatch.setMatchName(matchs.get(0).getMatchName());
                                             nMatch.setChatKey(chatKey);
                                             fireBaseQueries.addMatch(userName, MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
+                                            fireBaseQueries.removeMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_MATCHED_ME,m.getPosition());
                                             fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(matchs.get(0).getMatchMail()), new QueryMaster() {
                                                 @Override
                                                 public void run(DataSnapshot s) {
@@ -169,7 +171,6 @@ public class SwipeButtonsFragment extends Fragment {
                                                     nMatch.setMatchName(linker.getUserName());
                                                     nMatch.setChatKey(chatKey);
                                                     fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
-                                                    fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_MATCHED_ME,nMatch);
                                                     matchs.remove(0);
                                                     if (matchs.size() == 0) {
                                                         loadBlankFragment();
@@ -347,18 +348,19 @@ public class SwipeButtonsFragment extends Fragment {
                                             public void run(DataSnapshot s) {
                                                 final User user = s.getValue(User.class);
 
-                                                if (user.getDressSize() == dressSize)//my dress size
-                                                    fireBaseQueries.executeIfExists(mUserRef.child("recentlyMatched"), new QueryMaster() {
-                                                        @Override
-                                                        public void run(DataSnapshot s) {
-                                                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
-                                                            ArrayList<String> update = s.getValue(t);
-                                                            if (!update.contains(user.getEmail()))
-                                                                addToQueue(user.toMatch());
-
-                                                        }
-                                                    });
-
+                                                if (user.getDressSize() == dressSize) {
+//                                                    fireBaseQueries.executeIfExists(mUserRef.child("recentlyMatched"), new QueryMaster() {
+//                                                        @Override
+//                                                        public void run(DataSnapshot s) {
+//                                                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {
+//                                                            };
+//                                                            ArrayList<String> update = s.getValue(t);
+//                                                            if (!update.contains(user.getEmail()))
+                                                               addToQueue(user.toMatch());
+//
+//                                                        }
+//                                                    });
+                                                }
                                             }
                                         });
                                     }
