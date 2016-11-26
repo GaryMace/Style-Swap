@@ -101,6 +101,7 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
                                         mUserRef.child("name").setValue(userName.getText().toString());
                                         mUserRef.child("phoneNum").setValue(userNumber.getText().toString());
                                         //mUserRef.child("dressSize").setValue(.getText().toString());
+                                        mUserRef.child("dressSize").setValue(8);
                                 }
                         });
                         getFragmentManager().popBackStack();

@@ -219,8 +219,10 @@ public class MainActivity extends AppCompatActivity
             ImageView imageView = new ImageView(getBaseContext());
             imageView.setImageURI(selectedImageUri);
 
+            profileImage = imageView;
             Log.d("TAGGE", "result ok: ");
             fireBaseQueries.uploadImageView(imageView, mUserLogin);
+
         } else {
             Log.d(TAG, "FFS, result code is: " + requestCode);
             if (resultCode == Activity.RESULT_CANCELED) {
