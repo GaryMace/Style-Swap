@@ -9,6 +9,9 @@ import java.util.List;
  *              When a new user registers a User object is pushed to firebase with all the information
  *              they entered.
  *
+ *              Dummy variables are used because if they were left empty then the new data entries on
+ *              firebase wouldn't be added
+ *
  */
 public class User {
     private String password;

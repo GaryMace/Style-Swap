@@ -57,7 +57,6 @@ import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
  *              that match from your list, their list and also deletes the chat room between you.
  *
  *               Created by gary on 13/10/16.
-
  *
  */
 public class MatchListFragment extends Fragment {

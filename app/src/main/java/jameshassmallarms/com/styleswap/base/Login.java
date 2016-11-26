@@ -40,21 +40,21 @@ import jameshassmallarms.com.styleswap.messaging.MyFirebaseInstanceIDService;
 
 /**
  * Login:
- * <p>
- * The Login activity is started by the AppStartupActivity. AppStartup expects to get a
- * result from this activity. There are two kinds of results that are returned.
- * <p>
- * 1) The user logins to an existing account and that users email is sent back to
- * AppStartup. From there it is sent back to MainActivity
- * <p>
- * 2) The user chooses the "Sign up" button and Login Activity launches Register Activity.
- * There is logic in place that tells AppStartup that it now expects the result directly
- * from Register and NOT LOGIN.
- * <p>
- * LOCAL DATABASE:
- * We used our local database to store the users login info if they click the
- * RememberMe Checkbox. It simply stores the most up-to-date login info and reloads
- * it from the database when the app relaunches.
+ *
+ *          The Login activity is started by the AppStartupActivity. AppStartup expects to get a
+ *          result from this activity. There are two kinds of results that are returned.
+
+ *          1) The user logins to an existing account and that users email is sent back to
+ *          AppStartup. From there it is sent back to MainActivity
+ *
+ *          2) The user chooses the "Sign up" button and Login Activity launches Register Activity.
+ *          There is logic in place that tells AppStartup that it now expects the result directly
+ *          from Register and NOT LOGIN.
+ *
+ *          LOCAL DATABASE:
+ *          We used our local database to store the users login info if they click the
+ *          RememberMe Checkbox. It simply stores the most up-to-date login info and reloads
+ *          it from the database when the app relaunches.
  */
 public class Login extends AppCompatActivity implements View.OnClickListener {
     public static final String LOGIN_USER_EMAIL = "login_email";

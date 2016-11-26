@@ -29,7 +29,19 @@ import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 import jameshassmallarms.com.styleswap.infrastructure.Linker;
 
 /**
- * Created by gary on 24/11/16.
+ * ChatIm:
+ *
+ *              This fragment inflates the messaging screen between two users. We use a Firebase
+ *              recycler that listens for new messages on firebase in a chat room and pulls them down.
+ *
+ *              From there the messages are handled in such a way to determine who they belong to.
+ *
+ *              All of the messages that the current logged in user sends will be displayed as blue.
+ *              All of the messages that a match sends will be displayed as grey for the logged in user.
+ *
+ *
+ *
+ *              Created by gary on 24/11/16.
  */
 
 public class ChatIm extends Fragment {
