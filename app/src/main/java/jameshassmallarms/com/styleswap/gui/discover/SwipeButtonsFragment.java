@@ -124,7 +124,17 @@ public class SwipeButtonsFragment extends Fragment {
                         getMatchs();
                 }
                 else {
+                    final DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
+                    fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
+                        @Override
+                        public void run(DataSnapshot s) {
+                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
+                            ArrayList<String> update = s.getValue(t);
+                            update.add(matchs.get(0).getMatchMail());
+                            recentlyMatch.setValue(update);
 
+                        }
+                    });
                     executeIfExists(fireBaseQueries.getMatchedme(userName), new QueryMaster() {
                         @Override
                         public void run(DataSnapshot s) {
@@ -132,6 +142,7 @@ public class SwipeButtonsFragment extends Fragment {
                             GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {};
                             ArrayList<Match> update = s.getValue(t);
                             boolean matchFlag = false;
+
                             for (int i = 1; i < update.size(); i++) {
                                 final Match m = update.get(i);
                                 System.out.println(m.getMatchMail() + "=========== " + matchs.get(0).getMatchMail());
@@ -166,28 +177,20 @@ public class SwipeButtonsFragment extends Fragment {
                                     ChatMessage message = new ChatMessage("Hello,I matched you", userName);
                                     fireBaseQueries.createChatRoom(chatKey).push().setValue(message);
                                     fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
-                                    DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
-                                    fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
-                                        @Override
-                                        public void run(DataSnapshot s) {
-                                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
-                                            ArrayList<String> update = s.getValue(t);
-                                            update.add(m.getMatchMail());
-                                        }
-                                    });
+
+
                                     matchFlag = true;
                                     matchs.remove(0);
                                     if (matchs.size() == 0) {
                                         loadBlankFragment();
                                         getMatchs();
-                                    }
-                                    else
+                                    } else
                                         replaceFragment(nestedQueue.poll());
-                                    break;
 
                                 }
 
                             }
+
 
                             if (!matchFlag) {
                                 System.out.println(matchs.size()+ "=================");
@@ -200,10 +203,16 @@ public class SwipeButtonsFragment extends Fragment {
                                 if (matchs.size() == 0) {
                                     loadBlankFragment();
                                     getMatchs();
-                                }
-                                else
+                                } else
                                     replaceFragment(nestedQueue.poll());
+
+
                             }
+
+
+
+
+
                         }
                     });
                     //Run Queries
@@ -230,13 +239,14 @@ public class SwipeButtonsFragment extends Fragment {
                                 if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
 
                                     fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
-                                    DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
+                                    final DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
                                     fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
                                         @Override
                                         public void run(DataSnapshot s) {
                                             GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
                                             ArrayList<String> update = s.getValue(t);
                                             update.add(m.getMatchMail());
+                                            recentlyMatch.setValue(update);
 
                                         }
                                     });
