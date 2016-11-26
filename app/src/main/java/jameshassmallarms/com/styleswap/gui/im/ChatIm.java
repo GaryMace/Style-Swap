@@ -98,7 +98,7 @@ public class ChatIm extends Fragment {
             R.layout.chat_bubble_me,                            //this is a dummy layout, will be replaced
             RecyclerView.ViewHolder.class,
             mFirebaseDatabaseReference.child("Chats").          //Links to the chat room on firebase
-                child(FireBaseQueries.encodeKey(mChatKey)).
+                child(mChatKey).
                 child("messages")) {
 
             //When we're loading messages make either a layout for me (blue bubble) or my Match (grey bubble)
@@ -178,7 +178,7 @@ public class ChatIm extends Fragment {
                     new ChatMessage(mMessageEditText.getText().toString(), linker.getLoggedInUser());   //This is a message from the logged-in user to send
 
                 mFirebaseDatabaseReference.child("Chats")
-                    .child(FireBaseQueries.encodeKey(mChatKey))     //Key to chat room
+                    .child(mChatKey)     //Key to chat room
                     .child("messages")
                     .push().setValue(message);
                 mMessageEditText.setText("");       //reset the submit message text field at the bottom of screen
