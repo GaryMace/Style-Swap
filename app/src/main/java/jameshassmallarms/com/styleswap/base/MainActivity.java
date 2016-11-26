@@ -214,7 +214,8 @@ public class MainActivity extends AppCompatActivity
         //ACTIVITY.RESULT_OK is -1, ACTIVITY.RESULT_CANCELED = 0
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == EditProfileFragment.RESULT_LOAD_IMAGE) { //For loading an image form the gallery in EditProfileFragment.
+        if (requestCode == EditProfileFragment.RESULT_LOAD_IMAGE &&
+            data != null) { //For loading an image form the gallery in EditProfileFragment.
             Uri selectedImageUri = data.getData();
             ImageView imageView = new ImageView(getBaseContext());
             imageView.setImageURI(selectedImageUri);
@@ -227,7 +228,8 @@ public class MainActivity extends AppCompatActivity
             Log.d(TAG, "FFS, result code is: " + requestCode);
             if (resultCode == Activity.RESULT_CANCELED) {
                 Log.d(TAG, "Register cancelled");
-            } else if (resultCode == Activity.RESULT_OK) {
+            } else if (resultCode == Activity.RESULT_OK &&
+                data != null) {
                 //First get the result code
                 String loginState = data.getExtras().getString(MainActivity.GET_LOGIN_STATE);
                 if (loginState != null) {
