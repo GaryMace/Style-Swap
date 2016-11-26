@@ -147,7 +147,6 @@ public class MainActivity extends AppCompatActivity
     //Queue of Users for SwipeButton
     private Queue<User> cachedUsers;
 
-    //TODO: relaunching app re-asks for login if logged in! fix it!
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -196,6 +195,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    //Starts the first screen you see. MainActivity then gets the Login/Register data later.
     private void startAppStartupActivityForResult() {
         Intent getLoginIntent = new Intent(getBaseContext(), AppStartupActivtiy.class);
         startActivityForResult(getLoginIntent, GET_USER_INFORMATION);
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity
         //ACTIVITY.RESULT_OK is -1, ACTIVITY.RESULT_CANCELED = 0
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == EditProfileFragment.RESULT_LOAD_IMAGE) {
+        if (requestCode == EditProfileFragment.RESULT_LOAD_IMAGE) { //For loading an image form the gallery in EditProfileFragment.
             Uri selectedImageUri = data.getData();
             ImageView imageView = new ImageView(getBaseContext());
             imageView.setImageURI(selectedImageUri);
@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity
                         mUserLogin = data.getExtras().getString(Login.LOGIN_USER_EMAIL);
                         toggleUserLoggedIn();
 
+                        //Pull the rest of the user information from firebase after they login
                         DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail(mUserLogin);
                         fireBaseQueries.executeIfExists(mUserRef, new QueryMaster() {
                             @Override
@@ -249,9 +250,9 @@ public class MainActivity extends AppCompatActivity
                         });
 
                         fireBaseQueries.download(profileImage, mUserLogin);
-
                         createLocationRequest();
 
+                        //All the information we need should have been just entered by the
                     } else if (loginState.equals(Register.REGISTER_NEW_USER)) {      //User created a new account
                         mUserLogin = data.getExtras().getString(Register.REGISTER_EMAIL);
                         mUserAge = data.getExtras().getInt(Register.REGISTER_AGE);      //Why do we care about an age?
@@ -269,7 +270,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Updates fields based on data stored in the bundle.
+     * Updates fields based on data stored in the bundle. Most of the GPS code in here came
+     * straight from Google code labs
+     *
+     * But.. it works :)
      *
      * @param savedInstanceState The activity state saved in the Bundle.
      */
@@ -376,6 +380,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    //Yeah this is my code though.. not googles.
     private void checkLocationPermissions() {
 
         if (ContextCompat.checkSelfPermission(this,
@@ -387,7 +392,7 @@ public class MainActivity extends AppCompatActivity
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
-                showExplanation("Permission Needed",
+                showExplanation("Permission Needed",        //Make pop-up dialog asking for permissions
                     "We need to access your GPS to use for matching",
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     REQUEST_CHECK_LOCATION_PREFERENCES

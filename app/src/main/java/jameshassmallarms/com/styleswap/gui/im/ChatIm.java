@@ -104,7 +104,7 @@ public class ChatIm extends Fragment {
             //When we're loading messages make either a layout for me (blue bubble) or my Match (grey bubble)
             @Override
             protected void populateViewHolder(RecyclerView.ViewHolder viewHolder, ChatMessage message, int position) {
-                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                mProgressBar.setVisibility(ProgressBar.INVISIBLE);                          //Hide progress bar now that we have stuff to display
 
                 if (message.getIsMine().equals(linker.getLoggedInUser())) {                 //If the message loaded was mine, blue bubble it
                     populateMyBubble((MyMessageViewHolder) viewHolder, message, position);
