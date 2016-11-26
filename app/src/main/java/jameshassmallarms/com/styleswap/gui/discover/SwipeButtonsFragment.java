@@ -265,8 +265,12 @@ public class SwipeButtonsFragment extends Fragment {
                                 loadBlankFragment();
                                 getMatchs();
                             }
-                            else
+                            else {
                                 replaceFragment(nestedQueue.poll());
+
+                                //linker.setCachedMatches(matchs.get(0));
+
+                            }
                         }
                     });
                         //Run Queries
@@ -280,6 +284,7 @@ public class SwipeButtonsFragment extends Fragment {
     public void onStart() {
         super.onStart();
         userName = linker.getLoggedInUser();
+        //if cached not empty put cached
         if (userName != null && nestedQueue.size() == 0) {
             getMatchs();
         }
