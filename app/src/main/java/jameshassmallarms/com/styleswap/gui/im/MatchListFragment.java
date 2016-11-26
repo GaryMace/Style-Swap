@@ -104,6 +104,7 @@ public class MatchListFragment extends Fragment {
                 GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
                 };
                 ArrayList<Match> update = s.getValue(t);
+                Log.d(TAG, update.get(1).getChatKey());
                 update.remove(0);
                 if (linker.getCachedMatches().isEmpty() ||
                     update.size() > linker.getCachedMatches().size() ||
@@ -246,7 +247,7 @@ public class MatchListFragment extends Fragment {
             }
 
             public void bindMatch(Match m) {
-                matchChatKey = m.getMatchChatToken();
+                matchChatKey = m.getChatKey();
                 matchName.setText(m.getMatchName());
                 matchNumber.setText(m.getMatchNumber());
 
