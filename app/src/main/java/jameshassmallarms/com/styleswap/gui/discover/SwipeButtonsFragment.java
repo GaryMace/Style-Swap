@@ -161,7 +161,6 @@ public class SwipeButtonsFragment extends Fragment {
                                             nMatch.setMatchName(matchs.get(0).getMatchName());
                                             nMatch.setChatKey(chatKey);
                                             fireBaseQueries.addMatch(userName, MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
-                                            fireBaseQueries.removeMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_MATCHED_ME,m.getPosition());
                                             fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(matchs.get(0).getMatchMail()), new QueryMaster() {
                                                 @Override
                                                 public void run(DataSnapshot s) {
@@ -185,7 +184,7 @@ public class SwipeButtonsFragment extends Fragment {
 
                                     ChatMessage message = new ChatMessage("Hello,I matched you", userName);
                                     fireBaseQueries.createChatRoom(chatKey).push().setValue(message);
-                                    fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
+                                   fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
                                     matchFlag = true;
 
 
