@@ -312,8 +312,10 @@ public class SwipeButtonsFragment extends Fragment {
     }
 
     private void replaceFragment(NestedInfoCard nest) {
-        transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_match_frame, nest, "TAG").commit();
+        if (this.isVisible()) {
+            transaction = getChildFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_match_frame, nest, "TAG").commit();
+        }
         Log.d("Fragment", "Replaced");
     }
 
