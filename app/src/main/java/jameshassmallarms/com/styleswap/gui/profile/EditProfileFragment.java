@@ -75,7 +75,7 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
                 userEmail = linker.getLoggedInUser();
 
                 imageView = (ImageView) view.findViewById(R.id.profileImage);
-                imageView = linker.getUserProfileImage();
+                imageView.setImageDrawable(linker.getUserProfileImage().getDrawable());
 
                 spinner = (Spinner) view.findViewById(R.id.spinner1);
                 ArrayAdapter adapter = ArrayAdapter.createFromResource(this.getActivity(),R.array.dress_sizes,android.R.layout.simple_spinner_item);
@@ -100,7 +100,7 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
                                         mUserRef.child("itemDescription").setValue(itemDescription.getText().toString());
                                         mUserRef.child("name").setValue(userName.getText().toString());
                                         mUserRef.child("phoneNum").setValue(userNumber.getText().toString());
-                                        mUserRef.child("dressSize").setValue(userNumber.getText().toString());
+                                        //mUserRef.child("dressSize").setValue(.getText().toString());
                                 }
                         });
                         getFragmentManager().popBackStack();
@@ -149,6 +149,7 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
 
                         Log.d("TAGGE", "result ok: ");
                         fireBaseQueries.uploadImageView(imageView, userEmail);
+                        //imageView.setImageDrawable(linker.getUserProfileImage().getDrawable());
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                         Log.d("TAGGE", "result canceled: ");
 
