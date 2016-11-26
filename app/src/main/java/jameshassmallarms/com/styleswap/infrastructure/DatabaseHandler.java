@@ -62,7 +62,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         sqLiteDatabase.execSQL(CREATE_REMEBER_TABLE);
         //sqLiteDatabase.execSQL(CREATE_IMAGE_TABLE);
-        writeDummyInfo();
+        //writeDummyInfo();
     }
 
     @Override

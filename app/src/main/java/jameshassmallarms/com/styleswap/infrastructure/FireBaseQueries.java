@@ -2,6 +2,7 @@ package jameshassmallarms.com.styleswap.infrastructure;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
@@ -50,11 +51,14 @@ public class FireBaseQueries {
 
         StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(userID + "/" + "Dress");
 
-        image.setDrawingCacheEnabled(true);
-        image.buildDrawingCache();
-        Bitmap bitmap = image.getDrawingCache();
+        /*image.setDrawingCacheEnabled(true);
+        image.buildDrawingCache();*/
+        //Bitmap bitmap = image.getDrawingCache();
+        BitmapDrawable drawable = (BitmapDrawable) image.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] data = baos.toByteArray();
 
         UploadTask uploadTask = picRef.putBytes(data);

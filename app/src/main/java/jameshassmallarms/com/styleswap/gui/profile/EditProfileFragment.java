@@ -1,10 +1,17 @@
 package jameshassmallarms.com.styleswap.gui.profile;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +39,7 @@ import static android.app.Activity.RESULT_OK;
  */
 
 public class EditProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+        public static final int RESULT_LOAD_IMAGE = 4;
         private EditText itemDescription;
         private EditText userNumber;
         private EditText userName;
@@ -119,30 +127,32 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
 
         public void loadImagefromGallery(View view) {
                 // Create intent to Open Image applications like Gallery, Google Photos
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+              /*  Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 // Start the Intent
-                startActivityForResult(galleryIntent, 1);
+                Log.d("TAGGE", linker.getLoggedInUser());
+                startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);*/
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                getActivity().startActivityForResult(Intent.createChooser(intent,
+                    "Select Picture"), RESULT_LOAD_IMAGE);
         }
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
                 super.onActivityResult(requestCode, resultCode, data);
-                try {
-                        // When an Image is picked
-                        if (requestCode == 1 && resultCode == RESULT_OK
-                                && null != data) {
-                                // Get the Image from data
-                                imageView.setImageURI(data.getData());
-                                fireBaseQueries.uploadImageView(imageView, userEmail);
+                Log.d("TAGGE", "THANK YOU TO FUCK: res code is " + requestCode);
+                if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK) {
+                        Uri selectedImageUri = data.getData();
+                        imageView.setImageURI(selectedImageUri);
 
-                        } else {
-                                Toast.makeText(getActivity(), "You haven't picked Image", Toast.LENGTH_LONG).show();
-                        }
-                } catch (Exception e) {
-                        Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG).show();
+                        Log.d("TAGGE", "result ok: ");
+                        fireBaseQueries.uploadImageView(imageView, userEmail);
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                        Log.d("TAGGE", "result canceled: ");
+
                 }
-
         }
 
         @Override

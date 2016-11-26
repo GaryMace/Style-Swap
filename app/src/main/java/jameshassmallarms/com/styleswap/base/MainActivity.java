@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -56,6 +57,7 @@ import java.util.Queue;
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.gui.discover.SwipeButtonsFragment;
 import jameshassmallarms.com.styleswap.gui.im.MatchListFragment;
+import jameshassmallarms.com.styleswap.gui.profile.EditProfileFragment;
 import jameshassmallarms.com.styleswap.gui.profile.ProfileFragment;
 import jameshassmallarms.com.styleswap.impl.Match;
 import jameshassmallarms.com.styleswap.impl.User;
@@ -212,47 +214,58 @@ public class MainActivity extends AppCompatActivity
         //ACTIVITY.RESULT_OK is -1, ACTIVITY.RESULT_CANCELED = 0
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_CANCELED) {
-            Log.d(TAG, "Register cancelled");
-        } else if (resultCode == Activity.RESULT_OK) {
-            //First get the result code
-            String loginState = data.getExtras().getString(MainActivity.GET_LOGIN_STATE);
-            if (loginState != null) {
-                if (loginState.equals(Login.LOGIN_EXISTING_USER)) {            //If they logged into an existing account
-                    mUserLogin = data.getExtras().getString(Login.LOGIN_USER_EMAIL);
-                    toggleUserLoggedIn();
+        if (requestCode == EditProfileFragment.RESULT_LOAD_IMAGE) {
+            Uri selectedImageUri = data.getData();
+            ImageView imageView = new ImageView(getBaseContext());
+            imageView.setImageURI(selectedImageUri);
 
-                    DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail(mUserLogin);
-                    fireBaseQueries.executeIfExists(mUserRef, new QueryMaster() {
-                        @Override
-                        public void run(DataSnapshot s) {
-                            User loggedInUser = s.getValue(User.class);
-                            mUserAge = loggedInUser.getAge();      //Why do we care about an age?
-                            mUserName = loggedInUser.getName();
-                            mUserNumber = loggedInUser.getPhoneNum();
-                            mUserSize = loggedInUser.getDressSize();
-                            mItemDescription = loggedInUser.getItemDescription();
-                        }
+            Log.d("TAGGE", "result ok: ");
+            fireBaseQueries.uploadImageView(imageView, mUserLogin);
+        } else {
+            Log.d(TAG, "FFS, result code is: " + requestCode);
+            if (resultCode == Activity.RESULT_CANCELED) {
+                Log.d(TAG, "Register cancelled");
+            } else if (resultCode == Activity.RESULT_OK) {
+                //First get the result code
+                String loginState = data.getExtras().getString(MainActivity.GET_LOGIN_STATE);
+                if (loginState != null) {
+                    if (loginState.equals(Login.LOGIN_EXISTING_USER)) {            //If they logged into an existing account
+                        mUserLogin = data.getExtras().getString(Login.LOGIN_USER_EMAIL);
+                        toggleUserLoggedIn();
+
+                        DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail(mUserLogin);
+                        fireBaseQueries.executeIfExists(mUserRef, new QueryMaster() {
+                            @Override
+                            public void run(DataSnapshot s) {
+                                User loggedInUser = s.getValue(User.class);
+                                mUserAge = loggedInUser.getAge();      //Why do we care about an age?
+                                mUserName = loggedInUser.getName();
+                                mUserNumber = loggedInUser.getPhoneNum();
+                                mUserSize = loggedInUser.getDressSize();
+                                mItemDescription = loggedInUser.getItemDescription();
+                            }
 
 
-                    });
+                        });
 
-                    fireBaseQueries.download(profileImage, mUserLogin);
+                        fireBaseQueries.download(profileImage, mUserLogin);
 
-                    createLocationRequest();
+                        createLocationRequest();
 
-                } else if (loginState.equals(Register.REGISTER_NEW_USER)) {      //User created a new account
-                    mUserLogin = data.getExtras().getString(Register.REGISTER_EMAIL);
-                    mUserAge = data.getExtras().getInt(Register.REGISTER_AGE);      //Why do we care about an age?
-                    mUserName = data.getExtras().getString(Register.REGISTER_NAME);
-                    mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
-                    mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
-                    Log.d(TAG, "User registered to email: " + mUserLogin);
-                    fireBaseQueries.download(profileImage, mUserLogin);
+                    } else if (loginState.equals(Register.REGISTER_NEW_USER)) {      //User created a new account
+                        mUserLogin = data.getExtras().getString(Register.REGISTER_EMAIL);
+                        mUserAge = data.getExtras().getInt(Register.REGISTER_AGE);      //Why do we care about an age?
+                        mUserName = data.getExtras().getString(Register.REGISTER_NAME);
+                        mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
+                        mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
+                        Log.d(TAG, "User registered to email: " + mUserLogin);
+                        fireBaseQueries.download(profileImage, mUserLogin);
+                    }
+
                 }
-
             }
         }
+
     }
 
     /**
