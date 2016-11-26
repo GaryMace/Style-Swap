@@ -220,7 +220,6 @@ public class MainActivity extends AppCompatActivity
             imageView.setImageURI(selectedImageUri);
 
             profileImage = imageView;
-            EditProfileFragment.callback(profileImage);
             Log.d("TAGGE", "result ok: ");
             fireBaseQueries.uploadImageView(imageView, mUserLogin);
 
