@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -172,6 +173,7 @@ public class SwipeButtonsFragment extends Fragment {
                                                     nMatch.setMatchName(linker.getUserName());
                                                     nMatch.setChatKey(chatKey);
                                                     fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
+                                                    Toast.makeText(getContext(), "You just matched with "+ matchs.get(0).getMatchName(), Toast.LENGTH_SHORT).show();
                                                     matchs.remove(0);
                                                     if (matchs.size() == 0) {
                                                         loadBlankFragment();
