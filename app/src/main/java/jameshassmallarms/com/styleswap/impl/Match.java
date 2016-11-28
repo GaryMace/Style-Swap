@@ -24,14 +24,14 @@ import android.graphics.Bitmap;
  *
  */
 public class Match {
-    private String matchChatToken;    //ID's a unique firebase chat room for the users.
+    private String matchChatToken;
     private String matchName;
     private String matchMail;
     private Bitmap matchImage;
     private String matchNumber;
     private String matchBio;
     private byte[] byteArray;
-    private String chatKey;
+    private String chatKey;              //ID's a unique firebase chat room for the users.
 
     public int getPosition() {
         return position;

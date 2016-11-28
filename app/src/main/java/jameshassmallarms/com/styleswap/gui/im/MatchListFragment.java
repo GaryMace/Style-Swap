@@ -86,14 +86,11 @@ public class MatchListFragment extends Fragment {
         linker = (Linker) getActivity();
         db = new FireBaseQueries();
 
-        //TODO: Store cached matches in database, reload them so this doesn't skip layout due to empty adapter
-        //updateUI();
         getMatches(linker.getLoggedInUser());   //Get matches from firebase for the current logged in user
 
         return view;
     }
 
-    //TODO: ignore first item in list! it's the dummy field
     public void getMatches(String email) {
         final DatabaseReference userRef;
         userRef = db.getBothMatched(email);
@@ -104,9 +101,9 @@ public class MatchListFragment extends Fragment {
                 GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
                 };
                 ArrayList<Match> update = s.getValue(t);
-                update.remove(0);
+                update.remove(0);                       //First item from firebase is always a dummy (otherwise firebase list wont exist), ignore it here.
                 if (linker.getCachedMatches().isEmpty() ||
-                    update.size() > linker.getCachedMatches().size() ||
+                    update.size() > linker.getCachedMatches().size() ||     //If there's been some update get the new list.
                     update.size() < linker.getCachedMatches().size() ) {
 
                     linker.setCachedMatches(update);
@@ -125,7 +122,7 @@ public class MatchListFragment extends Fragment {
             public void onSuccess(byte[] bytes) {
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 imageView.setImageBitmap(bmp);
-                linker.getCachedMatches()
+                linker.getCachedMatches()       //Cache the match for faster fragment inflation on tab revisit. Will be slow first time only this way
                     .get(position)
                     .setMatchImage(((BitmapDrawable)imageView.getDrawable()).getBitmap());
 
@@ -145,7 +142,7 @@ public class MatchListFragment extends Fragment {
             } else {
                 mAdapter.notifyDataSetChanged();
             }
-            mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+            mProgressBar.setVisibility(ProgressBar.INVISIBLE);      //Matches found, hide the progress bar
             mMatchRecycler.setAdapter(mAdapter);
         }
     }
@@ -175,7 +172,7 @@ public class MatchListFragment extends Fragment {
         @Override
         public void onBindViewHolder(MatchHolder holder, int position) {
             Match match = matches.get(position);
-            holder.bindMatch(match);                                //Bind this.match to a visible list item in the adapter
+            holder.bindMatch(match);                                //Bind this match to a visible list item in the adapter
 
         }
 
@@ -185,9 +182,15 @@ public class MatchListFragment extends Fragment {
         }
 
         public void removeAt(int position) {
-            linker.getCachedMatches().remove(position);
+            Match m = linker.getCachedMatches().remove(position);
+
+            String chatKey = m.getChatKey();
 
             db.removeMatch(linker.getLoggedInUser(), MainActivity.FIREBASE_BOTH_MATCHED, position);
+
+            //TODO: removeAtPosition wont work for my match
+            //db.removeMatch(m.getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED, position);
+
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, matches.size());
         }
@@ -215,10 +218,12 @@ public class MatchListFragment extends Fragment {
 
                         Log.d("TAG", "removed Image at position" + newPosition);
                         removeAt(getAdapterPosition());                                 //Remove this user from my bothMatched list locally and on Firebase
+                        db.deleteChatRoom(matchChatKey);
                         notifyItemRangeChanged(newPosition, matches.size());            //Remove user from visible list locally
                         notifyItemChanged(newPosition);
                     }
                 });   //why did it take me so long to realise this was missing....FFUUUUU
+
                 mListItemContainer.setOnLongClickListener(new View.OnLongClickListener() {
 
                     @Override

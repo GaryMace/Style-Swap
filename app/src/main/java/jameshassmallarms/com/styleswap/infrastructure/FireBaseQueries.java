@@ -135,9 +135,6 @@ public class FireBaseQueries {
         return getUserReferenceByEmail(email).child("phoneNumber");
     }
 
-    public DatabaseReference getThing(String email) {
-        return getUserReferenceByEmail(email).child("-chats").child("haymakerstirrat%40gmail%2Ecom").child("messages");
-    }
 
     public DatabaseReference getPassword(String email) {
         return getUserReferenceByEmail(email).child("password");
@@ -194,6 +191,10 @@ public class FireBaseQueries {
         });
     }
 
+    public DatabaseReference getChatRoom(String chatRoomKey) {
+        return getChatRoot().child(chatRoomKey);
+    }
+
     public void removeMatch(String email, String matchType, final int position) {
         final DatabaseReference userRef;
 
@@ -207,6 +208,18 @@ public class FireBaseQueries {
                 ArrayList<Match> update = s.getValue(t);
                 update.remove(position);
                 userRef.setValue(update);
+
+            }
+        });
+    }
+
+    public void deleteChatRoom(String chatRoomKey) {
+        final DatabaseReference ref = getChatRoom(encodeKey(chatRoomKey));
+
+        executeIfExists(ref, new QueryMaster() {
+            @Override
+            public void run(DataSnapshot s) {
+                ref.setValue(null);
 
             }
         });
