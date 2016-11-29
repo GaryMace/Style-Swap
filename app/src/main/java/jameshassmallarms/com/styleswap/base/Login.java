@@ -97,13 +97,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 }
             }
         };
-        isNetworkAvailable(h,2000);
+        AppStartupActivtiy.isNetworkAvailable(h, AppStartupActivtiy.TIME_OUT_PERIOD);
 
         mLoginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                isNetworkAvailable(h,2000);
+                AppStartupActivtiy.isNetworkAvailable(h, AppStartupActivtiy.TIME_OUT_PERIOD);
                 /*FireBaseQueries fb = new FireBaseQueries();
                 Match m = new Match();*/
                 /*User usr = new User("Alan", 21, "haymakerStirrat@gmail.com", "1234", 10);
@@ -221,55 +221,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 break;
         }
 
-    }
-
-    public static void isNetworkAvailable(final Handler handler, final int timeout) {
-        // ask fo message '0' (not connected) or '1' (connected) on 'handler'
-        // the answer must be send before before within the 'timeout' (in milliseconds)
-
-        new Thread() {
-            private boolean responded = false;
-
-            @Override
-            public void run() {
-                // set 'responded' to TRUE if is able to connect with google mobile (responds fast)
-                new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
-                            urlc.setRequestProperty("User-Agent", "Test");
-                            urlc.setRequestProperty("Connection", "close");
-                            urlc.setConnectTimeout(1500);
-                            urlc.connect();
-                            if (urlc.getResponseCode() == 200)
-                                responded = true;
-                            else
-                                responded = false;
-                        } catch (Exception e) {
-                        }
-                    }
-                }.start();
-
-                try {
-                    int waited = 0;
-                    while (!responded && (waited < timeout)) {
-                        sleep(100);
-                        if (!responded) {
-                            waited += 100;
-                        }
-                    }
-                } catch (InterruptedException e) {
-                } // do nothing
-                finally {
-                    if (!responded) {
-                        handler.sendEmptyMessage(0);
-                    } else {
-                        handler.sendEmptyMessage(1);
-                    }
-                }
-            }
-        }.start();
     }
 }
 //    private void onTokenRefresh(DatabaseReference userToken) {

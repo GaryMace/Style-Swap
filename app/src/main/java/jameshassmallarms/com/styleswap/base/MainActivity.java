@@ -124,7 +124,6 @@ public class MainActivity extends AppCompatActivity
 
 
     //Logged in user fields
-    private int mSearchRange;
     private String mUserLogin;
     private int mUserSize;
     private int mUserAge;   //do we care about their age?
@@ -216,20 +215,22 @@ public class MainActivity extends AppCompatActivity
 
         if (requestCode == EditProfileFragment.RESULT_LOAD_IMAGE &&
             data != null) { //For loading an image form the gallery in EditProfileFragment.
+
             Uri selectedImageUri = data.getData();
             ImageView imageView = new ImageView(getBaseContext());
             imageView.setImageURI(selectedImageUri);
 
             profileImage = imageView;
-            Log.d("TAGGE", "result ok: ");
+            Log.d(TAG, "Image gotten, updating!");
             fireBaseQueries.uploadImageView(imageView, mUserLogin);
 
         } else {
-            Log.d(TAG, "FFS, result code is: " + requestCode);
             if (resultCode == Activity.RESULT_CANCELED) {
                 Log.d(TAG, "Register cancelled");
+
             } else if (resultCode == Activity.RESULT_OK &&
                 data != null) {
+
                 //First get the result code
                 String loginState = data.getExtras().getString(MainActivity.GET_LOGIN_STATE);
                 if (loginState != null) {
@@ -327,11 +328,6 @@ public class MainActivity extends AppCompatActivity
             .build();
         createLocationRequest();
         getUserLocationFromRequest();
-
-        /*if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-        } else {
-            startLocationUpdates();
-        }*/
     }
 
     protected void createLocationRequest() {
@@ -391,7 +387,7 @@ public class MainActivity extends AppCompatActivity
             Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
             Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
+            == PackageManager.PERMISSION_GRANTED) { //Dont care if they have access, ask them anyways
 
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -624,7 +620,7 @@ public class MainActivity extends AppCompatActivity
 
     protected void onStart() {
         super.onStart();
-        mGoogleAPIClient.disconnect();
+        mGoogleAPIClient.disconnect();  // #Magic
         mGoogleAPIClient.connect();
     }
 

@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -35,46 +37,64 @@ import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
 
 import static java.lang.Integer.parseInt;
 
-public class Register extends AppCompatActivity{
+public class Register extends AppCompatActivity {
     public static final String REGISTER_NEW_USER = "register_new";
 
-    public static final String REGISTER_EMAIL  ="reg_email";
-    public static final String REGISTER_NAME  ="reg_name";
-    public static final String REGISTER_PHONE  ="reg_phone";
-    public static final String REGISTER_PASSWORD  ="reg_pass";
-    public static final String REGISTER_SIZE  ="reg_size";
-    public static final String REGISTER_AGE  ="reg_age";       //Why we need an age?
+    public static final String REGISTER_EMAIL = "reg_email";
+    public static final String REGISTER_NAME = "reg_name";
+    public static final String REGISTER_PHONE = "reg_phone";
+    public static final String REGISTER_PASSWORD = "reg_pass";
+    public static final String REGISTER_SIZE = "reg_size";
+    public static final String REGISTER_AGE = "reg_age";       //Why we need an age?
 
-
+    private boolean mInternetConnected;
     private Button buttonRegister;
-    private EditText mName, mAge, mUsername, mPassword, mDressSize, mEmail, mPhoneNumber;
+    private EditText mName, mAge, mPassword, mDressSize, mEmail, mPhoneNumber;
     FireBaseQueries fireBaseQueries = new FireBaseQueries();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_register);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_register);
 
-            mName = (EditText) findViewById(R.id.registerName);
-            mAge = (EditText) findViewById(R.id.registerAge);
-            mEmail = (EditText) findViewById(R.id.registerEmail);
-            mPassword = (EditText) findViewById(R.id.registerPassword);
-            mDressSize = (EditText) findViewById(R.id.registerDressSize);
-            mPhoneNumber = (EditText) findViewById(R.id.registerPhoneNumber);
-            buttonRegister = (Button) findViewById(R.id.ButtonRegister);
+        mName = (EditText) findViewById(R.id.registerName);
+        mAge = (EditText) findViewById(R.id.registerAge);
+        mEmail = (EditText) findViewById(R.id.registerEmail);
+        mPassword = (EditText) findViewById(R.id.registerPassword);
+        mDressSize = (EditText) findViewById(R.id.registerDressSize);
+        mPhoneNumber = (EditText) findViewById(R.id.registerPhoneNumber);
+        buttonRegister = (Button) findViewById(R.id.ButtonRegister);
 
-            buttonRegister.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                        if (validateRegister());
-                            registerIfNew();
+        final Handler h = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
 
+                if (msg.what != 1) { // code if not connected
+                    mInternetConnected = false;
+
+                } else { // code if connected
+                    mInternetConnected = true;
                 }
-            });
+            }
+        };
+        AppStartupActivtiy.isNetworkAvailable(h, AppStartupActivtiy.TIME_OUT_PERIOD);
+
+        buttonRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppStartupActivtiy.isNetworkAvailable(h, AppStartupActivtiy.TIME_OUT_PERIOD);
+                if (mInternetConnected) {
+                    if (validateRegister()) ;
+                        registerIfNew();
+                } else {
+                    Toast.makeText(getBaseContext(), "You need an internet connection to Register!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 
-    public void launchLogin(){
+    public void launchLogin() {
         Intent intent = new Intent();
         intent.putExtra(MainActivity.GET_LOGIN_STATE, REGISTER_NEW_USER);
         intent.putExtra(REGISTER_EMAIL, mEmail.getText().toString());
@@ -87,22 +107,21 @@ public class Register extends AppCompatActivity{
         finish();
     }
 
-    
-    private void registerIfNew(){
+
+    private void registerIfNew() {
         DatabaseReference userRef = fireBaseQueries.getUserReferenceByEmail(mEmail.getText().toString());
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     //sorry user already exsists
                     Toast.makeText(getBaseContext(), "User with that email already exists.", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     //register
                     User newUser = new User(mEmail.getText().toString(), mPassword.getText().toString(),
-                            mName.getText().toString(), Integer.valueOf(mAge.getText().toString()),
-                            Integer.valueOf(mDressSize.getText().toString()), mPhoneNumber.getText().toString());
+                        mName.getText().toString(), Integer.valueOf(mAge.getText().toString()),
+                        Integer.valueOf(mDressSize.getText().toString()), mPhoneNumber.getText().toString());
 
                     fireBaseQueries.pushNewUserDetails(newUser);
                     //Drawable myDrawable = getResources().getDrawable(R.drawable.stock);
@@ -131,32 +150,30 @@ public class Register extends AppCompatActivity{
                     Toast.makeText(getBaseContext(), "Register complete, logging in!", Toast.LENGTH_SHORT).show();
                     launchLogin();
                 }
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
     }
 
-    private boolean validateRegister(){
-        if(mName.getText().toString().isEmpty() || mPassword.getText().toString().isEmpty() ||
-               mAge.getText().toString().isEmpty() || mEmail.getText().toString().isEmpty() ||
-               mPhoneNumber.getText().toString().isEmpty() || mDressSize.getText().toString().isEmpty()){
+    private boolean validateRegister() {
+        if (mName.getText().toString().isEmpty() || mPassword.getText().toString().isEmpty() ||
+            mAge.getText().toString().isEmpty() || mEmail.getText().toString().isEmpty() ||
+            mPhoneNumber.getText().toString().isEmpty() || mDressSize.getText().toString().isEmpty()) {
 
             Toast.makeText(getBaseContext(), "Please fill all fields to complete register", Toast.LENGTH_SHORT).show();
             return false;
         }
         int dressSize = Integer.valueOf(mDressSize.getText().toString());
 
-        if (dressSize % 2 != 0 || dressSize < 0 || dressSize > 40){
+        if (dressSize % 2 != 0 || dressSize < 0 || dressSize > 40) {
             Toast.makeText(getBaseContext(), "Invalid dress size", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (mPhoneNumber.getText().toString().length() != 10){
+        if (mPhoneNumber.getText().toString().length() != 10) {
             Toast.makeText(getBaseContext(), "Invaild phone number", Toast.LENGTH_SHORT).show();
             return false;
         }

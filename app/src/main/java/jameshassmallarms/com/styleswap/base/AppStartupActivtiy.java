@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -27,10 +29,24 @@ import java.util.TimerTask;
 import jameshassmallarms.com.styleswap.R;
 
 /**
+ *
+ * AppStartup Activity:
+ *
+ *              This activity allows the user to choose whether they want to login or Register straight
+ *              off the bat. It launches either a LoginActivity or a RegisterActivity, gets the result
+ *              and hands it back to MainActivity.
+ *
+ *              The auto changing messages at the bottom are handled using a threaded timer that will
+ *              change the text displayed from a list every 8 seconds. You can also swipe through
+ *              the messages.
+ *
+ *              DISCLAIMER: Video displayed is not ours, it's a recording of a project runway episode.
+ *
  * Created by gary on 18/11/16.
  */
 
 public class AppStartupActivtiy extends Activity {
+    public static final int TIME_OUT_PERIOD = 2000;
     private static final String TAG = "debug_app_startup";
     private static final int LOGIN_EXISTING_USER = 1;
     private static final int REGISTER_NEW_USER = 2;
@@ -58,7 +74,7 @@ public class AppStartupActivtiy extends Activity {
 
         mIntroVid = (VideoView)
                 findViewById(R.id.activity_startup_video);
-        String path = "android.resource://" + getPackageName() + "/" + R.raw.intro;
+        String path = "android.resource://" + getPackageName() + "/" + R.raw.intro; //Inflate the intro video, not ours, got it from project runway...
         mIntroVid.setVideoURI(Uri.parse(path));
 
         mIntroVid.setOnPreparedListener(PreparedListener);
@@ -85,11 +101,11 @@ public class AppStartupActivtiy extends Activity {
             }
         });
 
-        //Messages shown at bootom of screen
+        //Messages shown at bottom of screen
         List<AppStartupMessage> appMessages = new ArrayList<>();
 
-        appMessages.add(new AppStartupMessage("Hello", "Sign up for free to find new people to swap old dresses with."));
-        appMessages.add(new AppStartupMessage("Discover", "Find the dress you've always wanted from another person."));
+        appMessages.add(new AppStartupMessage("Hello", "Sign up for free to find new people to StyleSwap with."));
+        appMessages.add(new AppStartupMessage("Discover", "Find the dress you've always wanted. Sign up now!"));
         appMessages.add(new AppStartupMessage("Your Matches", "Browse your matches and find the perfect StyleSwap for you."));
         appMessages.add(new AppStartupMessage("Contact", "Get in touch with your matches to arrange your StyleSwap."));
 
@@ -98,14 +114,13 @@ public class AppStartupActivtiy extends Activity {
         viewPager.setAdapter(appStartupPagerAdapter);
 
 
-        //TODO: If a user swipes this overwrites it and puts it 2 or even 3 messages ahead. Swiping should -1 or +1 mCurrTextBox
-        final Handler handler = new Handler();
+        final Handler handler = new Handler();  //Handle the result of the timer runnable with this handler
         final Runnable Update = new Runnable() {
             public void run() {
-                if (mCurrTextBox == NUM_TEXT_BOXES_TO_DISPLAY) {
+                if (mCurrTextBox == NUM_TEXT_BOXES_TO_DISPLAY) {    //If at end of list, go back to start
                     mCurrTextBox = 0;
                 }
-                viewPager.setCurrentItem(mCurrTextBox++, true);
+                viewPager.setCurrentItem(mCurrTextBox++, true); //increment Current list item in ViewPager
             }
         };
 
@@ -133,7 +148,7 @@ public class AppStartupActivtiy extends Activity {
                     m = new MediaPlayer();
                 }
                 m.setVolume(0f, 0f);
-                m.setLooping(true);
+                m.setLooping(true);     //Keep looping video
                 m.start();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -161,13 +176,16 @@ public class AppStartupActivtiy extends Activity {
             String loginState = data.getExtras().getString(MainActivity.GET_LOGIN_STATE);
             if (loginState != null) {
                 Intent mainActivityRes = new Intent();
+
                 if (loginState.equals(Login.LOGIN_EXISTING_USER)) {            //If they logged into an existing account
-                    mainActivityRes.putExtra(Login.LOGIN_USER_EMAIL, data.getExtras().getString(Login.LOGIN_USER_EMAIL));
-                    //get the rest of the info from firebase with a query
+                    mainActivityRes.putExtra(Login.LOGIN_USER_EMAIL, data.getExtras().getString(Login.LOGIN_USER_EMAIL));   //NB flag
                     mainActivityRes.putExtra(MainActivity.GET_LOGIN_STATE, Login.LOGIN_EXISTING_USER);
                     setResult(Activity.RESULT_OK, mainActivityRes);
                     finish();
                 } else if (loginState.equals(Register.REGISTER_NEW_USER)) {      //User created a new account
+                    //This is another NB flag, need to tell MainActivity what type of result it's getting, i.e. is it getting vals from Reg or Login?
+                    mainActivityRes.putExtra(MainActivity.GET_LOGIN_STATE, Register.REGISTER_NEW_USER);
+
                     String mUserEmail = data.getExtras().getString(Register.REGISTER_EMAIL);
                     int mUserAge = data.getExtras().getInt(Register.REGISTER_AGE);      //Why do we care about an age?
                     String mUserName = data.getExtras().getString(Register.REGISTER_NAME);
@@ -180,20 +198,20 @@ public class AppStartupActivtiy extends Activity {
                     mainActivityRes.putExtra(Register.REGISTER_SIZE, mUserSize);
                     setResult(Activity.RESULT_OK, mainActivityRes);
                     finish();
-
                 }
 
             }
         }
     }
-    //Prevent back presses
+
+    //Prevent back presses, this would cause the app to move to the main app screen, #NotIdeal
     @Override
     public void onBackPressed() {
     }
 
 
     /**
-     * The following Code relates to the scolling messages seen at the bottom of the AppStartup Login
+     * The following Code relates to the scrolling messages seen at the bottom of the AppStartup Login
      * screen.
      *
      * The Adapter is responsible for changing the displayed text when either the timer runs out or
@@ -252,5 +270,66 @@ public class AppStartupActivtiy extends Activity {
             this.topMsg = topMsg;
             this.bottomMsg = bottomMsg;
         }
+    }
+
+    /**
+     * Tries to connect to google using a thread, if it cannot then the app prevents users from
+     * progressing to next steps.
+     *
+     * The reason we use a thread is because running this on the UI thread will cause a NetworkException
+     * to be raised, #NotIdeal.
+     *
+     * Thanks to StackOverflow for this cheeky fix.
+     * http://stackoverflow.com/questions/6493517/detect-if-android-device-has-internet-connection
+     * @param handler
+     * @param timeout
+     */
+    public static void isNetworkAvailable(final Handler handler, final int timeout) {
+        // ask fo message '0' (not connected) or '1' (connected) on 'handler'
+        // the answer must be send before before within the 'timeout' (in milliseconds)
+
+        new Thread() {
+            private boolean responded = false;
+
+            @Override
+            public void run() {
+                // set 'responded' to TRUE if is able to connect with google mobile (responds fast)
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
+                            urlc.setRequestProperty("User-Agent", "Test");
+                            urlc.setRequestProperty("Connection", "close");
+                            urlc.setConnectTimeout(timeout);
+                            urlc.connect();
+                            if (urlc.getResponseCode() == 200)
+                                responded = true;
+                            else
+                                responded = false;
+                        } catch (Exception e) {
+                        }
+                    }
+                }.start();
+
+                try {
+                    int waited = 0;
+                    while (!responded && (waited < timeout)) {  //Keep trying to connect until timeout
+                        sleep(100);
+                        if (!responded) {
+                            waited += 100;
+                        }
+                    }
+                } catch (InterruptedException e) {
+                } // do nothing
+                finally {
+                    if (!responded) {
+                        handler.sendEmptyMessage(0);
+                    } else {
+                        handler.sendEmptyMessage(1);
+                    }
+                }
+            }
+        }.start();
     }
 }
