@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/login_grey"
-    tools:context="jameshassmallarms.com.styleswap.base.MainActivity">
+    tools:context="Android.com.styleswap.base.MainActivity">
 
     <FrameLayout
         android:id="@+id/activity_main_fragment_container"
