@@ -319,7 +319,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             cachedUsers = new PriorityQueue<>();
             isUserLoggedIn = false;
-            userProfileImg = BitmapFactory.decodeResource(getResources(), R.drawable.ja);  //this may need to be a database query?
+            userProfileImg = BitmapFactory.decodeResource(getResources(), R.drawable.stock);  //this may need to be a database query?
             userChangedImg = false;
             cachedMatches = new ArrayList<>();
             startAppStartupActivityForResult(); //Launch the start-up screen

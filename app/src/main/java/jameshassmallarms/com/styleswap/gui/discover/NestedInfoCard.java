@@ -2,29 +2,22 @@ package jameshassmallarms.com.styleswap.gui.discover;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import jameshassmallarms.com.styleswap.R;
 import jameshassmallarms.com.styleswap.infrastructure.FireBaseQueries;
-import jameshassmallarms.com.styleswap.infrastructure.QueryMaster;
-
-import static jameshassmallarms.com.styleswap.R.drawable.james;
 
 /**
  * Created by Alan on 25/10/2016.
@@ -66,15 +59,6 @@ public class NestedInfoCard extends Fragment {
             description.setText(desc);
             Bitmap bmp = BitmapFactory.decodeByteArray(img, 0, img.length);
             userPic.setImageBitmap(bmp);
-            //test.download(userPic,email);
-            // getUserInfo(user);
-            /*test.download(userPic, user, "Dress");
-            test.download(userPic, user);
-            DatabaseReference tester = test.getUserItemDescription(user);
-            test.executeIfExists(tester, q);
-           // test.executeIfExists(tester, P);
-            userName.setText("Kill me");
-*/
         }
 
         return root;
