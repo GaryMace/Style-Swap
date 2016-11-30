@@ -148,6 +148,7 @@ public class MatchListFragment extends Fragment {
                 mAdapter.notifyDataSetChanged();
             }
             mProgressBar.setVisibility(ProgressBar.INVISIBLE);      //Matches found, hide the progress bar
+            mHasMatches.setVisibility(LinearLayout.INVISIBLE);      //Has matches so hide the textview
             mMatchRecycler.setAdapter(mAdapter);
         } else {
             mProgressBar.setVisibility(ProgressBar.INVISIBLE);      //Matches found, hide the progress bar
