@@ -63,4 +63,7 @@ public interface Linker {
 
     String  getPhoneNumber();
 
+    void setDressSize(int newDressSize);
+
+    int getDressSize();
 }
