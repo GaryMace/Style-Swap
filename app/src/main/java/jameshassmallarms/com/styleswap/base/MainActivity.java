@@ -607,6 +607,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void setDressSize(int newDressSize) {
+        DatabaseReference db = fireBaseQueries.getUserReferenceByEmail(mUserLogin);
+        mUserSize = newDressSize;
+        db.child("dressSize").setValue(newDressSize);
+    }
+
+    @Override
+    public int getDressSize() {
+        return mUserSize;
+    }
+
+    @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(TAG, "Connected to GoogleApiClient");
         if (mLastLocation == null &&
