@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
+              android:layout_height="match_parent"
+              android:background="@color/login_grey"
               android:orientation="vertical">
 
     <android.support.percent.PercentRelativeLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="134dp"
+        android:layout_height="150dp"
         android:background="@color/login_grey">
 
         <ImageView
@@ -18,96 +19,144 @@
             app:layout_widthPercent="75%"/>
     </android.support.percent.PercentRelativeLayout>
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/login_grey">
+    <!--Dummy layout that stops editext being selected on activity startup, not our code!
+    see http://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-activity-startup
+    for the authors-->
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true"/>
 
+    <!-- :nextFocusUp and :nextFocusLeft have been set to the id of this component
+    to prevent the dummy from receiving focus again -->
+    <AutoCompleteTextView
+        android:id="@+id/autotext"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:nextFocusLeft="@id/autotext"
+        android:nextFocusUp="@id/autotext"/>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@color/login_grey">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <EditText
                 android:id="@+id/registerEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="Email: "
-                android:textColorHint="@color/colorPrimaryDark"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold"/>
+                android:background="@drawable/edit_text_listener"
+                android:fontFamily="sans-serif"
+                android:hint="@string/activity_reg_email_hint"
+                android:inputType="textEmailAddress"
+                android:padding="15dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/edit_text_hint"
+                android:textSize="16sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/edit_text_seps"/>
 
 
             <EditText
                 android:id="@+id/registerPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="Password: "
-                android:textColorHint="@color/colorPrimaryDark"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold"/>
+                android:background="@drawable/edit_text_listener"
+                android:fontFamily="sans-serif"
+                android:hint="@string/activity_reg_password_hint"
+                android:inputType="textPassword"
+                android:padding="15dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/edit_text_hint"
+                android:textSize="16sp"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/edit_text_seps"/>
 
             <EditText
                 android:id="@+id/registerName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="Name: "
-                android:textColorHint="@color/colorPrimaryDark"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold"/>
+                android:background="@drawable/edit_text_listener"
+                android:hint="@string/activity_reg_name_hint"
+                android:padding="15dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/edit_text_hint"
+                android:textSize="16sp"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/edit_text_seps"/>
 
             <EditText
                 android:id="@+id/registerAge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="Age: "
-                android:textColorHint="@color/colorPrimaryDark"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold"/>
+                android:background="@drawable/edit_text_listener"
+                android:hint="@string/activity_reg_age_hint"
+                android:inputType="number"
+                android:padding="15dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/edit_text_hint"
+                android:textSize="16sp"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/edit_text_seps"/>
 
-
-            <!-- just use email for username-->
             <EditText
                 android:id="@+id/registerDressSize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="Dress Size: "
-                android:textColorHint="@color/colorPrimaryDark"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold"/>
+                android:background="@drawable/edit_text_listener"
+                android:fontFamily="sans-serif"
+                android:hint="@string/activity_reg_dress_size_hint"
+                android:inputType="number"
+                android:padding="15dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/edit_text_hint"
+                android:textSize="16sp"/>
 
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/edit_text_seps"/>
 
             <EditText
                 android:id="@+id/registerPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:hint="Phone Number: "
-                android:textColorHint="@color/colorPrimaryDark"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold"/>
+                android:background="@drawable/edit_text_listener"
+                android:fontFamily="sans-serif"
+                android:hint="@string/activity_reg_phone_number_hint"
+                android:inputType="textPassword"
+                android:padding="15dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/edit_text_hint"
+                android:textSize="16sp"/>
 
             <Button
                 android:id="@+id/ButtonRegister"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/activity_app_startup_register"
-                android:text="Register"
+                android:text="@string/activity_reg_button_text"
                 android:textColor="@color/white"
                 android:textSize="20sp"/>
 
-
         </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
 </LinearLayout>

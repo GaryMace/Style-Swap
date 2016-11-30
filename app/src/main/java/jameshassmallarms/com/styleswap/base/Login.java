@@ -56,7 +56,7 @@ import jameshassmallarms.com.styleswap.messaging.MyFirebaseInstanceIDService;
  *          RememberMe Checkbox. It simply stores the most up-to-date login info and reloads
  *          it from the database when the app relaunches.
  */
-public class Login extends AppCompatActivity implements View.OnClickListener {
+public class Login extends AppCompatActivity {
     public static final String LOGIN_USER_EMAIL = "login_email";
     public static final String LOGIN_EXISTING_USER = "login_existing";
     private static final String TAG = "debug_login";
@@ -83,7 +83,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         mLoginButton = (Button) findViewById(R.id.activity_login_button);
         mLaunchRegister = (TextView) findViewById(R.id.activity_login_launch_register);
         mRememberMe = (CheckBox) findViewById(R.id.activity_login_remember_me);
-
+        Log.d(TAG, "Table exists = "+localDb.isTableExists("userRemember", true));
+        
         loadRememberDataIfExists();
         final Handler h = new Handler() {
             @Override
@@ -104,29 +105,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 AppStartupActivtiy.isNetworkAvailable(h, AppStartupActivtiy.TIME_OUT_PERIOD);
-                /*FireBaseQueries fb = new FireBaseQueries();
-                Match m = new Match();*/
-                /*User usr = new User("Alan", 21, "haymakerStirrat@gmail.com", "1234", 10);
-                fb.pushNewUserDetails(usr);*/
 
-                /*m.setMatchName("Gary");
-                m.setMatchMail("Garymac@live.ie");
-                m.setMatchNumber("083 376 9282");
-                fb.addMatch("haymakerStirrat@gmail.com", MainActivity.FIREBASE_MATCHED_ME, m);*/
-
-                /*m.setMatchName("Gary");
-                m.setMatchMail("Garymac@live.ie");
-                m.setMatchNumber("083 376 9282");
-                m.setMatchChatToken("Garymac@live.iehaymakerStirrat@gmail.com");
-                fb.addMatch("haymakerStirrat@gmail.com", MainActivity.FIREBASE_BOTH_MATCHED, m);*/
-
-
-                //TODO: breaks on first install, fix
                 if (mInternetConnected) {
                     if (submissionFilled()) {
                         final String userName = mUserName.getText().toString();
                         final String password = mUserPassword.getText().toString();
-                        //if ()
+
                         executeIfExists(firebaseDb.getPassword(userName), new QueryMaster() {
                             @Override
                             public void run(DataSnapshot s) {
@@ -165,10 +149,18 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 } else {
                     Toast.makeText(getBaseContext(), "You need an internet connection to Login!", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
-        mLaunchRegister.setOnClickListener(this);
+
+        mLaunchRegister.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getBaseContext(), Register.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                startActivity(i);
+            }
+        });
 
     }
 
@@ -190,7 +182,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     q.run(dataSnapshot);
-                } else {    //user name doesn;t exist
+                } else {    //user name doesn't exist
                     Toast.makeText(getBaseContext(), "That UserName doesn't exist!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -205,34 +197,4 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private boolean submissionFilled() {
         return mUserName.getText() != null && mUserPassword.getText() != null;
     }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) { //need a switch statement to see which button was clicked in login
-            case R.id.activity_login_button:
-
-
-                break;
-
-            case R.id.activity_login_launch_register:
-                Intent i = new Intent(getBaseContext(), Register.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-                startActivity(i);
-                break;
-        }
-
-    }
 }
-//    private void onTokenRefresh(DatabaseReference userToken) {
-//        FireBaseQueries firebase = new FireBaseQueries();
-//        // Get updated InstanceID token.
-//        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-//        //Log.d(TAG, "Refreshed token: " + refreshedToken);
-//
-//        // If you want to send messages to this application instance or
-//        // manage this apps subscriptions on the server side, send the
-//        // Instance ID token to your app server.
-//        firebase.getUserToken(refreshedToken);
-//
-//    }
-

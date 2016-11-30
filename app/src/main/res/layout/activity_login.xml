@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_height="match_parent"
-    android:padding="10dp"
-    android:layout_width="match_parent"
-    android:background="@color/login_grey">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/login_grey"
+              android:orientation="vertical">
+
     <android.support.percent.PercentRelativeLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
@@ -19,64 +18,81 @@
             app:layout_widthPercent="75%"/>
     </android.support.percent.PercentRelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:text="Username"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:textColor="@color/colorPrimaryDark"
-        android:layout_height="wrap_content"/>
+    <!--Dummy layout that stops editext being selected on activity startup, not our code!
+    see http://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-activity-startup
+    for the authors-->
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true"/>
+
+    <!-- :nextFocusUp and :nextFocusLeft have been set to the id of this component
+    to prevent the dummy from receiving focus again -->
+    <AutoCompleteTextView
+        android:id="@+id/autotext"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:nextFocusLeft="@id/autotext"
+        android:nextFocusUp="@id/autotext"/>
 
     <EditText
         android:id="@+id/activity_login_username"
         android:layout_width="match_parent"
-        android:layout_marginBottom="10dp"
-        android:textColor="@color/white"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:text="Password"
-        android:textStyle="bold"
-        android:textSize="16sp"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:background="@drawable/edit_text_listener"
+        android:fontFamily="sans-serif"
+        android:hint="@string/login_username"
+        android:inputType="textEmailAddress"
+        android:padding="15dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/edit_text_hint"
+        android:textSize="16sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/edit_text_seps"/>
 
     <EditText
         android:id="@+id/activity_login_password"
         android:layout_width="match_parent"
-        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_listener"
+        android:fontFamily="sans-serif"
+        android:hint="@string/login_password"
         android:inputType="textPassword"
+        android:padding="15dp"
         android:textColor="@color/white"
-        android:layout_height="wrap_content" />
+        android:textColorHint="@color/edit_text_hint"
+        android:textSize="16sp"/>
 
     <Button
         android:id="@+id/activity_login_button"
-        android:text="Log in"
-        android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/activity_app_startup_register"
+        android:text="@string/activity_login_text"
         android:textColor="@color/white"
-        android:textSize="20sp"
-        android:background="@drawable/activity_app_startup_register"/>
+        android:textSize="20sp"/>
 
     <TextView
         android:id="@+id/activity_login_launch_register"
         android:layout_width="wrap_content"
-        android:text="Sign Up here"
-        android:layout_gravity="center_horizontal"
-        android:textStyle="bold"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/activity_login_sign_up"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:textStyle="bold"/>
 
     <CheckBox
         android:id="@+id/activity_login_remember_me"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimaryDark"
-        android:text="Remember me?"/>
-
+        android:text="@string/activity_login_remember_me"
+        android:textColor="@color/colorPrimaryDark"/>
 
 
 </LinearLayout>

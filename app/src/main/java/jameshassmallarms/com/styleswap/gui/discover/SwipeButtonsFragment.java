@@ -322,6 +322,7 @@ public class SwipeButtonsFragment extends Fragment {
         if (this.isVisible()) {
             transaction = getChildFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_match_frame, nest, "TAG").commit();
+            //TODO: Fix, throwing this error when i click "X" on one person -> java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.Class java.lang.Object.getClass()' on a null object reference
         }
         Log.d("Fragment", "Replaced");
     }

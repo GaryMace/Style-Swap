@@ -1,119 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:background="@color/login_grey">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/login_grey"
+              android:orientation="vertical">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="60">
+
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:src="@drawable/stock"/>
+
+        <Button
+            android:id="@+id/editPhotoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/activity_app_startup_register"
+            android:text="Edit"
+            android:textColor="@android:color/white"/>
+
+        <Button
+            android:id="@+id/editPhotoButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/activity_app_startup_register"
+            android:text="Done"
+            android:textColor="@android:color/white"/>
+
+    </RelativeLayout>
 
     <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:weightSum="100">
+        android:layout_weight="10"
+        android:orientation="horizontal">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="60">
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="15dp"
+            android:text="@string/item_size"
+            android:textColor="@color/edit_text_hint"
+            android:textSize="20sp"/>
 
-            <Button
-                android:id="@+id/editPhotoButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Edit"
-                android:background="@drawable/activity_app_startup_register"
-                android:textColor="@android:color/white"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
-
-            <ImageView
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:layout_gravity="center"
-                android:src="@drawable/stock"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:id="@+id/profileImage"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true" />
-
-            <Button
-                android:id="@+id/editPhotoButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Done"
-                android:background="@drawable/activity_app_startup_register"
-                android:textColor="@android:color/white"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true" />
-
-
-        </RelativeLayout>
-        <LinearLayout
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="8.2">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="23dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="20dp"
-                android:text= "@string/item_size"
-                android:id="@+id/textView" />
-
-
-            <Spinner
-                android:id="@+id/spinner1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
-
-                android:background="@android:drawable/btn_dropdown"
-                android:spinnerMode="dropdown"/>
-
-
-        </LinearLayout>
-
-        <EditText
-            android:layout_height="0dp"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:hint="@string/item_description"
-            android:textColor="@color/white"
-            android:textColorHint="@color/colorPrimaryDark"
-            android:id="@+id/itemDescription"
-            android:layout_weight="12"/>
-
-        <EditText
-            android:layout_height="0dp"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:hint="Name"
-            android:textColor="@color/white"
-            android:textColorHint="@color/colorPrimaryDark"
-            android:id="@+id/userName"
-            android:layout_weight="10"/>
-
-
-        <EditText
-            android:layout_height="0dp"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:hint="@string/user_number"
-            android:textColor="@color/white"
-            android:textColorHint="@color/colorPrimaryDark"
-            android:id="@+id/userNumber"
-            android:layout_weight="10"/>
-
-
-
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown"/>
 
     </LinearLayout>
-</ScrollView>
+
+    <android.support.percent.PercentRelativeLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="30">
+
+        <EditText
+            android:id="@+id/itemDescription"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/edit_text_listener"
+            android:hint="@string/item_description"
+            android:paddingStart="15dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/edit_text_hint"
+            app:layout_heightPercent="33%"
+            app:layout_widthPercent="100%"/>
+
+        <View
+            android:id="@+id/edit_prof_split1"
+            android:layout_alignBottom="@id/itemDescription"
+            android:background="@color/edit_text_seps"
+            app:layout_heightPercent="1%"
+            app:layout_widthPercent="100%"/>
+
+        <EditText
+            android:id="@+id/userName"
+            android:layout_alignTop="@id/edit_prof_split1"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/edit_text_listener"
+            android:hint="@string/fragment_edit_prof_name_hint"
+            android:paddingStart="15dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/edit_text_hint"
+            app:layout_heightPercent="32%"
+            app:layout_widthPercent="100%"/>
+
+        <View
+            android:id="@+id/edit_prof_split2"
+            android:layout_alignBottom="@id/userName"
+            android:background="@color/edit_text_seps"
+            app:layout_heightPercent="1%"
+            app:layout_widthPercent="100%"/>
+
+        <EditText
+            android:id="@+id/userNumber"
+            android:layout_alignTop="@id/edit_prof_split2"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/edit_text_listener"
+            android:hint="@string/user_number"
+
+            android:paddingStart="15dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/edit_text_hint"
+            app:layout_heightPercent="32%"
+            app:layout_widthPercent="100%"/>
+
+    </android.support.percent.PercentRelativeLayout>
+</LinearLayout>

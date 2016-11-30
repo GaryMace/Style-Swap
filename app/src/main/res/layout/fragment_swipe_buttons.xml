@@ -1,51 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/fragment_buttons_screen"
-        android:background="@color/login_grey">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_buttons_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/login_grey"
+    android:orientation="vertical">
 
     <FrameLayout
+        android:id="@+id/fragment_match_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="true"/>
+
+    <ImageButton
+        android:id="@+id/fragment_yes_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="15dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginRight="60dp"
+        android:background="@color/login_grey"
+        android:src="@drawable/yes"/>
+
+    <ImageButton
+        android:id="@+id/fragment_no_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/fragment_match_frame"
-
-        />
-
-
-
-        <ImageButton
-            android:id="@+id/fragment_yes_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:src="@drawable/yes"
-            android:layout_centerVertical="true"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="60dp"
-            android:layout_marginEnd="60dp"
-            android:background="@color/login_grey"
-            android:layout_marginBottom="15dp"/>
-
-        <ImageButton
-            android:id="@+id/fragment_no_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/no"
-            android:layout_marginLeft="60dp"
-            android:layout_marginStart="60dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:background="@color/login_grey"
-            android:layout_marginBottom="15dp"/>
-
+        android:layout_gravity="center"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginStart="60dp"
+        android:background="@color/login_grey"
+        android:src="@drawable/no"/>
 
 </RelativeLayout>

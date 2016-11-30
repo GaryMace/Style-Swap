@@ -66,6 +66,7 @@ public class MatchListFragment extends Fragment {
     private static final String REVERT_TO_TAG = "match_list_fragment";
     private static final String TAG = "debug_match";
     private ProgressBar mProgressBar;
+    private LinearLayout mHasMatches;
     private RecyclerView mMatchRecycler;
     private FireBaseQueries db;
     private MatchAdapter mAdapter;
@@ -78,6 +79,8 @@ public class MatchListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_im, container, false);
         fragmentManager = getActivity().getSupportFragmentManager();
         mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        mHasMatches = (LinearLayout) view.findViewById(R.id.fragment_im_no_matches);
+        mHasMatches.setVisibility(LinearLayout.INVISIBLE);
 
         mMatchRecycler = (RecyclerView) view
                 .findViewById(R.id.fragment_im_recycler);
@@ -86,6 +89,7 @@ public class MatchListFragment extends Fragment {
         linker = (Linker) getActivity();
         db = new FireBaseQueries();
 
+        Log.d(TAG, "Liker email for matches is: "+linker.getLoggedInUser());
         getMatches(linker.getLoggedInUser());   //Get matches from firebase for the current logged in user
 
         return view;
@@ -108,6 +112,7 @@ public class MatchListFragment extends Fragment {
 
                     linker.setCachedMatches(update);
                 }
+
                 updateUI();
             }
         });
@@ -144,6 +149,9 @@ public class MatchListFragment extends Fragment {
             }
             mProgressBar.setVisibility(ProgressBar.INVISIBLE);      //Matches found, hide the progress bar
             mMatchRecycler.setAdapter(mAdapter);
+        } else {
+            mProgressBar.setVisibility(ProgressBar.INVISIBLE);      //Matches found, hide the progress bar
+            mHasMatches.setVisibility(LinearLayout.VISIBLE);
         }
     }
 

@@ -84,7 +84,7 @@ public class Register extends AppCompatActivity {
             public void onClick(View v) {
                 AppStartupActivtiy.isNetworkAvailable(h, AppStartupActivtiy.TIME_OUT_PERIOD);
                 if (mInternetConnected) {
-                    if (validateRegister()) ;
+                    if (validateRegister())
                         registerIfNew();
                 } else {
                     Toast.makeText(getBaseContext(), "You need an internet connection to Register!", Toast.LENGTH_SHORT).show();

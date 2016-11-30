@@ -166,7 +166,6 @@ public class AppStartupActivtiy extends Activity {
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //ACTIVITY.RESULT_OK is -1, ACTIVITY.RESULT_CANCELED = 0
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_CANCELED) {

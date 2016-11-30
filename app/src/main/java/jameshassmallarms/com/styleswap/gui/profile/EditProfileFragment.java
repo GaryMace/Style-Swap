@@ -144,7 +144,6 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
                 super.onActivityResult(requestCode, resultCode, data);
-                Log.d("TAGGE", "THANK YOU TO FUCK: res code is " + requestCode);
                 if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK) {
                         Uri selectedImageUri = data.getData();
                         imageView.setImageURI(selectedImageUri);
@@ -161,12 +160,9 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
 
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                TextView myText = (TextView) view;
-                Toast.makeText(this.getActivity(), "You Selected "+myText.getText(), Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> adapterView) {
-
         }
 }

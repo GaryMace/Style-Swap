@@ -15,9 +15,9 @@
             android:id="@+id/fragment_im_match_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:layout_marginBottom="25dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="25dp"
-            android:layout_marginBottom="25dp"
             android:src="@drawable/ja"/>
 
         <LinearLayout
@@ -56,8 +56,8 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
                     android:layout_marginStart="5dp"
-                    android:textColor="@color/white"
                     android:text="085 766 3464"
+                    android:textColor="@color/white"
                     android:textSize="15sp"/>
             </LinearLayout>
         </LinearLayout>
@@ -66,9 +66,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:orientation="vertical">
+
             <Button
                 android:id="@+id/fragment_im_delete_match_button"
                 android:layout_width="30dp"
@@ -84,11 +85,12 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="1dp">
+
         <View
-            app:layout_widthPercent="65%"
+            android:background="@color/match_sep"
             app:layout_heightPercent="100%"
             app:layout_marginStartPercent="35%"
-            android:background="@color/match_sep"/>
+            app:layout_widthPercent="65%"/>
     </android.support.percent.PercentRelativeLayout>
 
 </LinearLayout>

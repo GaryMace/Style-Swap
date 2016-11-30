@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/fragment_im"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-    android:background="@color/login_grey">
+                android:id="@+id/fragment_im"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/login_grey"
+                android:orientation="vertical">
+
     <LinearLayout
         android:id="@+id/fragment_im_match_header"
         android:layout_width="match_parent"
@@ -26,6 +27,21 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/match_sep"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fragment_im_no_matches"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="50dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/im_no_matches"
+            android:textColor="@color/white"
+            android:textSize="17sp"/>
     </LinearLayout>
 
     <ProgressBar

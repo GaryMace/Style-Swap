@@ -264,8 +264,9 @@ public class MainActivity extends AppCompatActivity
                         mUserName = data.getExtras().getString(Register.REGISTER_NAME);
                         mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
                         mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
-                        Log.d(TAG, "User registered to email: " + mUserLogin);
+                        Log.d(TAG, "User registered to email: " + mUserLogin+", "+mUserName+", "+mUserSize);
                         fireBaseQueries.download(profileImage, mUserLogin);
+                        toggleUserLoggedIn();   //FFS of course we forgot to do this.. no wonder it was returning null in MatchListFrags
                     }
 
                 }

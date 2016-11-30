@@ -1,20 +1,20 @@
 <tabs>
     <tab
-        id="@+id/tab_profile"
+        activeColor="#FFFFFF"
+        barColorWhenSelected="#303F9F"
         icon="@drawable/stock_img"
-        title=""
-        barColorWhenSelected="#303F9F"
-        activeColor="#FFFFFF"/>
+        id="@+id/tab_profile"
+        title=""/>
     <tab
-        id="@+id/tab_search"
+        activeColor="#FFFFFF"
+        barColorWhenSelected="#303F9F"
         icon="@drawable/swap_tab"
-        title=""
-        barColorWhenSelected="#303F9F"
-        activeColor="#FFFFFF"/>
+        id="@+id/tab_search"
+        title=""/>
     <tab
-        id="@+id/tab_contact"
-        icon="@drawable/message_tab"
-        title=""
+        activeColor="#FFFFFF"
         barColorWhenSelected="#303F9F"
-        activeColor="#FFFFFF"/>
+        icon="@drawable/message_tab"
+        id="@+id/tab_contact"
+        title=""/>
 </tabs>

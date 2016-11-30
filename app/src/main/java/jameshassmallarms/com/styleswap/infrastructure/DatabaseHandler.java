@@ -45,9 +45,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String CREATE_REMEBER_TABLE = createRememberMe();
+        Log.d(TAG, "Db created :)");
+        String CREATE_REMEMBER_TABLE = createRememberMe();
 
-        sqLiteDatabase.execSQL(CREATE_REMEBER_TABLE);
+        sqLiteDatabase.execSQL(CREATE_REMEMBER_TABLE);
         //writeDummyInfo();
     }
 
@@ -220,5 +221,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
 
         return list;
+    }
+
+    public boolean isTableExists(String tableName, boolean openDb) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        if(openDb) {
+            if(db == null || !db.isOpen()) {
+                db = getReadableDatabase();
+            }
+
+            if(!db.isReadOnly()) {
+                db.close();
+                db = getReadableDatabase();
+            }
+        }
+
+        Cursor cursor = db.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '"+tableName+"'", null);
+        if(cursor!=null) {
+            if(cursor.getCount()>0) {
+                cursor.close();
+                return true;
+            }
+            cursor.close();
+        }
+        return false;
     }
 }

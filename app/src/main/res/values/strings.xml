@@ -9,10 +9,10 @@
     <string name="bottom_bar_bye">GoodBye</string>
     <string name="fragment_im_matches_title">MATCHES</string>
     <string name="doop">::{\' - \' }</string>
-    <string name="item_description">Description:</string>
-    <string name="item_size">\nSize:</string>
-    <string name="user_number">Number:</string>
-    <string name="user_email">Email:</string>
+    <string name="item_description">Description</string>
+    <string name="item_size">Size</string>
+    <string name="user_number">Number</string>
+    <string name="user_email">Email</string>
     <string name="user_name">Name</string>
     <string name="user_description">Description</string>
 
@@ -35,4 +35,19 @@
         <item>18</item>
         <item>20</item>
     </string-array>
+
+    <string name="im_no_matches">You don\'t have any matches yet!</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+    <string name="activity_login_text">Log in</string>
+    <string name="activity_login_sign_up">Sign Up here</string>
+    <string name="activity_login_remember_me">Remember me?</string>
+    <string name="activity_reg_email_hint">Email</string>
+    <string name="activity_reg_password_hint">Password</string>
+    <string name="activity_reg_name_hint">Name</string>
+    <string name="activity_reg_age_hint">Age</string>
+    <string name="activity_reg_dress_size_hint">Dress size</string>
+    <string name="activity_reg_phone_number_hint">Phone number</string>
+    <string name="activity_reg_button_text">Register</string>
+    <string name="fragment_edit_prof_name_hint">Name</string>
 </resources>

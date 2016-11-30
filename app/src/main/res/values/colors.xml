@@ -14,6 +14,9 @@
     <color name="dark_slate_gray">#2F4F4F</color>
 
     <color name="login_grey">#1F1F1F</color>
+    <color name="edit_text_fill">#262626</color>
     <color name="blank_frag_color">#2F2F2F</color>
     <color name="match_sep">#1B1B1B</color>
+    <color name="edit_text_seps">#3A3A3A</color>
+    <color name="edit_text_hint">#9F9F9F</color>
 </resources>
