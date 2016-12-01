@@ -53,34 +53,14 @@ public class SwipeButtonsFragment extends Fragment {
     private BlankFragment blank;
     private ImageButton likeObject;
     private ImageButton dislikeObject;
-    private String description;
-    private TextView userNameView;
-    private Fragment nestedCard;
     private FragmentTransaction transaction;
     private Queue<NestedInfoCard> nestedQueue;
     private String userName;
-    private int dressSize;
     private int searchRadius = 10;
     private boolean isBlank;
     private Linker linker;
     private FireBaseQueries fireBaseQueries = new FireBaseQueries();
     private ArrayList<Match> matchs = new ArrayList<>();
-    private DatabaseHandler convert = new DatabaseHandler(getContext());
-
-    QueryMaster q = new QueryMaster() {
-        @Override
-        public void run(DataSnapshot s) {
-            description = s.getValue().toString();
-        }
-    };
-
-    QueryMaster P = new QueryMaster() {
-        @Override
-        public void run(DataSnapshot s) {
-            userNameView.setText(s.getValue().toString());
-        }
-    };
-
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -90,8 +70,7 @@ public class SwipeButtonsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_swipe_buttons, container, false);
         blank = new BlankFragment();
         linker = (Linker) getActivity();
-        nestedCard = new NestedInfoCard();
-        nestedQueue = new LinkedList<NestedInfoCard>();
+        nestedQueue = new LinkedList<>();
 
         userName = linker.getLoggedInUser();
 
@@ -131,7 +110,6 @@ public class SwipeButtonsFragment extends Fragment {
                     executeIfExists(fireBaseQueries.getMatchedme(userName), new QueryMaster() {
                         @Override
                         public void run(DataSnapshot s) {
-                            System.out.println(matchs.size()+ "=================");
                             GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {};
                             ArrayList<Match> update = s.getValue(t);
                             boolean matchFlag = false;
@@ -139,7 +117,6 @@ public class SwipeButtonsFragment extends Fragment {
                             for (int i = 1; i < update.size(); i++) {
                                 final Match m = update.get(i);
                                 m.setPosition(i);
-                                System.out.println(m.getMatchMail() + "=========== " + matchs.get(0).getMatchMail());
                                 if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
                                     Log.d("Email for encoding", userName);
                                     Log.d("Other Email", matchs.get(0).getMatchMail());
@@ -178,7 +155,7 @@ public class SwipeButtonsFragment extends Fragment {
 
                                     ChatMessage message = new ChatMessage("Hello,I matched you", userName);
                                     fireBaseQueries.createChatRoom(chatKey).push().setValue(message);
-                                   fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
+                                    fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
                                     matchFlag = true;
 
 
@@ -211,7 +188,6 @@ public class SwipeButtonsFragment extends Fragment {
 
                         }
                     });
-                    //Run Queries
                 }
             }
         });
@@ -223,7 +199,8 @@ public class SwipeButtonsFragment extends Fragment {
                     if (userName != null)
                         getMatchs();
 
-                } else {
+                }
+                else{
                     final DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
                     fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
                         @Override
@@ -253,6 +230,7 @@ public class SwipeButtonsFragment extends Fragment {
                             }
 
                             matchs.remove(0);
+                            System.out.println(matchs.size()+"---------");
                             if (matchs.size() == 0) {
                                 loadBlankFragment();
                                 getMatchs();
