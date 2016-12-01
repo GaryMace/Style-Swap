@@ -335,7 +335,7 @@ public class SwipeButtonsFragment extends Fragment {
                                                             ArrayList<String> update = s.getValue(t);
                                                             boolean add = true;
                                                             for (String str: update){
-                                                                if (str.equals(user.getEmail())){
+                                                                if (str != null && str.equals(user.getEmail())){
                                                                     add = false;
                                                                     System.out.println(user.getEmail());
                                                                     break;
