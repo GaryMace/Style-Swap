@@ -23,6 +23,7 @@ public class ProfileFragment extends Fragment {
     private TextView profileinfo;
     private TextView profileinfo2;
     private ImageView profilePic;
+    private Button mCameraButton;
     private Linker linker;
 
     @Override
@@ -31,7 +32,6 @@ public class ProfileFragment extends Fragment {
         linker = (Linker) getActivity();
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-
         profileinfo = (TextView) view.findViewById(R.id.profileinfo);
         profileinfo.setText(linker.getUserName());
 
@@ -39,6 +39,15 @@ public class ProfileFragment extends Fragment {
         profileinfo2.setText(linker.getAge());
 
         profilePic = (ImageView) view.findViewById(R.id.profile_trans);
+
+        mCameraButton = (Button) view.findViewById(R.id.profilecamera);
+        mCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                startActivity(intent);
+            }
+        });
 
         logout = (Button) view.findViewById(R.id.logout);
         logout.setOnClickListener(new View.OnClickListener() {
