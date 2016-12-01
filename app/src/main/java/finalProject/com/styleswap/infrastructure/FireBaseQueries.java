@@ -49,7 +49,7 @@ public class FireBaseQueries {
 
     public void uploadImageView(ImageView image, String userID) {
 
-        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(userID + "/" + "Dress");
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-70481.appspot.com").child(userID + "/" + "Dress");
 
         /*image.setDrawingCacheEnabled(true);
         image.buildDrawingCache();*/

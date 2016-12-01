@@ -104,22 +104,18 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
             }
         });
         return view;
-
     }
 
 
     public void onStart() {
         super.onStart();
         imageView.setImageDrawable(linker.getUserProfileImage().getDrawable());
-
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-
-
     }
 
     public void loadImagefromGallery(View view) {

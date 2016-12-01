@@ -19,12 +19,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -68,10 +71,11 @@ public class MatchListFragment extends Fragment {
     private ProgressBar mProgressBar;
     private LinearLayout mHasMatches;
     private RecyclerView mMatchRecycler;
-    private FireBaseQueries db;
+    private FireBaseQueries mDb;
     private MatchAdapter mAdapter;
     private Linker linker;                      //Linker is an interface that lets us get cached data from MainActivity quickly
     private FragmentManager fragmentManager;
+    private boolean mFoundNewUpdatesFromFirebase;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,7 +91,7 @@ public class MatchListFragment extends Fragment {
         mMatchRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         mMatchRecycler.setHasFixedSize(true);
         linker = (Linker) getActivity();
-        db = new FireBaseQueries();
+        mDb = new FireBaseQueries();
 
         Log.d(TAG, "Liker email for matches is: "+linker.getLoggedInUser());
         getMatches(linker.getLoggedInUser());   //Get matches from firebase for the current logged in user
@@ -95,11 +99,16 @@ public class MatchListFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Once this fragment is re-inflated to the screen we need to check if there are any new matches, but also
+     * to check if anyone has deleted us.
+     *
+     */
     public void getMatches(String email) {
         final DatabaseReference userRef;
-        userRef = db.getBothMatched(email);
+        userRef = mDb.getBothMatched(email);
 
-        db.executeIfExists(userRef, new QueryMaster() {
+        mDb.executeIfExists(userRef, new QueryMaster() {
             @Override
             public void run(DataSnapshot s) {
                 GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {
@@ -110,6 +119,7 @@ public class MatchListFragment extends Fragment {
                     update.size() > linker.getCachedMatches().size() ||     //If there's been some update get the new list.
                     update.size() < linker.getCachedMatches().size() ) {
 
+                    mFoundNewUpdatesFromFirebase = true;
                     linker.setCachedMatches(update);
                 }
 
@@ -119,7 +129,7 @@ public class MatchListFragment extends Fragment {
     }
     public void download(final ImageView imageView, String username, String imagename, final int position) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(username + "/" + imagename);
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-70481.appspot.com").child(username + "/" + imagename);
 
         final long ONE_MEGABYTE = 1024 * 1024;
         picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -142,8 +152,9 @@ public class MatchListFragment extends Fragment {
 
     private void updateUI() {
         if (!linker.getCachedMatches().isEmpty()) {
-            if (mAdapter == null) {
+            if (mAdapter == null || mFoundNewUpdatesFromFirebase) {
                 mAdapter = new MatchAdapter(linker.getCachedMatches());
+                mFoundNewUpdatesFromFirebase = false;
             } else {
                 mAdapter.notifyDataSetChanged();
             }
@@ -160,7 +171,7 @@ public class MatchListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateUI();
-        //getMatches(linker.getLoggedInUser());
+        getMatches(linker.getLoggedInUser());
     }
 
 
@@ -195,10 +206,10 @@ public class MatchListFragment extends Fragment {
 
             String chatKey = m.getChatKey();
 
-            db.removeMatch(linker.getLoggedInUser(), MainActivity.FIREBASE_BOTH_MATCHED, position);
+            mDb.removeMatch(linker.getLoggedInUser(), MainActivity.FIREBASE_BOTH_MATCHED, position);
 
             //TODO: removeAtPosition wont work for my match
-            //db.removeMatch(m.getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED, position);
+            //mDb.removeMatch(m.getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED, position);
 
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, matches.size());
@@ -227,7 +238,7 @@ public class MatchListFragment extends Fragment {
 
                         Log.d("TAG", "removed Image at position" + newPosition);
                         removeAt(getAdapterPosition());                                 //Remove this user from my bothMatched list locally and on Firebase
-                        db.deleteChatRoom(matchChatKey);
+                        mDb.deleteChatRoom(matchChatKey);
                         notifyItemRangeChanged(newPosition, matches.size());            //Remove user from visible list locally
                         notifyItemChanged(newPosition);
                     }
@@ -237,23 +248,29 @@ public class MatchListFragment extends Fragment {
 
                     @Override
                     public boolean onLongClick(View v) {                        //Launch IM fragment and add this fragment to back stack
-                        Log.d("TAG", "Clicked Match, launching im fragment");
-                        FragmentTransaction ft = fragmentManager.beginTransaction();
-                        ChatIm chatFragment = new ChatIm();
+                        Log.d(TAG, "Chatkey is: " + matchChatKey);
+                        executeIfExists(mDb.getChatRoom(matchChatKey), new QueryMaster() {
+                            @Override
+                            public void run(DataSnapshot s) {
+                                Log.d("TAG", "Clicked Match, launching im fragment");
+                                FragmentTransaction ft = fragmentManager.beginTransaction();
+                                ChatIm chatFragment = new ChatIm();
 
-                        //Pass match data to fragment we're about to launch
-                        Bundle argData = new Bundle();
-                        Bitmap compressedImg = ((BitmapDrawable)matchImage.getDrawable()).getBitmap();
-                        compressedImg = Bitmap.createScaledBitmap(compressedImg, 100, 100, false);
+                                //Pass match data to fragment we're about to launch
+                                Bundle argData = new Bundle();
+                                Bitmap compressedImg = ((BitmapDrawable)matchImage.getDrawable()).getBitmap();
+                                compressedImg = Bitmap.createScaledBitmap(compressedImg, 100, 100, false);
 
-                        byte[] img = DatabaseHandler.createByteArray(compressedImg);
-                        argData.putByteArray(ARGUMENT_MATCH_IMAGE, img);
-                        argData.putString(ARGUMENT_MATCH_NAME, matchName.getText().toString());
-                        argData.putString(ARGUMENT_CHAT_KEY, matchChatKey);
-                        chatFragment.setArguments(argData);
+                                byte[] img = DatabaseHandler.createByteArray(compressedImg);
+                                argData.putByteArray(ARGUMENT_MATCH_IMAGE, img);
+                                argData.putString(ARGUMENT_MATCH_NAME, matchName.getText().toString());
+                                argData.putString(ARGUMENT_CHAT_KEY, matchChatKey);
+                                chatFragment.setArguments(argData);
 
-                        ft.addToBackStack(MatchListFragment.REVERT_TO_TAG);
-                        ft.replace(R.id.activity_main_fragment_container, chatFragment, getString(R.string.fragment_im_id)).commit();
+                                ft.addToBackStack(MatchListFragment.REVERT_TO_TAG);
+                                ft.replace(R.id.activity_main_fragment_container, chatFragment, getString(R.string.fragment_im_id)).commit();
+                            }
+                        });
                         return false;
                     }
                 });
@@ -269,6 +286,25 @@ public class MatchListFragment extends Fragment {
                 else
                     download(matchImage, m.getMatchMail(), "Dress", getAdapterPosition());  //We don't have it locally so download it
             }
+        }
+
+        public void executeIfExists(DatabaseReference databaseReference, final QueryMaster q) {
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists())
+                        q.run(dataSnapshot);
+                    else {
+                        //Chatroom doenst exist maybe? do stuff
+                        Toast.makeText(getActivity(), "Chat room doesn't exist anymore, you've been unmatched", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
         }
     }
 }
