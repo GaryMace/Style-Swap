@@ -19,7 +19,7 @@ import finalProject.com.styleswap.infrastructure.Linker;
 public class ProfileFragment extends Fragment {
     private static final String REVERT_TO_TAG = "profile_fragment";
     private ImageButton gotoEditProfile;
-    //private Button logout;
+    private Button logout;
     private TextView profileinfo;
     private TextView profileinfo2;
     private ImageView profilePic;
@@ -40,17 +40,17 @@ public class ProfileFragment extends Fragment {
 
         profilePic = (ImageView) view.findViewById(R.id.profile_trans);
 
-//        logout = (Button) view.findViewById(R.id.logout);
-//        logout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                Intent i = getContext().getPackageManager()
-////                        .getLaunchIntentForPackage( getContext().getPackageName() );
-////                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-////                startActivity(i);
-//
-//            }
-//        });
+        logout = (Button) view.findViewById(R.id.logout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = getContext().getPackageManager()
+                        .getLaunchIntentForPackage( getContext().getPackageName() );
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+
+            }
+        });
 
         gotoEditProfile = (ImageButton) view.findViewById(R.id.profilepic);
         gotoEditProfile.setOnClickListener(new View.OnClickListener() {

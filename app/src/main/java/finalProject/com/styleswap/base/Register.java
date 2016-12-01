@@ -122,7 +122,7 @@ public class Register extends AppCompatActivity {
                     fireBaseQueries.pushNewUserDetails(newUser);
                     //Drawable myDrawable = getResources().getDrawable(R.drawable.stock);
 
-                    StorageReference picRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child((mEmail.getText().toString()) + "/" + "Dress");
+                    StorageReference picRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://styleswap-70481.appspot.com").child((mEmail.getText().toString()) + "/" + "Dress");
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     Bitmap mybit = BitmapFactory.decodeResource(getResources(), R.drawable.stock);  //We do not own this image
                     mybit.compress(Bitmap.CompressFormat.JPEG, 100, baos);

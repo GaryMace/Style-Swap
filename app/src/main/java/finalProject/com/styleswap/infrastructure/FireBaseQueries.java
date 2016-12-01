@@ -78,7 +78,7 @@ public class FireBaseQueries {
 
     public void download(final ImageView imageView, String username) {
 
-        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(username + "/" + "Dress");
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-70481.appspot.com").child(username + "/" + "Dress");
 
         final long ONE_MEGABYTE = 1024 * 1024;
         picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
