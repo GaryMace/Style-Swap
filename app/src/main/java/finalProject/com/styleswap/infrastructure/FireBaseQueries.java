@@ -226,7 +226,6 @@ public class FireBaseQueries {
             @Override
             public void run(DataSnapshot s) {
                 ref.setValue(null);
-
             }
         });
     }
