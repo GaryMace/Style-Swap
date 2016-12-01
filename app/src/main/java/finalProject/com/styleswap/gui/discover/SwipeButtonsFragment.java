@@ -94,7 +94,7 @@ public class SwipeButtonsFragment extends Fragment {
         nestedQueue = new LinkedList<NestedInfoCard>();
 
         userName = linker.getLoggedInUser();
-        dressSize = linker.getDressSize();
+
         Log.d("TAG", "prafff: " + linker.getLoggedInUser());
 
 
@@ -277,7 +277,6 @@ public class SwipeButtonsFragment extends Fragment {
         super.onStart();
         userName = linker.getLoggedInUser();
         //if cached not empty put cached
-
         if (userName != null && nestedQueue.size() == 0) {
             getMatchs();
         }
@@ -333,7 +332,7 @@ public class SwipeButtonsFragment extends Fragment {
 
         final DatabaseReference mUserRef = fireBaseQueries.getUserLocationReferenceByEmail(userName);
         final GeoFire geoFire = new GeoFire(mUserRef.getParent());
-
+        System.out.println("pppppppppppp");
         geoFire.setLocation(mUserRef.getKey(), new GeoLocation(linker.getDeviceLat(), linker.getDeviceLon()), new GeoFire.CompletionListener() {
             @Override
             public void onComplete(String key, DatabaseError error) {
@@ -351,8 +350,7 @@ public class SwipeButtonsFragment extends Fragment {
                                             @Override
                                             public void run(DataSnapshot s) {
                                                 final User user = s.getValue(User.class);
-
-                                                if (user.getDressSize() == dressSize) {
+                                                if (user.getDressSize() == linker.getDressSize()) {
                                                     fireBaseQueries.executeIfExists(fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched"), new QueryMaster() {
                                                         @Override
                                                         public void run(DataSnapshot s) {
@@ -428,7 +426,7 @@ public class SwipeButtonsFragment extends Fragment {
                     addToQueue(update.get(i));
                     update.remove(i);
                 }
-                //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
+                matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
 
                 getNewMatchs();
 
