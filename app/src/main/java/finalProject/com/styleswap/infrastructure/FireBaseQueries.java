@@ -25,6 +25,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
+import finalProject.com.styleswap.base.MainActivity;
 import finalProject.com.styleswap.impl.Match;
 import finalProject.com.styleswap.impl.User;
 
@@ -196,9 +197,14 @@ public class FireBaseQueries {
     }
 
     public void removeMatch(String email, String matchType, final int position) {
-        final DatabaseReference userRef;
+        DatabaseReference userRef;
 
-        userRef = getMatchedme(email);
+        if (matchType.equals(MainActivity.FIREBASE_BOTH_MATCHED)) {
+            userRef = getBothMatched(email);
+        } else {
+            userRef = getMatchedme(email);
+        }
+        final DatabaseReference finalRef = userRef;
 
         executeIfExists(userRef, new QueryMaster() {
             @Override
@@ -207,7 +213,7 @@ public class FireBaseQueries {
                 };
                 ArrayList<Match> update = s.getValue(t);
                 update.remove(position);
-                userRef.setValue(update);
+                finalRef.setValue(update);
 
             }
         });

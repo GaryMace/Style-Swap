@@ -209,7 +209,7 @@ public class MatchListFragment extends Fragment {
             mDb.removeMatch(linker.getLoggedInUser(), MainActivity.FIREBASE_BOTH_MATCHED, position);
 
             //TODO: removeAtPosition wont work for my match
-            //mDb.removeMatch(m.getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED, position);
+            mDb.removeMatch(m.getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED, position);
 
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, matches.size());
