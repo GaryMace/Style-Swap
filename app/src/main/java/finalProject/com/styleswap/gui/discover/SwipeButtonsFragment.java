@@ -59,7 +59,7 @@ public class SwipeButtonsFragment extends Fragment {
     private FragmentTransaction transaction;
     private Queue<NestedInfoCard> nestedQueue;
     private String userName;
-    private int dressSize = 8;
+    private int dressSize;
     private int searchRadius = 10;
     private boolean isBlank;
     private Linker linker;
@@ -94,6 +94,7 @@ public class SwipeButtonsFragment extends Fragment {
         nestedQueue = new LinkedList<NestedInfoCard>();
 
         userName = linker.getLoggedInUser();
+        dressSize = linker.getDressSize();
         Log.d("TAG", "prafff: " + linker.getLoggedInUser());
 
 
@@ -350,14 +351,15 @@ public class SwipeButtonsFragment extends Fragment {
                                             @Override
                                             public void run(DataSnapshot s) {
                                                 final User user = s.getValue(User.class);
+
                                                 if (user.getDressSize() == dressSize) {
                                                     fireBaseQueries.executeIfExists(fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched"), new QueryMaster() {
                                                         @Override
                                                         public void run(DataSnapshot s) {
-                                                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {
-                                                            };
+                                                            GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
                                                             ArrayList<String> update = s.getValue(t);
                                                             boolean add = true;
+                                                            System.out.println(user.getEmail()+"=========");
                                                             for (String str: update){
                                                                 if (str.equals(user.getEmail())){
                                                                     add = false;
@@ -427,7 +429,7 @@ public class SwipeButtonsFragment extends Fragment {
                     update.remove(i);
                 }
                 //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
-                System.out.println("get matches=============");
+
                 getNewMatchs();
 
             }
