@@ -103,14 +103,6 @@ public class SwipeButtonsFragment extends Fragment {
 
 
         loadBlankFragment();
-//        } else {
-//            NestedInfoCard card = loadFragment(matchs.get(0));
-//            nestedQueue.add(card);
-//            matchs.remove(0);
-//
-//            replaceFragment(nestedQueue.poll());
-//
-//        }
 
 
         likeObject.setOnClickListener(new View.OnClickListener() {
@@ -284,6 +276,7 @@ public class SwipeButtonsFragment extends Fragment {
         super.onStart();
         userName = linker.getLoggedInUser();
         //if cached not empty put cached
+
         if (userName != null && nestedQueue.size() == 0) {
             getMatchs();
         }
@@ -434,7 +427,7 @@ public class SwipeButtonsFragment extends Fragment {
                     update.remove(i);
                 }
                 //matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
-
+                System.out.println("get matches=============");
                 getNewMatchs();
 
             }
@@ -451,7 +444,7 @@ public class SwipeButtonsFragment extends Fragment {
 
     public void addToQueue(final Match match) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-f3aa9.appspot.com").child(match.getMatchMail() + "/" + "Dress");
+        StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-70481.appspot.com").child(match.getMatchMail() + "/" + "Dress");
         Log.d("Username Check", match.getMatchName());
 
         final long ONE_MEGABYTE = 1024 * 1024;

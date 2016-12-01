@@ -71,7 +71,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
-        System.out.println("try use");
         profilePic.setImageDrawable(linker.getUserProfileImage().getDrawable());
     }
 }
