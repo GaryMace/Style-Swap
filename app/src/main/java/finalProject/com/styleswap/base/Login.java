@@ -53,7 +53,6 @@ public class Login extends AppCompatActivity {
     private FireBaseQueries firebaseDb;
     private Button mLoginButton;
     private EditText mUserName, mUserPassword;
-    private TextView mLaunchRegister;
     private CheckBox mRememberMe;
 
     private boolean mInternetConnected;
@@ -69,7 +68,6 @@ public class Login extends AppCompatActivity {
         mUserName = (EditText) findViewById(R.id.activity_login_username);
         mUserPassword = (EditText) findViewById(R.id.activity_login_password);
         mLoginButton = (Button) findViewById(R.id.activity_login_button);
-        mLaunchRegister = (TextView) findViewById(R.id.activity_login_launch_register);
         mRememberMe = (CheckBox) findViewById(R.id.activity_login_remember_me);
         Log.d(TAG, "Table exists = "+localDb.isTableExists("userRemember", true));
         
@@ -139,17 +137,6 @@ public class Login extends AppCompatActivity {
                 }
             }
         });
-
-        mLaunchRegister.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getBaseContext(), Register.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-                startActivity(i);
-            }
-        });
-
     }
 
     private void loadRememberDataIfExists() {

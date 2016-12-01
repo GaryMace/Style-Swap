@@ -72,9 +72,17 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
         imageView.setImageDrawable(linker.getUserProfileImage().getDrawable());
 
         spinner = (Spinner) view.findViewById(R.id.spinner1);
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(this.getActivity(), R.array.dress_sizes, android.R.layout.simple_spinner_item);
+
+        ArrayAdapter adapter =
+            ArrayAdapter.createFromResource(this.getActivity(), R.array.dress_sizes, android.R.layout.simple_spinner_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+
+        //Set default adapter position to be users dress size so they dont accidentally change dress size to 2..
+        int spinnerPosition = adapter.getPosition(linker.getDressSize()+"");
+
+        //set the default according to value
+        spinner.setSelection(spinnerPosition);
 
         mUploadNewImage.setOnClickListener(new View.OnClickListener() {
             @Override
