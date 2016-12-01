@@ -187,7 +187,6 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-
     }
 
     //Starts the first screen you see. MainActivity then gets the Login/Register data later.

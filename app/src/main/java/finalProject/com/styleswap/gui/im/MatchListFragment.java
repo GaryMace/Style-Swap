@@ -237,7 +237,8 @@ public class MatchListFragment extends Fragment {
                         int newPosition = getAdapterPosition();
 
                         Log.d("TAG", "removed Image at position" + newPosition);
-                        removeAt(getAdapterPosition());                                 //Remove this user from my bothMatched list locally and on Firebase
+                        //removeAt(getAdapterPosition());                                 //Remove this user from my bothMatched list locally and on Firebase
+                        Log.d(TAG, "Chat key is: " + matchChatKey);
                         mDb.deleteChatRoom(matchChatKey);
                         notifyItemRangeChanged(newPosition, matches.size());            //Remove user from visible list locally
                         notifyItemChanged(newPosition);

@@ -220,7 +220,7 @@ public class FireBaseQueries {
     }
 
     public void deleteChatRoom(String chatRoomKey) {
-        final DatabaseReference ref = getChatRoom(encodeKey(chatRoomKey));
+        final DatabaseReference ref = getChatRoom(chatRoomKey);
 
         executeIfExists(ref, new QueryMaster() {
             @Override
