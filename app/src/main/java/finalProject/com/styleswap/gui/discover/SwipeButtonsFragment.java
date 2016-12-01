@@ -189,11 +189,11 @@ public class SwipeButtonsFragment extends Fragment {
 
 
                             if (!matchFlag) {
-                                System.out.println(matchs.size()+ "=================");
                                 Match nMatch = new Match();
                                 nMatch.setMatchMail(userName);
                                 nMatch.setMatchNumber(linker.getPhoneNumber());
                                 nMatch.setMatchName(linker.getUserName());
+                                nMatch.setMatchBio(linker.getItemDescription());
                                 fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_MATCHED_ME,nMatch);
                                 matchs.remove(0);
                                 if (matchs.size() == 0) {
@@ -332,7 +332,6 @@ public class SwipeButtonsFragment extends Fragment {
 
         final DatabaseReference mUserRef = fireBaseQueries.getUserLocationReferenceByEmail(userName);
         final GeoFire geoFire = new GeoFire(mUserRef.getParent());
-        System.out.println("pppppppppppp");
         geoFire.setLocation(mUserRef.getKey(), new GeoLocation(linker.getDeviceLat(), linker.getDeviceLon()), new GeoFire.CompletionListener() {
             @Override
             public void onComplete(String key, DatabaseError error) {
@@ -357,7 +356,6 @@ public class SwipeButtonsFragment extends Fragment {
                                                             GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
                                                             ArrayList<String> update = s.getValue(t);
                                                             boolean add = true;
-                                                            System.out.println(user.getEmail()+"=========");
                                                             for (String str: update){
                                                                 if (str.equals(user.getEmail())){
                                                                     add = false;
