@@ -231,6 +231,7 @@ public class SwipeButtonsFragment extends Fragment {
 
                             matchs.remove(0);
                             System.out.println(matchs.size()+"---------");
+                            System.out.println(matchs.size());
                             if (matchs.size() == 0) {
                                 loadBlankFragment();
                                 getMatchs();
@@ -402,7 +403,6 @@ public class SwipeButtonsFragment extends Fragment {
                     addToQueue(update.get(i));
                     update.remove(i);
                 }
-                matchedMe.setValue(update);//comment back in for vinal version just not removing so i can test
 
                 getNewMatchs();
 
