@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="Android.com.styleswap">
+          package="finalProject.com.styleswap">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -24,11 +25,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="Android.com.styleswap.base.Login" />
+            android:name="finalProject.com.styleswap.base.Login" />
         <activity
-            android:name="Android.com.styleswap.base.Register" />
+            android:name="finalProject.com.styleswap.base.Register" />
         <activity
-            android:name="Android.com.styleswap.base.AppStartupActivtiy" />
+            android:name="finalProject.com.styleswap.base.AppStartupActivtiy" />
 
         <service
             android:name=".messaging.MyFirebaseMessagingService">
