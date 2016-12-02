@@ -7,12 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;/*
-<<<<<<< 2e1878d49c8862379371e0311dd0860992cbcffd
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-=======
 import android.view.KeyEvent;
->>>>>>> Fullscreen and bug fixes*/
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,7 +100,7 @@ public class ProfileFragment extends Fragment {
         profilePic.setImageDrawable(linker.getUserProfileImage().getDrawable());
     }
 
-    /*//makes captured photo your profile photo
+    //makes captured photo your profile photo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -113,8 +110,10 @@ public class ProfileFragment extends Fragment {
             linker.setUserProfileImage(photo);
             FireBaseQueries base = new FireBaseQueries();
             base.uploadImageView(profilePic, linker.getLoggedInUser());
-        }*/
-    /*@Override
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
@@ -134,5 +133,5 @@ public class ProfileFragment extends Fragment {
                 return false;
             }
         });
-    }*/
+    }
 }
