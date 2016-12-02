@@ -63,6 +63,12 @@ public interface Linker {
 
     String  getPhoneNumber();
 
+    void  setItemDescription(String description);
+
+    void  setUserName(String name);
+
+    void  setPhoneNumber(String number);
+
     void setDressSize(int newDressSize);
 
     int getDressSize();

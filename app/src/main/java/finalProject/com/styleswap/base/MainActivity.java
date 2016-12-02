@@ -598,6 +598,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void setItemDescription(String description) {
+        mItemDescription = description;
+    }
+
+    @Override
+    public void setUserName(String name) {
+        mUserName = name;
+    }
+
+    @Override
+    public void setPhoneNumber(String number) {
+        mUserNumber = number;
+    }
+
+    @Override
     public void setDressSize(int newDressSize) {
         DatabaseReference db = fireBaseQueries.getUserReferenceByEmail(mUserLogin);
         mUserSize = newDressSize;

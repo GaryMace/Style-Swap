@@ -28,7 +28,13 @@ import finalProject.com.styleswap.infrastructure.QueryMaster;
 
 
 /**
- * Created by gary on 10/10/16.
+ * EditProfileFragment:
+ *
+ *                  This class allows you to edit you accounts details. You can select new photos
+ *                  from your gallery and edit your other detail people will see when they match
+ *                  with you.
+ *
+ *`Created by James on 24/11/16.
  */
 
 public class EditProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
@@ -36,8 +42,6 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
     private EditText itemDescription;
     private EditText userNumber;
     private EditText userName;
-    private Button mUploadNewImage;
-    private Button mDoneButton;
     private Linker linker;
     private String userEmail = null;
     private int mNewDressSize;
@@ -52,8 +56,8 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
 
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
 
-        mUploadNewImage = (Button) view.findViewById(R.id.editPhotoButton);
-        mDoneButton = (Button) view.findViewById(R.id.editPhotoButton2);
+        Button mUploadNewImage = (Button) view.findViewById(R.id.editPhotoButton);
+        Button mDoneButton = (Button) view.findViewById(R.id.editPhotoButton2);
 
         linker = (Linker) getActivity();
 
@@ -87,14 +91,14 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
         mUploadNewImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadImagefromGallery(getView());
+                loadImagefromGallery();
             }
         });
 
+        //updates account info in online database when you click done
         mDoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //fireBaseQueries.getUserItemDescription(email).setV;
                 final DatabaseReference mUserRef = fireBaseQueries.getUserReferenceByEmail(userEmail);
                 fireBaseQueries.executeIfExists(mUserRef, new QueryMaster() {
                     @Override
@@ -102,9 +106,12 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
                         mUserRef.child("itemDescription").setValue(itemDescription.getText().toString());
                         mUserRef.child("name").setValue(userName.getText().toString());
                         mUserRef.child("phoneNum").setValue(userNumber.getText().toString());
-                        //mUserRef.child("dressSize").setValue(.getText().toString());
-                        mUserRef.child("dressSize").setValue(8);
+                        mUserRef.child("dressSize").setValue(mNewDressSize);
+                        linker.setItemDescription(itemDescription.getText().toString());
+                        linker.setPhoneNumber(userNumber.getText().toString());
+                        linker.setUserName(userName.getText().toString());
                         linker.setDressSize(mNewDressSize);
+
                     }
                 });
                 getFragmentManager().popBackStack();
@@ -114,7 +121,7 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
         return view;
     }
 
-
+    //load cached profile image
     public void onStart() {
         super.onStart();
         imageView.setImageDrawable(linker.getUserProfileImage().getDrawable());
@@ -126,13 +133,8 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
         super.onResume();
     }
 
-    public void loadImagefromGallery(View view) {
-        // Create intent to Open Image applications like Gallery, Google Photos
-              /*  Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                // Start the Intent
-                Log.d("TAGGE", linker.getLoggedInUser());
-                startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);*/
+    //opens gallery and lets you pick photo
+    public void loadImagefromGallery() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -140,33 +142,25 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
             "Select Picture"), RESULT_LOAD_IMAGE);
     }
 
+    //makes your selected photo your new dress profile photo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("TAGGE", "THANK YOU TO FUCK: res code is " + requestCode);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK) {
             Uri selectedImageUri = data.getData();
             imageView.setImageURI(selectedImageUri);
-
-            Log.d("TAGGE", "result ok: ");
-
             fireBaseQueries.uploadImageView(imageView, userEmail);
-            //imageView.setImageDrawable(linker.getUserProfileImage().getDrawable());
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            Log.d("TAGGE", "result canceled: ");
 
-        }
+        } else if (resultCode == Activity.RESULT_CANCELED) {}
     }
 
+    //updates dress size when you select on spinner
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         int newDressSize = Integer.parseInt(adapterView.getItemAtPosition(i).toString());
         mNewDressSize = newDressSize;
-        Log.d("TAGGE", "Selected value is: " + newDressSize);
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
+    public void onNothingSelected(AdapterView<?> adapterView) {}
 }
