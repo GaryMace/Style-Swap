@@ -123,9 +123,10 @@ public class SwipeButtonsFragment extends Fragment {
                         public void run(DataSnapshot s) {
                             GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
                             ArrayList<String> update = s.getValue(t);
-                            if (update.size() > 10)
-                                update.remove(1);
                             update.add(matchs.get(0).getMatchMail());
+                            if (update.size() > 10) {
+                                update.remove(1);
+                            }
                             recentlyMatch.setValue(update);
 
                         }
@@ -233,8 +234,9 @@ public class SwipeButtonsFragment extends Fragment {
                             GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
                             ArrayList<String> update = s.getValue(t);
                             update.add(matchs.get(0).getMatchMail());
-                            if (update.size() > 10)
+                            if (update.size() > 10) {
                                 update.remove(1);
+                            }
                             recentlyMatch.setValue(update);
 
                         }
