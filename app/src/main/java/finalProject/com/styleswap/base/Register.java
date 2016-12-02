@@ -41,7 +41,7 @@ public class Register extends AppCompatActivity {
     public static final String REGISTER_PHONE = "reg_phone";
     public static final String REGISTER_PASSWORD = "reg_pass";
     public static final String REGISTER_SIZE = "reg_size";
-    public static final String REGISTER_AGE = "reg_age";       //Why we need an age?
+    public static final String REGISTER_AGE = "reg_age";
 
     private boolean mInternetConnected;
     private Button buttonRegister;

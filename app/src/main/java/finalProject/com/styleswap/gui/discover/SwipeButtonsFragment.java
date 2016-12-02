@@ -70,7 +70,6 @@ public class SwipeButtonsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_swipe_buttons, container, false);
         blank = new BlankFragment();
         linker = (Linker) getActivity();
-        //nestedQueue = new LinkedList<>();
 
         userName = linker.getLoggedInUser();
 
@@ -310,16 +309,7 @@ public class SwipeButtonsFragment extends Fragment {
         Log.d("Fragment", "Replaced");
     }
 
-    //    private void fillFragments(){
-//        count = 0;
-//
-//        nestedCards.clear();
-//        for(int i = 0; i < LOADING_SIZE; i++){
-//            NestedInfoCard card = loadFragment();
-//            nestedCards.add(card);
-//        }
-//    }
-//    //TODO dont match if matched recently
+    //TODO dont match if matched recently
     private void getNewMatchs() {
         //users email
 
