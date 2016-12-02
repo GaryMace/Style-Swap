@@ -186,7 +186,7 @@ public class Register extends AppCompatActivity {
         }
 
         if (mPhoneNumber.getText().toString().length() != 10) {
-            Toast.makeText(getBaseContext(), "Invaild phone number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "Invaild phone number not 10 digits", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
