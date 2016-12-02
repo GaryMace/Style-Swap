@@ -102,7 +102,6 @@ public class MatchListFragment extends Fragment {
     /**
      * Once this fragment is re-inflated to the screen we need to check if there are any new matches, but also
      * to check if anyone has deleted us.
-     *
      */
     public void getMatches(String email) {
         final DatabaseReference userRef;
@@ -127,6 +126,7 @@ public class MatchListFragment extends Fragment {
             }
         });
     }
+    
     public void download(final ImageView imageView, String username, String imagename, final int position) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-70481.appspot.com").child(username + "/" + imagename);
