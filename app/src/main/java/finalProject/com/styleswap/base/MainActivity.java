@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity
                         mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
                         mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
                         mItemDescription = "My Dress!!";
-                       // Log.d(TAG, "User registered to email: " + mUserLogin+", "+mUserName+", "+mUserSize+", "+mUserNumber);
+                        Log.d(TAG, "User registered to email: " + mUserLogin+", "+mUserName+", "+mUserSize+", "+mUserNumber);
                         Bitmap mybit = BitmapFactory.decodeResource(getResources(), R.drawable.stock);  //Assign new user defualt stock image on first register
                         profileImage.setImageBitmap(mybit);
                         toggleUserLoggedIn();   //FFS of course we forgot to do this.. no wonder it was returning null in MatchListFrags

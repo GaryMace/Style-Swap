@@ -180,6 +180,7 @@ public class MatchListFragment extends Fragment {
         }
     }
 
+    //When back pressed go to home
     @Override
     public void onResume() {
         super.onResume();
@@ -232,7 +233,7 @@ public class MatchListFragment extends Fragment {
         }
 
         //Remove match once the delete match button is pressed.
-        public void removeAt(int position) {
+        public void removeAt(int position, String chatKey) {
             Match m = linker.getCachedMatches().remove(position);   //Remove match locally from memory
 
             mDb.removeMatch(linker.getLoggedInUser(), MainActivity.FIREBASE_BOTH_MATCHED, position);    //Delete the match from my BothMatched on FireBase
@@ -261,14 +262,20 @@ public class MatchListFragment extends Fragment {
 
                     @Override
                     public void onClick(View v) {
-                        int newPosition = getAdapterPosition();
+                        final int newPosition = getAdapterPosition();
 
-                        Log.d("TAG", "removed Image at position" + newPosition);
-                        removeAt(getAdapterPosition());                                 //Remove this user from my bothMatched list locally and on Firebase
-                        Log.d(TAG, "Chat key is: " + matchChatKey);
-                        mDb.deleteChatRoom(matchChatKey);
+                        removeAt(getAdapterPosition(), matchChatKey);                   //Remove this user from my bothMatched list locally and on Firebase
                         notifyItemRangeChanged(newPosition, matches.size());            //Remove user from visible list locally
                         notifyItemChanged(newPosition);
+
+                        //Delete chat room only if it currently exists.
+                        executeIfChatRoomExists(mDb.getChatRoom(matchChatKey), new QueryMaster() {
+                            @Override
+                            public void run(DataSnapshot s) {
+                                Log.d(TAG, "Chat key is: " + matchChatKey);
+                                mDb.deleteChatRoom(matchChatKey);
+                            }
+                        });
                     }
                 });   //why did it take me so long to realise this was missing....FFUUUUU
 
