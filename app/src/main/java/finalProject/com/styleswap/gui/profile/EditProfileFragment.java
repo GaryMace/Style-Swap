@@ -25,8 +25,6 @@ import finalProject.com.styleswap.infrastructure.FireBaseQueries;
 import finalProject.com.styleswap.infrastructure.Linker;
 import finalProject.com.styleswap.infrastructure.QueryMaster;
 
-
-
 /**
  * EditProfileFragment:
  *

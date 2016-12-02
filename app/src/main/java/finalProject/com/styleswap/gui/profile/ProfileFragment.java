@@ -1,10 +1,14 @@
 package finalProject.com.styleswap.gui.profile;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +17,24 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import finalProject.com.styleswap.R;
+import finalProject.com.styleswap.infrastructure.FireBaseQueries;
 import finalProject.com.styleswap.infrastructure.Linker;
 
+/**
+ * ProfileFragment:
+ *                  This class shows your current profile Information you can access logout of edit
+ *                  profile from here.
+ *
+ *`Created by James on 24/11/16.
+ */
+
 public class ProfileFragment extends Fragment {
+    public static final int CAMERA_REQUEST = 1888;
     private static final String REVERT_TO_TAG = "profile_fragment";
-    private ImageButton gotoEditProfile;
-    private Button logout;
-    private TextView profileinfo;
-    private TextView profileinfo2;
     private ImageView profilePic;
-    private Button mCameraButton;
     private Linker linker;
 
     @Override
@@ -32,24 +43,26 @@ public class ProfileFragment extends Fragment {
         linker = (Linker) getActivity();
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        profileinfo = (TextView) view.findViewById(R.id.profileinfo);
-        profileinfo.setText(linker.getUserName());
+        TextView profileInfo = (TextView) view.findViewById(R.id.profileinfo);
+        profileInfo.setText(linker.getUserName());
 
-        profileinfo2 = (TextView) view.findViewById(R.id.profileinfo2);
-        profileinfo2.setText(linker.getAge());
+        TextView profileInfo2 = (TextView) view.findViewById(R.id.profileinfo2);
+        profileInfo2.setText(linker.getAge());
 
         profilePic = (ImageView) view.findViewById(R.id.profile_trans);
 
-        mCameraButton = (Button) view.findViewById(R.id.profilecamera);
+        Button mCameraButton = (Button) view.findViewById(R.id.profilecamera);
         mCameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                startActivity(intent);
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
 
-        logout = (Button) view.findViewById(R.id.logout);
+
+        //logs out by relauching app
+        final Button logout = (Button) view.findViewById(R.id.logout);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,7 +74,9 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        gotoEditProfile = (ImageButton) view.findViewById(R.id.profilepic);
+
+        //goes to edit profile fragment
+        ImageButton gotoEditProfile = (ImageButton) view.findViewById(R.id.profilepic);
         gotoEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,7 +84,7 @@ public class ProfileFragment extends Fragment {
                 FragmentTransaction ft = manager.beginTransaction();
                 EditProfileFragment editProf = new EditProfileFragment();
 
-
+                //this means when you press back from editProfile you will come back to this fragment
                 ft.addToBackStack(ProfileFragment.REVERT_TO_TAG);
                 ft.replace(R.id.activity_main_fragment_container, editProf, getString(R.string.fragment_edit_profle_id)).commit();
             }
@@ -77,9 +92,24 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
+    //set image to cached image
     @Override
     public void onStart(){
         super.onStart();
         profilePic.setImageDrawable(linker.getUserProfileImage().getDrawable());
+    }
+
+
+    //makes captured photo your profile photo
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            profilePic.setImageBitmap(photo);
+            linker.setUserProfileImage(photo);
+            FireBaseQueries base = new FireBaseQueries();
+            base.uploadImageView(profilePic, linker.getLoggedInUser());
+        }
     }
 }

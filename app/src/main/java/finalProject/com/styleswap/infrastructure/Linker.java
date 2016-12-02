@@ -33,6 +33,8 @@ public interface Linker {
 
     ImageView getUserProfileImage();
 
+    void setUserProfileImage(Bitmap bitmap);
+
     Bitmap getUserProfilePic();
 
     List<Match> getCachedMatches();

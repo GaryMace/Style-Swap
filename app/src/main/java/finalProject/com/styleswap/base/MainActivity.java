@@ -506,6 +506,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void setUserProfileImage(Bitmap bm) {
+         profileImage.setImageBitmap(bm);
+    }
+
+    @Override
     public Bitmap getUserProfilePic() {
         return ((BitmapDrawable)profileImage.getDrawable()).getBitmap();    //Get bitmap from imageView of logged in user
     }
