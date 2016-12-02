@@ -1,10 +1,12 @@
 package finalProject.com.styleswap.gui.discover;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -470,6 +472,28 @@ public class SwipeButtonsFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                //On back button pressed
+                if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    Intent startMain = new Intent(Intent.ACTION_MAIN);  //Just go back to home screen, initially it was logging user out.
+                    startMain.addCategory(Intent.CATEGORY_HOME);
+                    startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(startMain);
+                    return true;
+                }
+                return false;
             }
         });
     }
