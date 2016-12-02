@@ -11,6 +11,8 @@ import finalProject.com.styleswap.R;
 
 /**
  * Created by Alan on 21/11/2016.
+ *
+ *  Sets the nested fragment as a searching for matches fragment.
  */
 
 public class BlankFragment extends Fragment{

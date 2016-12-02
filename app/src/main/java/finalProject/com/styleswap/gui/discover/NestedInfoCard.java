@@ -25,7 +25,8 @@ import finalProject.com.styleswap.infrastructure.FireBaseQueries;
  *  NestedInfoCard:
  *
  *  This is the nested fragment which uses the bundle which is passed in from swipeButtonsFragment.
- *  It assigns the objects
+ *  It assigns the name, description to a Text view within the card and Assigns the byte array to the imageView.
+ *
  */
 
 
@@ -70,13 +71,6 @@ public class NestedInfoCard extends Fragment {
         return root;
     }
 
-    public String getNestedEmail(){
-        return email;
-    }
-
-    public String getNumber(){
-        return number;
-    }
 
     public String getName(){
         return user;
