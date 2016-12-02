@@ -193,7 +193,7 @@ public class AppStartupActivtiy extends Activity {
                     String mUserEmail = data.getExtras().getString(Register.REGISTER_EMAIL);
                     int mUserAge = data.getExtras().getInt(Register.REGISTER_AGE);      //Why do we care about an age?
                     String mUserName = data.getExtras().getString(Register.REGISTER_NAME);
-                    int mUserNumber = data.getExtras().getInt(Register.REGISTER_PHONE);
+                    String mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
                     int mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
                     mainActivityRes.putExtra(Register.REGISTER_EMAIL, mUserEmail);
                     mainActivityRes.putExtra(Register.REGISTER_NAME, mUserName);
