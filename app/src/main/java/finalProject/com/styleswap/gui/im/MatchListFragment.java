@@ -233,12 +233,17 @@ public class MatchListFragment extends Fragment {
         }
 
         //Remove match once the delete match button is pressed.
-        public void removeAt(int position, String chatKey) {
-            Match m = linker.getCachedMatches().remove(position);   //Remove match locally from memory
+        public void removeAt(final int position, String chatKey) {
+            final Match m = linker.getCachedMatches().remove(position);   //Remove match locally from memory
 
-            mDb.removeMatch(linker.getLoggedInUser(), MainActivity.FIREBASE_BOTH_MATCHED, position);    //Delete the match from my BothMatched on FireBase
-            mDb.removeMatch(m.getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED, position);            //Delete the match from matches BothMatched on FireBase
-
+            //Only delete if first time round
+            executeIfChatRoomExists(mDb.getChatRoom(chatKey), new QueryMaster() {
+                @Override
+                public void run(DataSnapshot s) {
+                    mDb.removeMatch(linker.getLoggedInUser(), MainActivity.FIREBASE_BOTH_MATCHED, position);    //Delete the match from my BothMatched on FireBase
+                    mDb.removeMatch(m.getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED, position);            //Delete the match from matches BothMatched on FireBase
+                }
+            });
             notifyItemRemoved(position);                //Notify adapter that item was deleted
             notifyItemRangeChanged(position, matches.size());       //Updates the adapter view
         }
@@ -265,7 +270,6 @@ public class MatchListFragment extends Fragment {
                         final int newPosition = getAdapterPosition();
 
                         removeAt(getAdapterPosition(), matchChatKey);                   //Remove this user from my bothMatched list locally and on Firebase
-                        notifyItemRangeChanged(newPosition, matches.size());            //Remove user from visible list locally
                         notifyItemChanged(newPosition);
 
                         //Delete chat room only if it currently exists.
