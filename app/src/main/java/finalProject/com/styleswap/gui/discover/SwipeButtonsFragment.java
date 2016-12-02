@@ -49,6 +49,34 @@ import finalProject.com.styleswap.infrastructure.QueryMaster;
  * Created by Alan on 25/10/2016.
  */
 
+/**
+ *SwipeButtonsFragment:
+ *
+ *              This is the fragment where the matching algorithm is used to query the online database
+ *              and creates a queue of NestedInfoCard's which are committed sequentially to the childFragmentManager
+ *              each time the tick or X is pressed .
+ *
+ *              When getMatchs is called it gets all the users who have ticked yes to me already and it populates the queue NestedQueue
+ *              using a method call to addToQueue().
+ *              After this getNewMatches is called which queries the users in the database using geolocation,
+ *              so users within a certain range and with the same dress size will be added to nestedQueue().
+ *              The objects in this queue are Instances of the nestedFragment, NestedInfoCard. This class contains
+ *              all information needed for to display the card, such as picture,name and description.
+ *
+ *              When the like button is pressed we check the database to see if that user has liked us already,
+ *              from this two things can happen.
+ *              (1) The user has already liked us, so we add both users to each others matched field.
+ *                  From there we create a unique key which corresponds to an instance of a chatRoom.
+ *              (2) The user has not already liked us and we add the current user logged into the other users matchedME.
+ *
+ *              When the dislike button is pressed we add the user on the screen to our recentlyMatched so it won't show up again.
+ *              Then we check if the the user has ticked us already, if they have we remove the other user from our matchedME.
+ *
+ *
+ *
+ */
+
+
 public class SwipeButtonsFragment extends Fragment {
 
     public static final int LOADING_SIZE = 10;
@@ -260,6 +288,11 @@ public class SwipeButtonsFragment extends Fragment {
         return root;
     }
 
+    /*
+    *      When onStart() is called it gets current logged in user.
+    *      It replaces the blank fragment if we have matches to fill it with, if not we call getMatches()
+    *
+     */
     public void onStart() {
         super.onStart();
         userName = linker.getLoggedInUser();
@@ -277,6 +310,7 @@ public class SwipeButtonsFragment extends Fragment {
 
     }
 
+    //Creates an instance of NestedInfoCard and passes it the bundle of necessary information to fill the card
     private NestedInfoCard loadFragment(Match match) {
         //Need to add in a query to get name description and picture
         String u = match.getMatchName();
@@ -302,6 +336,7 @@ public class SwipeButtonsFragment extends Fragment {
         return nest;
     }
 
+    //Replaces the current nested fragment with a new card
     private void replaceFragment(NestedInfoCard nest) {
         if (this.isVisible()) {
             transaction = getChildFragmentManager().beginTransaction();
@@ -311,6 +346,7 @@ public class SwipeButtonsFragment extends Fragment {
         Log.d("Fragment", "Replaced");
     }
 
+    //Queries database by geolocation and adds any users with same dress size as current user to nestedQueue
     //TODO dont match if matched recently
     private void getNewMatchs() {
         //users email
@@ -396,7 +432,7 @@ public class SwipeButtonsFragment extends Fragment {
 
 
     }
-
+    //Adds users who have already ticked me to the NestedQueue
     private void getMatchs() {
         final DatabaseReference matchedMe = fireBaseQueries.getMatchedme(userName);//users email
         fireBaseQueries.executeIfExists(matchedMe, new QueryMaster() {
@@ -416,14 +452,14 @@ public class SwipeButtonsFragment extends Fragment {
         });
     }
 
-
+    //Fills the nestedFrag with a blank fragment incase no users are returned from getMatchs()
     private void loadBlankFragment() {
         transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.fragment_match_frame, blank, "TAG").commit();
         isBlank = true;
     }
 
-
+    //Takes in a match as a parameter and creates an instance of a NestedCard given that match
     public void addToQueue(final Match match) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-70481.appspot.com").child(match.getMatchMail() + "/" + "Dress");
