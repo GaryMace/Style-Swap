@@ -21,7 +21,13 @@ import finalProject.com.styleswap.infrastructure.FireBaseQueries;
 
 /**
  * Created by Alan on 25/10/2016.
+ *
+ *  NestedInfoCard:
+ *
+ *  This is the nested fragment which uses the bundle which is passed in from swipeButtonsFragment.
+ *  It assigns the objects
  */
+
 
 public class NestedInfoCard extends Fragment {
 

@@ -103,16 +103,10 @@ public class SwipeButtonsFragment extends Fragment {
 
         userName = linker.getLoggedInUser();
 
-        Log.d("TAG", "prafff: " + linker.getLoggedInUser());
-
-
-        //System.out.println(linker.getLoggedInUser());
         likeObject = (ImageButton) root.findViewById(R.id.fragment_yes_button);
         dislikeObject = (ImageButton) root.findViewById(R.id.fragment_no_button);
 
-
         loadBlankFragment();
-
 
         likeObject.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,8 +141,6 @@ public class SwipeButtonsFragment extends Fragment {
                                 final Match m = update.get(i);
                                 m.setPosition(i);
                                 if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
-                                    Log.d("Email for encoding", userName);
-                                    Log.d("Other Email", matchs.get(0).getMatchMail());
                                     final String chatKey = FireBaseQueries.encodeKey(userName)
                                             + FireBaseQueries.encodeKey(matchs.get(0).getMatchMail());
                                     fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(userName), new QueryMaster() {
@@ -204,7 +196,6 @@ public class SwipeButtonsFragment extends Fragment {
                                 fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_MATCHED_ME,nMatch);
                                 matchs.remove(0);
                                 nestedQueue.poll();
-                                System.out.println(matchs.size());
                                 if (matchs.size() == 0) {
                                     loadBlankFragment();
                                     getMatchs();
@@ -230,7 +221,6 @@ public class SwipeButtonsFragment extends Fragment {
             public void onClick(View v) {
                 if (isBlank) {
                     if (userName != null) {
-                        System.out.println("------------------");
                         getMatchs();
                     }
 
@@ -266,8 +256,6 @@ public class SwipeButtonsFragment extends Fragment {
 
                             matchs.remove(0);
                             nestedQueue.poll();
-                            System.out.println(matchs.size()+"---------");
-                            System.out.println(matchs.size());
                             if (matchs.size() == 0) {
                                 loadBlankFragment();
                                 getMatchs();
@@ -297,7 +285,7 @@ public class SwipeButtonsFragment extends Fragment {
         super.onStart();
         userName = linker.getLoggedInUser();
 
-        System.out.println(matchs.size() + " ---");
+
         if (matchs.size() > 0){
             isBlank = false;
             replaceFragment(nestedQueue.peek());
@@ -321,9 +309,7 @@ public class SwipeButtonsFragment extends Fragment {
             Log.d("Debug_swipe", "Empty match byte array");
         }
         byte[] image = match.getByteArray();
-        if (image == null) {
-            Log.d("IMAGE DOESn't Exist", "LAMEEEE");
-        }
+
         Bundle b = new Bundle();
         b.putString("UserName", u);
         b.putString("Description", desc);
@@ -341,15 +327,14 @@ public class SwipeButtonsFragment extends Fragment {
         if (this.isVisible()) {
             transaction = getChildFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_match_frame, nest, "TAG").commit();
-            //TODO: Fix, throwing this error when i click "X" on one person -> java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.Class java.lang.Object.getClass()' on a null object reference
+
         }
         Log.d("Fragment", "Replaced");
     }
-
+    
     //Queries database by geolocation and adds any users with same dress size as current user to nestedQueue
     //TODO dont match if matched recently
     private void getNewMatchs() {
-        //users email
 
         final DatabaseReference mUserRef = fireBaseQueries.getUserLocationReferenceByEmail(userName);
         final GeoFire geoFire = new GeoFire(mUserRef.getParent());
@@ -380,7 +365,6 @@ public class SwipeButtonsFragment extends Fragment {
                                                             for (String str: update){
                                                                 if (str != null && str.equals(user.getEmail())){
                                                                     add = false;
-                                                                    System.out.println(user.getEmail());
                                                                     break;
                                                                 }
                                                             }
@@ -415,14 +399,11 @@ public class SwipeButtonsFragment extends Fragment {
                                     }
                                 });
                             } else {
-                                System.out.println(String.format("There is no location for key %s in GeoFire", key));
                             }
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            System.err.println("There was an error getting the GeoFire location: " + databaseError);
-                        }
+                        public void onCancelled(DatabaseError databaseError) {}
                     });
                 }
 
@@ -483,7 +464,6 @@ public class SwipeButtonsFragment extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Log.d("Pic load Failed", "WHy");
                 // Handle any errors
             }
         });
