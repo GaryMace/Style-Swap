@@ -38,8 +38,6 @@ import finalProject.com.styleswap.infrastructure.Linker;
  *              All of the messages that the current logged in user sends will be displayed as blue.
  *              All of the messages that a match sends will be displayed as grey for the logged in user.
  *
- *
- *
  *              Created by gary on 24/11/16.
  */
 
@@ -106,10 +104,10 @@ public class ChatIm extends Fragment {
                 mProgressBar.setVisibility(ProgressBar.INVISIBLE);                          //Hide progress bar now that we have stuff to display
 
                 if (message.getIsMine().equals(linker.getLoggedInUser())) {                 //If the message loaded was mine, blue bubble it
-                    populateMyBubble((MyMessageViewHolder) viewHolder, message, position);
+                    populateMyBubble((MyMessageViewHolder) viewHolder, message);
 
                 } else {    //If not my message load it into grey bubble
-                    populateMatchBubble((MatchesMessageViewHolder) viewHolder, message, position);
+                    populateMatchBubble((MatchesMessageViewHolder) viewHolder, message);
 
                 }
             }
@@ -187,7 +185,8 @@ public class ChatIm extends Fragment {
         return view;
     }
 
-    private void populateMyBubble(MyMessageViewHolder viewHolder, ChatMessage message, int position) {
+    //Populates the view of a message that I send
+    private void populateMyBubble(MyMessageViewHolder viewHolder, ChatMessage message) {
         TextView msg;
         ImageView imgView;
         LinearLayout layout;
@@ -207,7 +206,9 @@ public class ChatIm extends Fragment {
         msg.setTextColor(Color.WHITE);
     }
 
-    private void populateMatchBubble(MatchesMessageViewHolder viewHolder, ChatMessage message, int position) {
+
+    //populates the view of a message i recieve from my match
+    private void populateMatchBubble(MatchesMessageViewHolder viewHolder, ChatMessage message) {
         TextView msg;
         ImageView imgView;
         LinearLayout layout;

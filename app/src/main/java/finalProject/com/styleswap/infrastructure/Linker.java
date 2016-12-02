@@ -31,31 +31,17 @@ public interface Linker {
 
     String getLoggedInUser();
 
-    void setLoggedInUser(String user);
-
     ImageView getUserProfileImage();
 
     Bitmap getUserProfilePic();
-
-    void toggleUserChangedImg();
-
-    boolean userChangedImg();
 
     List<Match> getCachedMatches();
 
     void setCachedMatches(List<Match> cachedMatches);
 
-    void addCachedMatch(Match m);
-
-    void removeCachedMatch(Match m);
-
     double getDeviceLat();
 
     double getDeviceLon();
-
-    Queue<User> getCachedUsers();
-
-    void setCachedUsers(Queue<User> users);
 
     String  getItemDescription();
 

@@ -153,7 +153,7 @@ public class SwipeButtonsFragment extends Fragment {
                                     });
 
 
-                                    ChatMessage message = new ChatMessage("Hello,I matched you", userName);
+                                    ChatMessage message = new ChatMessage("Hello, I matched you", userName);
                                     fireBaseQueries.createChatRoom(chatKey).push().setValue(message);
                                     fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
                                     matchFlag = true;

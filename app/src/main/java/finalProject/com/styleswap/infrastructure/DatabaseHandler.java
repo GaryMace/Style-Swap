@@ -55,6 +55,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
+    // Specifies the remember me schema
     private String createRememberMe() {
         return "CREATE TABLE " + TABLE_REMEMBER_ME + " ( " +
             R_ID + " INTEGER PRIMARY KEY, " +
@@ -92,7 +93,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put(KEY_REMEMBER_EMAIL, newEmail);
-        db.update(TABLE_REMEMBER_ME, values, R_ID + "=\'" + 1 + "\'", null);
+        db.update(TABLE_REMEMBER_ME, values, R_ID + "=\'" + 1 + "\'", null);    //Always gets the first entry in table
         Log.d(TAG, "updated table in: " + values);
         db.close();
     }
@@ -102,7 +103,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put(KEY_REMEMBER_ME, rememberMe);
-        db.update(TABLE_REMEMBER_ME, values, R_ID + "=\'" + 1 + "\'", null);
+        db.update(TABLE_REMEMBER_ME, values, R_ID + "=\'" + 1 + "\'", null);    //Always gets the first entry in table
         Log.d(TAG, "updated table in: " + values);
         db.close();
     }
@@ -112,7 +113,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         values.put(KEY_REMEMBER_PASSWORD, password);
-        db.update(TABLE_REMEMBER_ME, values, R_ID + "=\'" + 1 + "\'", null);
+        db.update(TABLE_REMEMBER_ME, values, R_ID + "=\'" + 1 + "\'", null);    //Always gets the first entry in table
         Log.d(TAG, "updated table in: " + values);
         db.close();
     }
@@ -220,7 +221,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return list;
     }
 
-    public boolean isTableExists(String tableName, boolean openDb) {
+    //Does the table exist yet?
+    //Code gotten from: http://stackoverflow.com/questions/3058909/how-does-one-check-if-a-table-exists-in-an-android-sqlite-database
+    public boolean doesTableExist(String tableName, boolean openDb) {
         SQLiteDatabase db = this.getWritableDatabase();
         if(openDb) {
             if(db == null || !db.isOpen()) {

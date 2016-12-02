@@ -46,11 +46,11 @@ import finalProject.com.styleswap.R;
  */
 
 public class AppStartupActivtiy extends Activity {
-    public static final int TIME_OUT_PERIOD = 2000;
+    public static final int TIME_OUT_PERIOD = 2000;             //App has two seconds to connect to Google otherwise it's determined that the phone has no internet
     private static final String TAG = "debug_app_startup";
     private static final int LOGIN_EXISTING_USER = 1;
     private static final int REGISTER_NEW_USER = 2;
-    private static final long SWITCH_TO_NEXT_MESSAGE_DELAY = 8000;
+    private static final long SWITCH_TO_NEXT_MESSAGE_DELAY = 8000;  //Switch to next message in ViewPager after 8 seconds.
     private static final long START_TIMER_DELAY = 0;
 
     private VideoView mIntroVid;
@@ -60,7 +60,7 @@ public class AppStartupActivtiy extends Activity {
     //Threaded Text display fields
     private Timer mSwipeTimer;
     private int mCurrTextBox = 0;
-    private static final int NUM_TEXT_BOXES_TO_DISPLAY = 4;
+    private static final int NUM_TEXT_BOXES_TO_DISPLAY = 4; //Number of messages in the ViewPager
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,7 +87,7 @@ public class AppStartupActivtiy extends Activity {
 
             @Override
             public void onClick(View v) {
-                Intent getLoginIntent = new Intent(getBaseContext(), Login.class);
+                Intent getLoginIntent = new Intent(getBaseContext(), Login.class);  //User wants to login
                 startActivityForResult(getLoginIntent, LOGIN_EXISTING_USER);
             }
         });
@@ -96,11 +96,15 @@ public class AppStartupActivtiy extends Activity {
 
             @Override
             public void onClick(View v) {
-                Intent getLoginIntent = new Intent(getBaseContext(), Register.class);
+                Intent getLoginIntent = new Intent(getBaseContext(), Register.class);   //User wants to register
                 startActivityForResult(getLoginIntent, REGISTER_NEW_USER);
             }
         });
 
+        setupViewPager();
+    }
+
+    private void setupViewPager() {
         //Messages shown at bottom of screen
         List<AppStartupMessage> appMessages = new ArrayList<>();
 
@@ -126,14 +130,14 @@ public class AppStartupActivtiy extends Activity {
 
         mSwipeTimer = new Timer();
         mSwipeTimer.schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        handler.post(Update);
-                    }
-                },
-                START_TIMER_DELAY,
-                SWITCH_TO_NEXT_MESSAGE_DELAY);
+            new TimerTask() {
+                @Override
+                public void run() {
+                    handler.post(Update);
+                }
+            },
+            START_TIMER_DELAY,
+            SWITCH_TO_NEXT_MESSAGE_DELAY);
     }
 
     //Loops video and mutes its sound.
@@ -142,10 +146,10 @@ public class AppStartupActivtiy extends Activity {
         @Override
         public void onPrepared(MediaPlayer m) {
             try {
-                if (m.isPlaying()) {
+                if (m.isPlaying()) {    //Video already playing
                     m.stop();
                     m.release();
-                    m = new MediaPlayer();
+                    m = new MediaPlayer();  //Remake Player
                 }
                 m.setVolume(0f, 0f);
                 m.setLooping(true);     //Keep looping video
@@ -157,7 +161,7 @@ public class AppStartupActivtiy extends Activity {
     };
 
     /**
-     * Deals with the result from the Login. That being the screen where you select a shimmer to connect.
+     * Deals with the result from the Login and Register. That being the screen where you select a shimmer to connect.
      * It'll link the sensor you select to the body position you select.
      *
      * @param requestCode Random
@@ -215,9 +219,14 @@ public class AppStartupActivtiy extends Activity {
      *
      * The Adapter is responsible for changing the displayed text when either the timer runs out or
      * the user scrolls through the texts seen.
+     *
+     * This solution was generated from a solution I found online, I have in fairness seriously
+     * changed it though so I'm confident to call it my own.
+     *
+     * https://www.bignerdranch.com/blog/viewpager-without-fragments/
      */
     public class AppStartupPagerAdapter extends PagerAdapter {
-        List<AppStartupMessage> items;
+        List<AppStartupMessage> items;  //List of messages to display
         LayoutInflater inflater;
 
         public AppStartupPagerAdapter(Context context, List<AppStartupMessage> items) {
@@ -284,7 +293,7 @@ public class AppStartupActivtiy extends Activity {
      * @param timeout
      */
     public static void isNetworkAvailable(final Handler handler, final int timeout) {
-        // ask fo message '0' (not connected) or '1' (connected) on 'handler'
+        // ask for message '0' (not connected) or '1' (connected) on 'handler'
         // the answer must be send before before within the 'timeout' (in milliseconds)
 
         new Thread() {
@@ -297,7 +306,7 @@ public class AppStartupActivtiy extends Activity {
                     @Override
                     public void run() {
                         try {
-                            HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
+                            HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());   //Try to connect to google
                             urlc.setRequestProperty("User-Agent", "Test");
                             urlc.setRequestProperty("Connection", "close");
                             urlc.setConnectTimeout(timeout);
@@ -316,7 +325,7 @@ public class AppStartupActivtiy extends Activity {
                     while (!responded && (waited < timeout)) {  //Keep trying to connect until timeout
                         sleep(100);
                         if (!responded) {
-                            waited += 100;
+                            waited += 100;  //Waited a second, increment time out counter
                         }
                     }
                 } catch (InterruptedException e) {
@@ -329,6 +338,6 @@ public class AppStartupActivtiy extends Activity {
                     }
                 }
             }
-        }.start();
+        }.start();  //Start the thread
     }
 }

@@ -33,6 +33,15 @@ import finalProject.com.styleswap.infrastructure.FireBaseQueries;
 
 import static java.lang.Integer.parseInt;
 
+/**
+ * Register:
+ *
+ *          The Register Activity allows a new user to make an account on StyleSwap. This activity is
+ *          launched from AppStartupActivity and that activity will handle the information entered by
+ *          the user.
+ *
+ *          Similar to Login, an internet connection is required to register your information.
+ */
 public class Register extends AppCompatActivity {
     public static final String REGISTER_NEW_USER = "register_new";
 
@@ -63,7 +72,7 @@ public class Register extends AppCompatActivity {
 
         final Handler h = new Handler() {
             @Override
-            public void handleMessage(Message msg) {
+            public void handleMessage(Message msg) {        //Handle the "InternetConnected?" thread
 
                 if (msg.what != 1) { // code if not connected
                     mInternetConnected = false;
@@ -100,7 +109,7 @@ public class Register extends AppCompatActivity {
         intent.putExtra(REGISTER_PHONE, mPhoneNumber.getText().toString());
         intent.putExtra(REGISTER_SIZE, Integer.valueOf(mDressSize.getText().toString()));
         setResult(Activity.RESULT_OK, intent);
-        finish();
+        finish();   //Finish this activity and return
     }
 
 
@@ -111,7 +120,7 @@ public class Register extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    //sorry user already exsists
+                    //sorry user already exists
                     Toast.makeText(getBaseContext(), "User with that email already exists.", Toast.LENGTH_SHORT).show();
                 } else {
                     //register
@@ -120,7 +129,6 @@ public class Register extends AppCompatActivity {
                         Integer.valueOf(mDressSize.getText().toString()), mPhoneNumber.getText().toString());
 
                     fireBaseQueries.pushNewUserDetails(newUser);
-                    //Drawable myDrawable = getResources().getDrawable(R.drawable.stock);
 
                     StorageReference picRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://styleswap-70481.appspot.com").child((mEmail.getText().toString()) + "/" + "Dress");
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -141,7 +149,6 @@ public class Register extends AppCompatActivity {
                             Uri downloadUrl = taskSnapshot.getDownloadUrl();
                         }
                     });
-                    //tock.setImageDrawable(myDrawable);
 
                     Toast.makeText(getBaseContext(), "Register complete, logging in!", Toast.LENGTH_SHORT).show();
                     launchLogin();

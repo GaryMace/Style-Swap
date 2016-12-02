@@ -126,7 +126,17 @@ public class MatchListFragment extends Fragment {
             }
         });
     }
-    
+
+    /**
+     * This is a copy of the download image from Firebase queries however this method requires to store
+     * the downloaded image in cached matches which wont be the case for other usages in other fragments
+     * of the FirebaseQueries.download() method so that's why there is a custom implementation here in here.
+     *
+     * @param imageView To download into
+     * @param username Logged in user
+     * @param imagename contains the string "Dress"
+     * @param position  position in Recycle view.
+     */
     public void download(final ImageView imageView, String username, String imagename, final int position) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference picRef = storage.getReferenceFromUrl("gs://styleswap-70481.appspot.com").child(username + "/" + imagename);
@@ -150,6 +160,7 @@ public class MatchListFragment extends Fragment {
         });
     }
 
+    // If new matches were found add them, if not display current matches, if no matches display a textView saying so.
     private void updateUI() {
         if (!linker.getCachedMatches().isEmpty()) {
             if (mAdapter == null || mFoundNewUpdatesFromFirebase) {
@@ -162,7 +173,7 @@ public class MatchListFragment extends Fragment {
             mHasMatches.setVisibility(LinearLayout.INVISIBLE);      //Has matches so hide the textview
             mMatchRecycler.setAdapter(mAdapter);
         } else {
-            mProgressBar.setVisibility(ProgressBar.INVISIBLE);      //Matches found, hide the progress bar
+            mProgressBar.setVisibility(ProgressBar.INVISIBLE);      //No matches found, display "No matches found"
             mHasMatches.setVisibility(LinearLayout.VISIBLE);
         }
     }
@@ -170,8 +181,8 @@ public class MatchListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateUI();
-        getMatches(linker.getLoggedInUser());
+        updateUI();         //On Fragment reload, display matches we have stored in memory
+        getMatches(linker.getLoggedInUser());   //Look for new matches and add them to UI once downloaded
     }
 
 
@@ -201,18 +212,15 @@ public class MatchListFragment extends Fragment {
             return matches.size();
         }
 
+        //Remove match once the delete match button is pressed.
         public void removeAt(int position) {
-            Match m = linker.getCachedMatches().remove(position);
+            Match m = linker.getCachedMatches().remove(position);   //Remove match locally from memory
 
-            String chatKey = m.getChatKey();
+            mDb.removeMatch(linker.getLoggedInUser(), MainActivity.FIREBASE_BOTH_MATCHED, position);    //Delete the match from my BothMatched on FireBase
+            mDb.removeMatch(m.getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED, position);            //Delete the match from matches BothMatched on FireBase
 
-            mDb.removeMatch(linker.getLoggedInUser(), MainActivity.FIREBASE_BOTH_MATCHED, position);
-
-            //TODO: removeAtPosition wont work for my match
-            mDb.removeMatch(m.getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED, position);
-
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, matches.size());
+            notifyItemRemoved(position);                //Notify adapter that item was deleted
+            notifyItemRangeChanged(position, matches.size());       //Updates the adapter view
         }
 
         public class MatchHolder extends RecyclerView.ViewHolder {
@@ -250,25 +258,25 @@ public class MatchListFragment extends Fragment {
                     @Override
                     public boolean onLongClick(View v) {                        //Launch IM fragment and add this fragment to back stack
                         Log.d(TAG, "Chatkey is: " + matchChatKey);
-                        executeIfExists(mDb.getChatRoom(matchChatKey), new QueryMaster() {
+                        executeIfChatRoomExists(mDb.getChatRoom(matchChatKey), new QueryMaster() {
                             @Override
                             public void run(DataSnapshot s) {
                                 Log.d("TAG", "Clicked Match, launching im fragment");
                                 FragmentTransaction ft = fragmentManager.beginTransaction();
-                                ChatIm chatFragment = new ChatIm();
+                                ChatIm chatFragment = new ChatIm();                 //Chat fragment to replace Matchlist
 
                                 //Pass match data to fragment we're about to launch
                                 Bundle argData = new Bundle();
                                 Bitmap compressedImg = ((BitmapDrawable)matchImage.getDrawable()).getBitmap();
-                                compressedImg = Bitmap.createScaledBitmap(compressedImg, 100, 100, false);
+                                compressedImg = Bitmap.createScaledBitmap(compressedImg, 100, 100, false);  //Pass my matches image
 
-                                byte[] img = DatabaseHandler.createByteArray(compressedImg);
+                                byte[] img = DatabaseHandler.createByteArray(compressedImg);    //Needs to be byte array to pass
                                 argData.putByteArray(ARGUMENT_MATCH_IMAGE, img);
-                                argData.putString(ARGUMENT_MATCH_NAME, matchName.getText().toString());
-                                argData.putString(ARGUMENT_CHAT_KEY, matchChatKey);
+                                argData.putString(ARGUMENT_MATCH_NAME, matchName.getText().toString()); //Pass my matches name
+                                argData.putString(ARGUMENT_CHAT_KEY, matchChatKey); //Pass the unique chat key that ID's the chatroom for the users on Firebase
                                 chatFragment.setArguments(argData);
 
-                                ft.addToBackStack(MatchListFragment.REVERT_TO_TAG);
+                                ft.addToBackStack(MatchListFragment.REVERT_TO_TAG); //Allow the backbutton to revert back to this fragment
                                 ft.replace(R.id.activity_main_fragment_container, chatFragment, getString(R.string.fragment_im_id)).commit();
                             }
                         });
@@ -289,7 +297,8 @@ public class MatchListFragment extends Fragment {
             }
         }
 
-        public void executeIfExists(DatabaseReference databaseReference, final QueryMaster q) {
+
+        public void executeIfChatRoomExists(DatabaseReference databaseReference, final QueryMaster q) {
             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
@@ -297,7 +306,7 @@ public class MatchListFragment extends Fragment {
                     if (dataSnapshot.exists())
                         q.run(dataSnapshot);
                     else {
-                        //Chatroom doenst exist maybe? do stuff
+                        //Chatroom doenst exist, notify user.
                         Toast.makeText(getActivity(), "Chat room doesn't exist anymore, you've been unmatched", Toast.LENGTH_SHORT).show();
                     }
                 }

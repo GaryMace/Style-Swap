@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -69,12 +68,12 @@ public class Login extends AppCompatActivity {
         mUserPassword = (EditText) findViewById(R.id.activity_login_password);
         mLoginButton = (Button) findViewById(R.id.activity_login_button);
         mRememberMe = (CheckBox) findViewById(R.id.activity_login_remember_me);
-        Log.d(TAG, "Table exists = "+localDb.isTableExists("userRemember", true));
+        Log.d(TAG, "Table exists = "+localDb.doesTableExist("userRemember", true));
         
-        loadRememberDataIfExists();
+        loadRememberDataIfExists();             //If user selected the "remember me" checkbox last time logged in, load from local DB
         final Handler h = new Handler() {
             @Override
-            public void handleMessage(Message msg) {
+            public void handleMessage(Message msg) {    //handles the "internet connected?" thread
 
                 if (msg.what != 1) { // code if not connected
                     mInternetConnected = false;
@@ -110,10 +109,10 @@ public class Login extends AppCompatActivity {
                                             localDb.updatePassword(fbPassword);
                                             localDb.updateRememberMe(REMEMBER_ME);
                                         } else if (storedEmail == null) {
-                                            localDb.addDetails(userName, password, REMEMBER_ME);
+                                            localDb.addDetails(userName, password, REMEMBER_ME);        //Add remember me info to local database
                                         }
                                     } else {
-                                        localDb.deleteEntry();
+                                        localDb.deleteEntry();      //Delete from localdb
                                     }
                                     Log.d(TAG, "Login Successful: " + userName);
                                     Intent res = new Intent();

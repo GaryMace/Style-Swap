@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.support.annotation.IdRes;
@@ -131,16 +132,12 @@ public class MainActivity extends AppCompatActivity
     //Linker Interface appMessages
     private boolean isUserLoggedIn;
     private Bitmap userProfileImg;
-    private boolean userChangedImg;
     private List<Match> cachedMatches;
 
     //Bar fragments
     private SwipeButtonsFragment mSwipeButtons;
     private MatchListFragment mMatchList;
     private ProfileFragment mProfileFragment;
-
-    //Queue of Users for SwipeButton
-    private Queue<User> cachedUsers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,23 +158,24 @@ public class MainActivity extends AppCompatActivity
         // API.
         buildGoogleAPIClient();
 
+        // If the profile fragment is null,  i'm assuming the rest are too.
         if (mProfileFragment == null) {
             mSwipeButtons = new SwipeButtonsFragment();
             mMatchList = new MatchListFragment();
             mProfileFragment = new ProfileFragment();
         }
 
+        //BottomBar is the navigation tool used in the app.
         BottomBar bottomBar = (BottomBar) findViewById(R.id.activity_main_bottombar);
-        bottomBar.setDefaultTabPosition(1);
+        bottomBar.setDefaultTabPosition(1);     // Set the tab that is selected by default when the user logs in for the first time.
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
                 FragmentManager fragmentManager;
                 fragmentManager = getSupportFragmentManager();
                 FragmentTransaction ft = fragmentManager.beginTransaction();
+
                 if (tabId == R.id.tab_profile) {
-                    // The tab with id R.id.tab_favorites was selected,
-                    // change your content accordingly.
                     ft.replace(R.id.activity_main_fragment_container, mProfileFragment, getString(R.string.fragment_bottom_bar_id)).commit();
                 } else if (tabId == R.id.tab_search) {
                     ft.replace(R.id.activity_main_fragment_container, mSwipeButtons, getString(R.string.fragment_bottom_bar_id)).commit();
@@ -249,7 +247,7 @@ public class MainActivity extends AppCompatActivity
 
                         });
 
-                        fireBaseQueries.download(profileImage, mUserLogin);
+                        fireBaseQueries.download(profileImage, mUserLogin); //Download the profile image for the logged in user
                         createLocationRequest();
 
                         //All the information we need should have been just entered by the
@@ -260,7 +258,7 @@ public class MainActivity extends AppCompatActivity
                         mUserNumber = data.getExtras().getString(Register.REGISTER_PHONE);
                         mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
                         Log.d(TAG, "User registered to email: " + mUserLogin+", "+mUserName+", "+mUserSize);
-                        Bitmap mybit = BitmapFactory.decodeResource(getResources(), R.drawable.stock);
+                        Bitmap mybit = BitmapFactory.decodeResource(getResources(), R.drawable.stock);  //Assign new user defualt stock image on first register
                         profileImage.setImageBitmap(mybit);
                         toggleUserLoggedIn();   //FFS of course we forgot to do this.. no wonder it was returning null in MatchListFrags
                     }
@@ -308,10 +306,8 @@ public class MainActivity extends AppCompatActivity
                 mLastUpdateTime = savedInstanceState.getString(LAST_UPDATED_TIME_STRING_KEY);
             }
         } else {
-            cachedUsers = new PriorityQueue<>();
             isUserLoggedIn = false;
             userProfileImg = BitmapFactory.decodeResource(getResources(), R.drawable.stock);  //this may need to be a database query?
-            userChangedImg = false;
             cachedMatches = new ArrayList<>();
             startAppStartupActivityForResult(); //Launch the start-up screen
         }
@@ -334,6 +330,7 @@ public class MainActivity extends AppCompatActivity
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+    //Google's stuff, copied from their tutorial
     protected void getUserLocationFromRequest() {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
             .addLocationRequest(mLocationRequest);
@@ -377,7 +374,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    //Yeah this is my code though.. not googles.
+    //Yeah this is my code though.. not google's.
     private void checkLocationPermissions() {
 
         if (ContextCompat.checkSelfPermission(this,
@@ -409,6 +406,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    //Show explanation for any type of permission, re-usable code.
     private void showExplanation(String title,
                                  String message,
                                  final String permission,
@@ -499,35 +497,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void setLoggedInUser(String user) {
-        mUserLogin = user;
-        if (!isUserLoggedIn())
-            toggleUserLoggedIn();
-    }
-
-    @Override
     public ImageView getUserProfileImage() {
         return profileImage;
     }
 
     @Override
     public Bitmap getUserProfilePic() {
-        return userProfileImg;
-    }
-
-
-    @Override
-    public void toggleUserChangedImg() {
-        if (userChangedImg) {
-            userChangedImg = false;
-        } else {
-            userChangedImg = true;
-        }
-    }
-
-    @Override
-    public boolean userChangedImg() {
-        return userChangedImg;
+        return ((BitmapDrawable)profileImage.getDrawable()).getBitmap();    //Get bitmap from imageView of logged in user
     }
 
     @Override
@@ -539,18 +515,6 @@ public class MainActivity extends AppCompatActivity
     public void setCachedMatches(List<Match> cachedMatches) {
         if (cachedMatches != null)
             this.cachedMatches = cachedMatches;
-    }
-
-    @Override
-    public void addCachedMatch(Match m) {
-        cachedMatches.add(m);
-    }
-
-    @Override
-    public void removeCachedMatch(Match m) {
-        if (cachedMatches.contains(m)) {
-            cachedMatches.remove(m);
-        }
     }
 
     @Override
@@ -567,19 +531,6 @@ public class MainActivity extends AppCompatActivity
             return mLastLocation.getLongitude();
         else
             return 0;
-    }
-
-    @Override
-    public Queue<User> getCachedUsers() {
-        if (cachedUsers != null)
-            return cachedUsers;
-        else
-            return null;
-    }
-
-    @Override
-    public void setCachedUsers(Queue<User> users) {
-        cachedUsers = users;
     }
 
     @Override
@@ -614,9 +565,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setDressSize(int newDressSize) {
-        DatabaseReference db = fireBaseQueries.getUserReferenceByEmail(mUserLogin);
+        DatabaseReference db = fireBaseQueries.getUserReferenceByEmail(mUserLogin); // Get Dress field from schema for logged in user.
         mUserSize = newDressSize;
-        db.child("dressSize").setValue(newDressSize);
+        db.child("dressSize").setValue(newDressSize);       //Set new dress size, used in EditProfileFragment
     }
 
     @Override
@@ -627,6 +578,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(TAG, "Connected to GoogleApiClient");
+
+        //Don;t do this if no permission or last location is null.
         if (mLastLocation == null &&
             ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -699,10 +652,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putBoolean(KEY_IS_LOGGED_IN, isUserLoggedIn);
-        savedInstanceState.putString(KEY_USER_LOGIN, mUserLogin);
+        savedInstanceState.putBoolean(KEY_IS_LOGGED_IN, isUserLoggedIn);    //Save logged in user state, boolean!
+        savedInstanceState.putString(KEY_USER_LOGIN, mUserLogin);           //Save Logged in user
 
-        savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
+        savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates); //Google stuff
         savedInstanceState.putParcelable(LOCATION_KEY, mLastLocation);
         savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
     }
