@@ -54,7 +54,7 @@ public class SwipeButtonsFragment extends Fragment {
     private ImageButton likeObject;
     private ImageButton dislikeObject;
     private FragmentTransaction transaction;
-    private Queue<NestedInfoCard> nestedQueue;
+    private Queue<NestedInfoCard> nestedQueue = new LinkedList<>();
     private String userName;
     private int searchRadius = 10;
     private boolean isBlank;
@@ -70,7 +70,7 @@ public class SwipeButtonsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_swipe_buttons, container, false);
         blank = new BlankFragment();
         linker = (Linker) getActivity();
-        nestedQueue = new LinkedList<>();
+        //nestedQueue = new LinkedList<>();
 
         userName = linker.getLoggedInUser();
 
@@ -142,11 +142,12 @@ public class SwipeButtonsFragment extends Fragment {
                                                     fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
                                                     Toast.makeText(getContext(), "You just matched with "+ matchs.get(0).getMatchName(), Toast.LENGTH_SHORT).show();
                                                     matchs.remove(0);
+                                                    nestedQueue.poll();
                                                     if (matchs.size() == 0) {
                                                         loadBlankFragment();
                                                         getMatchs();
                                                     } else
-                                                        replaceFragment(nestedQueue.poll());
+                                                        replaceFragment(nestedQueue.peek());
                                                 }
                                             });
                                         }
@@ -173,13 +174,14 @@ public class SwipeButtonsFragment extends Fragment {
                                 nMatch.setMatchBio(linker.getItemDescription());
                                 fireBaseQueries.addMatch(matchs.get(0).getMatchMail(), MainActivity.FIREBASE_MATCHED_ME,nMatch);
                                 matchs.remove(0);
+                                nestedQueue.poll();
                                 System.out.println(matchs.size());
                                 if (matchs.size() == 0) {
                                     loadBlankFragment();
                                     getMatchs();
                                 }
                                 else
-                                    replaceFragment(nestedQueue.poll());
+                                    replaceFragment(nestedQueue.peek());
 
 
                             }
@@ -198,8 +200,10 @@ public class SwipeButtonsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (isBlank) {
-                    if (userName != null)
+                    if (userName != null) {
+                        System.out.println("------------------");
                         getMatchs();
+                    }
 
                 }
                 else{
@@ -232,6 +236,7 @@ public class SwipeButtonsFragment extends Fragment {
                             }
 
                             matchs.remove(0);
+                            nestedQueue.poll();
                             System.out.println(matchs.size()+"---------");
                             System.out.println(matchs.size());
                             if (matchs.size() == 0) {
@@ -239,7 +244,7 @@ public class SwipeButtonsFragment extends Fragment {
                                 getMatchs();
                             }
                             else {
-                                replaceFragment(nestedQueue.poll());
+                                replaceFragment(nestedQueue.peek());
 
                                 //linker.setCachedMatches(matchs.get(0));
 
@@ -258,18 +263,14 @@ public class SwipeButtonsFragment extends Fragment {
         super.onStart();
         userName = linker.getLoggedInUser();
 
-        //if cached not empty put cached
-        //System.out.println("===="+ matchs.size());
-//        if (matchs.size() > 0){
-//            Match m = matchs.get(0);
-//            matchs.clear();
-//            addToQueue(m);
-//        }
-//        else
-//            matchs.clear();
-        matchs.clear();
+        System.out.println(matchs.size() + " ---");
+        if (matchs.size() > 0){
+            isBlank = false;
+            replaceFragment(nestedQueue.peek());
+        }
 
-        if (userName != null && nestedQueue.size() == 0) {
+
+        else if (userName != null && nestedQueue.size() == 0) {
             getMatchs();
         }
 
@@ -444,7 +445,7 @@ public class SwipeButtonsFragment extends Fragment {
                 match.setByteArray(bytes);
                 nestedQueue.add(loadFragment(match));
                 if (isBlank) {
-                    replaceFragment(nestedQueue.poll());
+                    replaceFragment(nestedQueue.peek());
                     isBlank = false;
                 }
 
