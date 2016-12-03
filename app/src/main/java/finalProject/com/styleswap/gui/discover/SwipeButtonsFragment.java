@@ -174,19 +174,13 @@ public class SwipeButtonsFragment extends Fragment {
                                             });
                                         }
                                     });
-
-
                                     ChatMessage message = new ChatMessage("Hello, I matched you", userName);
                                     fireBaseQueries.createChatRoom(chatKey).push().setValue(message);
                                     fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
                                     matchFlag = true;
-
-
-
                                 }
 
                             }
-
 
                             if (!matchFlag) {
                                 Match nMatch = new Match();
@@ -203,14 +197,7 @@ public class SwipeButtonsFragment extends Fragment {
                                 }
                                 else
                                     replaceFragment(nestedQueue.peek());
-
-
                             }
-
-
-
-
-
                         }
                     });
                 }
@@ -250,9 +237,7 @@ public class SwipeButtonsFragment extends Fragment {
                             for (int i = 1; i < update.size(); i++) {
                                 final Match m = update.get(i);
                                 if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
-
                                     fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
-
                                 }
                             }
 
@@ -264,7 +249,6 @@ public class SwipeButtonsFragment extends Fragment {
                             }
                             else {
                                 replaceFragment(nestedQueue.peek());
-
                                 //linker.setCachedMatches(matchs.get(0));
 
                             }
@@ -287,12 +271,10 @@ public class SwipeButtonsFragment extends Fragment {
         super.onStart();
         userName = linker.getLoggedInUser();
 
-
         if (matchs.size() > 0){
             isBlank = false;
             replaceFragment(nestedQueue.peek());
         }
-
 
         else if (userName != null && nestedQueue.size() == 0) {
             getMatchs();
@@ -372,7 +354,6 @@ public class SwipeButtonsFragment extends Fragment {
                                                             }
                                                             if (add)
                                                                addToQueue(user.toMatch());
-
                                                         }
                                                     });
                                                 }
