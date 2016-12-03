@@ -112,7 +112,7 @@ public class SwipeButtonsFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (isBlank) {
+                if (isBlank) {  //If the blank fragment is currently displayed on the screen
                     if (userName != null)
                         getMatchs();
                 }
@@ -120,42 +120,42 @@ public class SwipeButtonsFragment extends Fragment {
                     final DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
                     fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
                         @Override
-                        public void run(DataSnapshot s) {
+                        public void run(DataSnapshot s) {    //adds the current match displayed on the screen to recently matched
                             GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
                             ArrayList<String> update = s.getValue(t);
                             update.add(matchs.get(0).getMatchMail());
                             if (update.size() > 10) {
                                 update.remove(1);
                             }
-                            recentlyMatch.setValue(update);
+                            recentlyMatch.setValue(update);  //Match is added so that match won't appear again on the screen
 
                         }
                     });
-                    executeIfExists(fireBaseQueries.getMatchedme(userName), new QueryMaster() {
+                    executeIfExists(fireBaseQueries.getMatchedme(userName), new QueryMaster() { //Gets users who have already liked me. (MatchedME)
                         @Override
                         public void run(DataSnapshot s) {
                             GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {};
-                            ArrayList<Match> update = s.getValue(t);
+                            ArrayList<Match> update = s.getValue(t); //Arraylist of all users who have previously liked me
                             boolean matchFlag = false;
 
-                            for (int i = 1; i < update.size(); i++) {
+                            for (int i = 1; i < update.size(); i++) {  //Loops through all users who have liked me
                                 final Match m = update.get(i);
                                 m.setPosition(i);
-                                if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
+                                if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {  //If the user we have just liked is in our matchedME then we match with the user
                                     final String chatKey = FireBaseQueries.encodeKey(userName)
-                                            + FireBaseQueries.encodeKey(matchs.get(0).getMatchMail());
+                                            + FireBaseQueries.encodeKey(matchs.get(0).getMatchMail());  //Unique chatRoom key is created
                                     fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(userName), new QueryMaster() {
                                         @Override
-                                        public void run(DataSnapshot s) {
+                                        public void run(DataSnapshot s) {  //Adds the user we just liked to our bothMAtched
                                             Match nMatch = new Match();
                                             nMatch.setMatchMail(matchs.get(0).getMatchMail());
                                             nMatch.setMatchNumber(matchs.get(0).getMatchNumber());
                                             nMatch.setMatchName(matchs.get(0).getMatchName());
-                                            nMatch.setChatKey(chatKey);
+                                            nMatch.setChatKey(chatKey);  //Creates a match and adds the information to it and adds the match to the database
                                             fireBaseQueries.addMatch(userName, MainActivity.FIREBASE_BOTH_MATCHED,nMatch);
                                             fireBaseQueries.executeIfExists(fireBaseQueries.getBothMatched(matchs.get(0).getMatchMail()), new QueryMaster() {
                                                 @Override
-                                                public void run(DataSnapshot s) {
+                                                public void run(DataSnapshot s) { //Adds the logged in user to the bothMatched of the user we just liked
                                                     Match nMatch = new Match();
                                                     nMatch.setMatchMail(userName);
                                                     nMatch.setMatchNumber(linker.getPhoneNumber());
@@ -169,7 +169,7 @@ public class SwipeButtonsFragment extends Fragment {
                                                         loadBlankFragment();
                                                         getMatchs();
                                                     } else
-                                                        replaceFragment(nestedQueue.peek());
+                                                        replaceFragment(nestedQueue.peek());  //Loads a new nestedCard onto the screen
                                                 }
                                             });
                                         }
@@ -177,12 +177,12 @@ public class SwipeButtonsFragment extends Fragment {
                                     ChatMessage message = new ChatMessage("Hello, I matched you", userName);
                                     fireBaseQueries.createChatRoom(chatKey).push().setValue(message);
                                     fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
-                                    matchFlag = true;
+                                    matchFlag = true;   //Creates a chatRoom with the key created above and removes the logged in user from the other users matchedME
                                 }
 
                             }
 
-                            if (!matchFlag) {
+                            if (!matchFlag) {  //if the other user has not liked us yet, we add ourselves to the other users MAtchedME in the database
                                 Match nMatch = new Match();
                                 nMatch.setMatchMail(userName);
                                 nMatch.setMatchNumber(linker.getPhoneNumber());
@@ -209,7 +209,7 @@ public class SwipeButtonsFragment extends Fragment {
             public void onClick(View v) {
                 if (isBlank) {
                     if (userName != null) {
-                        getMatchs();
+                        getMatchs();  //Queries the database for new matches if there is a searching fragment on the screen
                     }
 
                 }
@@ -217,7 +217,7 @@ public class SwipeButtonsFragment extends Fragment {
                     final DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
                     fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
                         @Override
-                        public void run(DataSnapshot s) {
+                        public void run(DataSnapshot s) {  //Adds the user we just disliked to our recentlyMatched so they don't come up again
                             GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};
                             ArrayList<String> update = s.getValue(t);
                             update.add(matchs.get(0).getMatchMail());
@@ -229,14 +229,14 @@ public class SwipeButtonsFragment extends Fragment {
                         }
                     });
 
-                    executeIfExists(fireBaseQueries.getMatchedme(userName), new QueryMaster() {
+                    executeIfExists(fireBaseQueries.getMatchedme(userName), new QueryMaster() { //Checks if the user we just disliked is in out MatchedME
                         @Override
                         public void run(DataSnapshot s) {
                             GenericTypeIndicator<ArrayList<Match>> t = new GenericTypeIndicator<ArrayList<Match>>() {};
                             ArrayList<Match> update = s.getValue(t);
                             for (int i = 1; i < update.size(); i++) {
                                 final Match m = update.get(i);
-                                if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) {
+                                if (m.getMatchMail().equals(matchs.get(0).getMatchMail())) { //If they are in our matchedME we remove them
                                     fireBaseQueries.removeMatch(userName, MainActivity.FIREBASE_MATCHED_ME,i);
                                 }
                             }
@@ -249,8 +249,6 @@ public class SwipeButtonsFragment extends Fragment {
                             }
                             else {
                                 replaceFragment(nestedQueue.peek());
-                                //linker.setCachedMatches(matchs.get(0));
-
                             }
                         }
                     });
