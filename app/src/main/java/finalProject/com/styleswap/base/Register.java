@@ -33,8 +33,6 @@ import finalProject.com.styleswap.R;
 import finalProject.com.styleswap.impl.User;
 import finalProject.com.styleswap.infrastructure.FireBaseQueries;
 
-import static java.lang.Integer.parseInt;
-
 /**
  * Register:
  *
@@ -141,7 +139,7 @@ public class Register extends AppCompatActivity {
 
                     StorageReference picRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://styleswap-70481.appspot.com").child((mEmail.getText().toString()) + "/" + "Dress");
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    Bitmap mybit = BitmapFactory.decodeResource(getResources(), R.drawable.stock);  //We do not own this image
+                    Bitmap mybit = BitmapFactory.decodeResource(getResources(), R.drawable.stock_img);  //We do not own this image
                     mybit.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] data = baos.toByteArray();
 

@@ -78,8 +78,6 @@ import finalProject.com.styleswap.infrastructure.QueryMaster;
 
 
 public class SwipeButtonsFragment extends Fragment {
-
-    public static final int LOADING_SIZE = 10;
     private BlankFragment blank;
     private ImageButton likeObject;
     private ImageButton dislikeObject;
@@ -90,7 +88,7 @@ public class SwipeButtonsFragment extends Fragment {
     private boolean isBlank;
     private Linker linker;
     private FireBaseQueries fireBaseQueries = new FireBaseQueries();
-    private ArrayList<Match> matchs = new ArrayList<>();;
+    private ArrayList<Match> matchs = new ArrayList<>();
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -117,7 +115,7 @@ public class SwipeButtonsFragment extends Fragment {
                         getMatchs();
                 }
                 else {
-                    final DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched");
+                    final DatabaseReference recentlyMatch = fireBaseQueries.getUserReferenceByEmail(userName).child(MainActivity.FIREBASE_RECENT_MATCH);
                     fireBaseQueries.executeIfExists(recentlyMatch, new QueryMaster() {
                         @Override
                         public void run(DataSnapshot s) {    //adds the current match displayed on the screen to recently matched
@@ -338,7 +336,7 @@ public class SwipeButtonsFragment extends Fragment {
                                             public void run(DataSnapshot s) {
                                                 final User user = s.getValue(User.class);
                                                 if (user.getDressSize() == linker.getDressSize()) {
-                                                    fireBaseQueries.executeIfExists(fireBaseQueries.getUserReferenceByEmail(userName).child("recentlyMatched"), new QueryMaster() {
+                                                    fireBaseQueries.executeIfExists(fireBaseQueries.getUserReferenceByEmail(userName).child(MainActivity.FIREBASE_RECENT_MATCH), new QueryMaster() {
                                                         @Override
                                                         public void run(DataSnapshot s) {
                                                             GenericTypeIndicator<ArrayList<String>> t = new GenericTypeIndicator<ArrayList<String>>() {};

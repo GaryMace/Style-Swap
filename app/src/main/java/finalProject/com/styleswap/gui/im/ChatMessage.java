@@ -7,7 +7,7 @@ package finalProject.com.styleswap.gui.im;
  *              user wants to send a message to his/her match then this object is pushed to firebase,
  *              downloaded to both clients and inflated to their views.
  *
- *
+ *               Created by gary on 15/10/16.
  */
 public class ChatMessage {
     private String id;

@@ -133,7 +133,6 @@ public class MainActivity extends AppCompatActivity
 
     //Linker Interface appMessages
     private boolean isUserLoggedIn;
-    private Bitmap userProfileImg;
     private List<Match> cachedMatches;
 
     //Bar fragments
@@ -263,7 +262,7 @@ public class MainActivity extends AppCompatActivity
                         mUserSize = data.getExtras().getInt(Register.REGISTER_SIZE);
                         mItemDescription = "My Dress!!";
                         Log.d(TAG, "User registered to email: " + mUserLogin+", "+mUserName+", "+mUserSize+", "+mUserNumber);
-                        Bitmap mybit = BitmapFactory.decodeResource(getResources(), R.drawable.stock);  //Assign new user defualt stock image on first register
+                        Bitmap mybit = BitmapFactory.decodeResource(getResources(), R.drawable.stock_img);  //Assign new user defualt stock image on first register
                         profileImage.setImageBitmap(mybit);
                         toggleUserLoggedIn();   //FFS of course we forgot to do this.. no wonder it was returning null in MatchListFrags
                     }
@@ -312,7 +311,6 @@ public class MainActivity extends AppCompatActivity
             }
         } else {
             isUserLoggedIn = false;
-            userProfileImg = BitmapFactory.decodeResource(getResources(), R.drawable.stock);  //this may need to be a database query?
             cachedMatches = new ArrayList<>();
             startAppStartupActivityForResult(); //Launch the start-up screen
         }

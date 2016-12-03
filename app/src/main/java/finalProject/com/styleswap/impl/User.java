@@ -12,6 +12,8 @@ import java.util.List;
  *              Dummy variables are used because if they were left empty then the new data entries on
  *              firebase wouldn't be added
  *
+ *              Created by gary 10/11/16
+ *
  */
 public class User {
     private String password;

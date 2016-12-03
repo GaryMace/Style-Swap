@@ -38,7 +38,7 @@ import finalProject.com.styleswap.impl.User;
  *                  custom way with Firebase but in most instances the methods in this class are all
  *                  that is required.
  *
- *`Created by James on 24/11/16.
+ * Created by James on 24/11/16.
  */
 
 public class FireBaseQueries {
@@ -214,11 +214,11 @@ public class FireBaseQueries {
     }
 
     public DatabaseReference getBothMatched(String email) {
-        return getUserReferenceByEmail(email).child("bothMatched");
+        return getUserReferenceByEmail(email).child(MainActivity.FIREBASE_BOTH_MATCHED);
     }
 
     public DatabaseReference getMatchedme(String email) {
-        return getUserReferenceByEmail(email).child("matchedMe");
+        return getUserReferenceByEmail(email).child(MainActivity.FIREBASE_MATCHED_ME);
     }
     public DatabaseReference createChatRoom(String chatRoomKey) {
         return getChatRoot().child(chatRoomKey).child("messages");
@@ -249,9 +249,9 @@ public class FireBaseQueries {
     public void addMatch(String email, String matchType, final Match newMatch) {
         final DatabaseReference userRef;
 
-        if (matchType.equals("bothMatched"))
+        if (matchType.equals(MainActivity.FIREBASE_BOTH_MATCHED))
             userRef = getBothMatched(email);
-        else if (matchType.equals("matchedMe"))
+        else if (matchType.equals(MainActivity.FIREBASE_MATCHED_ME))
             userRef = getMatchedme(email);
         else
             return;

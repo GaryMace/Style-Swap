@@ -3,12 +3,10 @@ package finalProject.com.styleswap.gui.profile;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +15,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.firebase.database.FirebaseDatabase;
 
 import finalProject.com.styleswap.R;
 import finalProject.com.styleswap.infrastructure.FireBaseQueries;
@@ -29,7 +25,7 @@ import finalProject.com.styleswap.infrastructure.Linker;
  *                  This class shows your current profile Information you can access logout of edit
  *                  profile from here.
  *
- *`Created by James on 24/11/16.
+ *                  Created by James on 24/11/16.
  */
 
 public class ProfileFragment extends Fragment {

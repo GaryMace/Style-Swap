@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
  *
  *              This is then used by both users to get into their uniques chat room
  *
+ *              Created by gary 12/11/16
  */
 public class Match {
     private String matchChatToken;

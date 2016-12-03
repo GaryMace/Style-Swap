@@ -20,6 +20,7 @@ import finalProject.com.styleswap.impl.User;
  *              in the BarFragment to access or change cached data in MainActivity. Note only the three
  *              fragments in the BarFragment can use it since only their Activity implements it.
  *
+ *              Created by gary 16/10/16
  */
 public interface Linker {
 

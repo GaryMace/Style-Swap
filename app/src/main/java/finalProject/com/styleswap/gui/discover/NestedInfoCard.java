@@ -31,16 +31,12 @@ import finalProject.com.styleswap.infrastructure.FireBaseQueries;
 
 
 public class NestedInfoCard extends Fragment {
-
-    private FireBaseQueries test = new FireBaseQueries();
     private TextView userName;
     private TextView description;
     private ImageView userPic;
     private String email;
     private String number;
     private String user;
-    FirebaseStorage storage = FirebaseStorage.getInstance();
-    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private ProgressBar mProgressBar;
 
 

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,7 @@ import finalProject.com.styleswap.infrastructure.QueryMaster;
  *                  from your gallery and edit your other detail people will see when they match
  *                  with you.
  *
- *`Created by James on 24/11/16.
+ *                  Created by James on 24/11/16.
  */
 
 public class EditProfileFragment extends Fragment implements AdapterView.OnItemSelectedListener {
@@ -43,9 +42,8 @@ public class EditProfileFragment extends Fragment implements AdapterView.OnItemS
     private Linker linker;
     private String userEmail = null;
     private int mNewDressSize;
-    FireBaseQueries fireBaseQueries = new FireBaseQueries();
-    ImageView imageView;
-    private static final String REVERT_TO_TAG = "edit_profile_fragment";
+    private FireBaseQueries fireBaseQueries = new FireBaseQueries();
+    private ImageView imageView;
     public Spinner spinner;
 
     @Override
